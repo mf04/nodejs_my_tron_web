@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test-api</title>
+</head>
+
+<body>
+
+    <script src="./TronWeb.js"></script>
+
+    <script>
+
+        const address3316 = "TTx2upsPjpFjHNT4qtwwpvXo4JpTumZXWN";
+
+        // console.log(TronWeb);
+
+        const tronWeb = new TronWeb.TronWeb({
+            fullHost: 'https://api.shasta.trongrid.io',
+        });
+
+        //获取余额
+        // tronWeb.trx.getBalance(address3316)
+        //     .then(res => {
+        //         console.log(res);
+        //     });
+
+        // 获取带宽
+        // tronWeb.trx.getBandwidth(address3316)
+        //     .then(res => {
+        //         console.log(res);
+        //     });
+
+        // tronWeb.trx.getBandwidthPrices(address3316)
+        //     .then(res => {
+        //         console.log(res);
+        //     });
+
+        // tronWeb.trx.getContract(address3316)
+        //     .then(res => {
+        //         console.log(res);
+        //     });
+
+        tronWeb.trx.getAccount(address3316)
+            .then(res => {
+                console.log(res);
+            });
+
+    </script>
+
+
+</body>
+
+</html>

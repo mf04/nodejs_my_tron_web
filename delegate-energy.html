@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>delegate-energy</title>
+
+    <style>
+        .mDelegateBtn {
+            height: 36px;
+            margin-left: 5px;
+            padding: 0 20px;
+            background-color: #c10;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .mDelegateBtn:active {
+            transform: translateY(1px);
+        }
+
+        .mReceiverAmount,
+        .mReceiverAddress {
+            height: 30px;
+            width: 300px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <input class="mReceiverAmount" type="text" placeholder="代理金额trx">
+
+    <input class="mReceiverAddress" type="text" placeholder="receiver地址">
+
+    <button class="mDelegateBtn">委托</button>
+
+
+    <script src="./TronWeb.js"></script>
+
+    <script>
+
+        const address3316 = "TTx2upsPjpFjHNT4qtwwpvXo4JpTumZXWN";
+        const privateKey3316 = "8C32CC921FA507BDADEA87A3EBF2CFA061DB4148761331F9397BE04493ED55BB";
+
+        const delegateEnergyHandle = async (amountToStake, receiverAddress, type = "ENERGY", lock = false) => {
+            // console.log("-------type------");
+            // console.log(type);
+
+            const tronWeb = new TronWeb.TronWeb({
+                // fullHost: 'https://api.shasta.trongrid.io',
+                fullHost: 'https://nile.trongrid.io',
+                privateKey: privateKey3316,
+            });
+
+            const isValideAddress = tronWeb.isAddress(receiverAddress);
+            console.log(isValideAddress);
+
+            const ownerAddress = tronWeb.defaultAddress.base58;
+            console.log(ownerAddress);
+
+            const amountInSun = tronWeb.toSun(amountToStake);
+            console.log(amountInSun);
+
+            const delegateTransaction = await tronWeb.transactionBuilder.delegateResource(
+                amountInSun,
+                receiverAddress,
+                type,
+                ownerAddress,
+                lock
+            );
+
+            // console.log(delegateTransaction);
+
+            const signedTx = await tronWeb.trx.sign(delegateTransaction);
+            // console.log("交易已签名...");
+            // console.log(signedTx);
+
+            const receipt = await tronWeb.trx.sendRawTransaction(signedTx);
+            console.log("交易已广播!");
+            console.log(receipt);
+            if (receipt.result) {
+                alert(`交易已广播,代理给${receiverAddress}, ${type} ${amountToStake}`);
+            }
+
+        }
+
+        const oBtn = document.querySelector(".mDelegateBtn");
+
+        oBtn.onclick = function () {
+            const amountDom = document.querySelector(".mReceiverAmount");
+            const amount = amountDom.value;
+            if (!amount) return;
+            const addressDom = document.querySelector(".mReceiverAddress");
+            const address = addressDom.value;
+            if (!address) return;
+            // delegateEnergyHandle(amount, address);
+            delegateEnergyHandle(amount, address, "BANDWIDTH");
+            // console.log(amount, address);
+            // delegateEnergyHandle(500, "TYeVen55WyknWPUpZemobRbs3cUEM8KJhy");
+            // delegateEnergyHandle(15, "TYeVen55WyknWPUpZemobRbs3cUEM8KJhy", "BANDWIDTH");
+        }
+
+    </script>
+
+
+</body>
+
+</html>

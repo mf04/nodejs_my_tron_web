@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bandwidth-energy-v2</title>
+
+    <style>
+        .mFreezeBtn {
+            height: 36px;
+            margin-left: 5px;
+            padding: 0 20px;
+            background-color: #c10;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .mFreezeBtn:active {
+            transform: translateY(1px);
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <button class="mFreezeBtn">TRX质押能量</button>
+    <button class="mFreezeBtn2">TRX质押带宽</button>
+
+    <script src="./TronWeb.js"></script>
+
+    <script>
+
+        const address3316 = "TTx2upsPjpFjHNT4qtwwpvXo4JpTumZXWN";
+        const privateKey3316 = "8C32CC921FA507BDADEA87A3EBF2CFA061DB4148761331F9397BE04493ED55BB";
+        // const amountToStake = 1500;
+
+        const freezeHandle = async (amountToStake, type = "ENERGY") => {
+            const tronWeb = new TronWeb.TronWeb({
+                // fullHost: 'https://api.shasta.trongrid.io',
+                fullHost: 'https://nile.trongrid.io',
+                privateKey: privateKey3316,
+            });
+
+            const amountInSun = tronWeb.toSun(amountToStake);
+            const ownerAddress = tronWeb.defaultAddress.base58;
+
+            // console.log(`质押数量 (SUN): ${amountInSun}`);
+            // console.log(`从地址 ${ownerAddress} 质押...`);
+
+            const stakeTransaction = await tronWeb.transactionBuilder.freezeBalanceV2(
+                amountInSun,
+                // "ENERGY", // 我们需要能量来执行TRC20转账
+                type,
+                ownerAddress
+            );
+
+            // console.log(stakeTransaction);
+
+            const signedTx = await tronWeb.trx.sign(stakeTransaction);
+            // console.log("交易已签名...");
+            // console.log(signedTx);
+
+            const receipt = await tronWeb.trx.sendRawTransaction(signedTx);
+            console.log("交易已广播!");
+            console.log(receipt);
+            if (receipt.result) {
+                alert(`交易已广播,质押, ${type} ${amountToStake}`);
+            }
+
+        }
+
+        const oBtn = document.querySelector(".mFreezeBtn");
+
+        oBtn.onclick = async function () {
+            console.log("-----ENERGY------");
+            freezeHandle(2000, "ENERGY");
+        }
+
+        const oBtn2 = document.querySelector(".mFreezeBtn2");
+
+        oBtn2.onclick = async function () {
+            console.log("-----BANDWIDTH------");
+            freezeHandle(100, "BANDWIDTH");
+        }
+
+    </script>
+
+
+</body>
+
+</html>

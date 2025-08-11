@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>transaction</title>
+    <style>
+        .mTransWrapper {
+            display: flex;
+            height: 36px;
+        }
+
+        .mTransInp,
+        .mTransBtn {
+            height: 36px;
+            box-sizing: border-box;
+        }
+
+        .mTransInp {
+            width: 200px;
+            border: 1px solid #ccc;
+        }
+
+        .mTransInp:focus {
+            outline: none;
+            border-color: #c10;
+            border-width: 2px;
+        }
+
+        .mTransBtn {
+            margin-left: 5px;
+            padding: 0 15px;
+            background-color: #c10;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .mTransBtn:active {
+            transform: translateY(1px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="mTransWrapper">
+        <input class="mTransInp" type="text" name="trans-inp" />
+        <button class="mTransBtn">转账</button>
+    </div>
+
+    <script src="./TronWeb.js"></script>
+
+    <script>
+
+        const address3315 = "TYeVen55WyknWPUpZemobRbs3cUEM8KJhy";
+        const address3316 = "TTx2upsPjpFjHNT4qtwwpvXo4JpTumZXWN";
+        const privateKey3315 = "C3006D24BAF70ED71349E85FFC1004769BCDB6A62AA309F259E82F061952ADC9";
+        const privateKey3316 = "8C32CC921FA507BDADEA87A3EBF2CFA061DB4148761331F9397BE04493ED55BB";
+
+        const transactionHandle = async (transAmount = 1) => {
+
+            const tronWeb = new TronWeb.TronWeb({
+                fullHost: 'https://api.shasta.trongrid.io',
+            });
+
+            const unsignedTxn = await tronWeb.transactionBuilder.sendTrx(
+                address3316, transAmount * 10 ** 6, address3315
+            );
+
+            // console.log(unsignedTxn);
+
+            const signedTxn = await tronWeb.trx.sign(unsignedTxn, privateKey3315);
+
+            // console.log(signedTxn);
+
+            const receipt = await tronWeb.trx.sendRawTransaction(signedTxn);
+
+            if (receipt && receipt.result) {
+                alert(`🌸🌸🌸转账成功，转账金额:${transAmount}🌸🌸🌸`);
+            }
+
+            // console.log(receipt);
+
+            // console.log(tronWeb);
+
+            // console.log(tronWeb.transactionBuilder.sendTrx);
+
+            // console.log(TronWeb.Trx);
+
+            // const t = new TronWeb.Trx;
+
+            // console.log(t);
+
+            // console.log(TronWeb.Trx.sendRawTransaction);
+            // console.log(TronWeb.TronWeb.address);
+            // const hash = TronWeb.TronWeb.address.toHex("TJxESHaxvPnGK29WpEQ5oNF4h2s1zPas4C");
+            // console.log(hash);
+
+            // const address = TronWeb.TronWeb.address.fromHex("416289e9f7d51489c557063a6d1ccc158c362eeeaa");
+            // console.log(address);
+
+            // const T = TronWeb.TronWeb;
+            // console.log(T);
+            // const transaction = await T.trx.sendTrx(
+            //     "TTx2upsPjpFjHNT4qtwwpvXo4JpTumZXWN",
+            //     199
+            // );
+            // console.log(transaction);
+
+            // const typeObj = Object.prototype.toString.call(TronWeb);
+
+            // console.log(typeObj);
+
+            // console.log(TronWeb.TransactionBuilder);
+
+            // const TB = TronWeb.TransactionBuilder;
+
+            // console.log(TronWeb);
+
+            // console.log(TB);
+
+            // const tb = new TB;
+
+            // console.log(tb);
+
+            // console.log(TB);
+
+            // const tb = new TB({
+            //     fullHost: 'https://api.shasta.trongrid.io',
+            // });
+
+            // console.log(tb);
+
+            // const unsignedTxn = await TB.sendTrx(
+            //     "TJxESHaxvPnGK29WpEQ5oNF4h2s1zPas4C",
+            //     199,
+            //     "TYeVen55WyknWPUpZemobRbs3cUEM8KJhy"
+            // );
+
+            // const unsignedTxn = await T.transactionBuilder.sendTrx(
+            //     "TJxESHaxvPnGK29WpEQ5oNF4h2s1zPas4C",
+            //     199,
+            //     "TYeVen55WyknWPUpZemobRbs3cUEM8KJhy"
+            // );
+
+            // console.log(unsignedTxn);
+
+        }
+
+        const oBtn = document.querySelector(".mTransBtn");
+
+        oBtn.onclick = async function () {
+            const amountDom = document.querySelector(".mTransInp");
+            const amount = amountDom.value;
+            if (!amount) return;
+            await transactionHandle(amount);
+            amountDom.value = "";
+        };
+
+    </script>
+
+
+</body>
+
+</html>

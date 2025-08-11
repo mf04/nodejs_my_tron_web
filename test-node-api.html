@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test-node-api</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .m-tronweb-btn {
+            height: 36px;
+            margin-left: 5px;
+            padding: 0 20px;
+            background-color: #c10;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .m-tronweb-btn:active {
+            transform: translateY(1px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="m-tronweb-btn-container">
+        <button class="m-tronweb-btn mStakeForSelfBtn">质押</button>
+        <button class="m-tronweb-btn mUnstakeForSelfBtn">取消质押</button>
+        <button class="m-tronweb-btn mDelegateToOtherBtn">委托</button>
+        <button class="m-tronweb-btn mUndelegateFromOtherBtn">取消委托</button>
+    </div>
+
+    <script type="module">
+        import {
+            stakeForSelf,
+            unstakeForSelf,
+            delegateToOther,
+            undelegateFromOther,
+        } from "./request.js";
+
+        const oStakeForSelf = document.querySelector(".mStakeForSelfBtn");
+        const oUntakeForSelf = document.querySelector(".mUnstakeForSelfBtn");
+        const oDelegateToOther = document.querySelector(".mDelegateToOtherBtn");
+        const oUndelegateFromOther = document.querySelector(".mUndelegateFromOtherBtn");
+
+        oStakeForSelf.onclick = function () {
+            stakeForSelf().then(res => {
+                console.log(res);
+            })
+        };
+
+        oUntakeForSelf.onclick = function () {
+
+        };
+
+        oDelegateToOther.onclick = function () {
+
+        };
+
+        oUndelegateFromOther.onclick = function () {
+
+        };
+
+    </script>
+
+</body>
+
+</html>

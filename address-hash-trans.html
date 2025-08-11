@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script src="./TronWeb.js"></script>
+
+    <script>
+
+        const trans = async () => {
+            const hash = TronWeb.TronWeb.address.toHex("TJxESHaxvPnGK29WpEQ5oNF4h2s1zPas4C");
+            console.log(hash);
+
+            const address = TronWeb.TronWeb.address.fromHex("416289e9f7d51489c557063a6d1ccc158c362eeeaa");
+            console.log(address);
+        }
+
+    </script>
+
+
+</body>
+
+</html>

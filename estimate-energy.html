@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>estimate energy</title>
+
+    <style>
+        .mEstimateEnergyBtn {
+            height: 36px;
+            margin-left: 5px;
+            padding: 0 20px;
+            background-color: #c10;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .mEstimateEnergyBtn:active {
+            transform: translateY(1px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <button class="mEstimateEnergyBtn">估算能量</button>
+
+    <script src="./TronWeb.js"></script>
+
+    <script>
+
+        // console.log(TronWeb);
+
+        const estimateEnergyHandle = async () => {
+            const tronWeb = new TronWeb.TronWeb({
+                fullHost: 'https://api.shasta.trongrid.io',
+            });
+            // console.log(tronWeb.transactionBuilder.estimateEnergy);
+            console.log(tronWeb.transactionBuilder);
+        }
+
+        const oBtn = document.querySelector(".mEstimateEnergyBtn");
+        oBtn.onclick = function () {
+            estimateEnergyHandle();
+        };
+
+    </script>
+
+</body>
+
+</html>

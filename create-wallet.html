@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>create wallet</title>
+</head>
+
+<body>
+
+    <!-- <script src="./node_modules/tronweb/dist/TronWeb.js"></script> -->
+    <script src="./TronWeb.js"></script>
+
+    <script>
+
+        const createWallet = async () => {
+            const T = TronWeb.TronWeb;
+            const account = await T.createAccount();
+            console.log(account);
+
+        }
+
+        createWallet();
+
+
+        // 随机生成新钱包（助记词 + 私钥 + 地址）
+        // const createWallet = () => {
+        //     const T = TronWeb.TronWeb;
+
+        //     const tronWeb = new T({
+        //         fullHost: 'https://api.shasta.trongrid.io', // TRON 主网节点
+        //     });
+
+        //     // 生成助记词（BIP39）
+        //     const mnemonic = TronWeb.utils.accounts.generateMnemonic();
+        //     console.log("助记词:", mnemonic);
+
+        //     // 通过助记词生成私钥和地址
+        //     const keyPair = TronWeb.utils.accounts.fromMnemonic(mnemonic);
+        //     console.log("私钥:", keyPair.privateKey);
+        //     console.log("地址:", keyPair.address); // 基地址（Base58格式，如 'TXYZ...'）
+
+        //     return keyPair;
+        // };
+
+        // const wallet = createWallet();
+
+
+
+
+    </script>
+
+
+
+</body>
+
+</html>

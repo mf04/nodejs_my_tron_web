@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bandwidth-energy</title>
+
+    <style>
+        .mFreezeBtn {
+            height: 36px;
+            margin-left: 5px;
+            padding: 0 20px;
+            background-color: #c10;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .mFreezeBtn:active {
+            transform: translateY(1px);
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <button class="mFreezeBtn">TRX冻结</button>
+
+    <script src="./TronWeb.js"></script>
+
+    <script>
+
+        // console.log(TronWeb);
+
+        const address3316 = "TTx2upsPjpFjHNT4qtwwpvXo4JpTumZXWN";
+        const privateKey3316 = "8C32CC921FA507BDADEA87A3EBF2CFA061DB4148761331F9397BE04493ED55BB";
+
+        const freezeHandle = async () => {
+            const tronWeb = new TronWeb.TronWeb({
+                fullHost: 'https://api.shasta.trongrid.io',
+                // headers: { 'TRON-PRO-API-KEY': 'your api key' },
+                privateKey: privateKey3316,
+            });
+
+            // const amount = 20 * 10 ** 6;
+            const amount = 1500 * 10 ** 6;
+            const resourceType = "ENERGY"; // "BANDWIDTH" or "ENERGY"
+
+            const transaction = await tronWeb.transactionBuilder.freezeBalanceV2(
+                amount,
+                resourceType,
+                address3316
+            );
+
+            console.log(transaction);
+
+            // const result = await tronWeb.trx.freezeBalance(
+            //     amount,
+            //     resourceType,
+            //     receiverAddress, // 可选，如果为空则给自己
+            //     {
+            //         shouldPollResponse: true // 是否等待交易确认（推荐 true）
+            //     }
+            // );
+
+            // console.log("冻结成功，交易ID:", result.txid);
+        }
+
+        const oBtn = document.querySelector(".mFreezeBtn");
+
+        oBtn.onclick = async function () {
+            freezeHandle();
+        }
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>withdraw</title>
+
+    <style>
+        .mWithdrawBtn {
+            height: 36px;
+            margin-left: 5px;
+            padding: 0 20px;
+            background-color: #c10;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .mWithdrawBtn:active {
+            transform: translateY(1px);
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <button class="mWithdrawBtn">解冻</button>
+
+    <script src="./TronWeb.js"></script>
+
+    <script>
+
+        const address3316 = "TTx2upsPjpFjHNT4qtwwpvXo4JpTumZXWN";
+        const privateKey3316 = "8C32CC921FA507BDADEA87A3EBF2CFA061DB4148761331F9397BE04493ED55BB";
+
+        const withdrawHandle = async () => {
+            const tronWeb = new TronWeb.TronWeb({
+                fullHost: 'https://api.shasta.trongrid.io',
+                privateKey: privateKey3316,
+            });
+
+            const ownerAddress = tronWeb.defaultAddress.base58;
+            // console.log("------ownerAddress------");
+            // console.log(ownerAddress);
+
+            const accountData = await tronWeb.trx.getAccount(ownerAddress);
+            // console.log(accountData);
+            // console.log(accountData.unfrozenV2);
+            if (!accountData.unfrozenV2 || accountData.unfrozenV2.length === 0) {
+                console.log("未发现任何处于解冻中的TRX。无需操作。");
+                return;
+            }
+
+        }
+
+        const oBtn = document.querySelector(".mWithdrawBtn");
+
+        oBtn.onclick = async function () {
+            withdrawHandle();
+        }
+
+    </script>
+
+</body>
+
+</html>
