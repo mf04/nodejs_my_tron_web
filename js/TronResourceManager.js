@@ -1,4 +1,5 @@
 import { TronWeb } from "tronweb"
+import RedisManager from "./MyRedis/RedisManager.js"
 
 class TronResourceManager {
 
@@ -12,6 +13,7 @@ class TronResourceManager {
             privateKey,
         });
         this.ownerAddress = this.tronWeb.defaultAddress.base58;
+        this.redis = new RedisManager;
     }
 
     /**
@@ -22,9 +24,14 @@ class TronResourceManager {
     async stakeForSelf(amountInTrx, resourceType = 'ENERGY') {
         try {
             const amountInSun = this.tronWeb.toSun(amountInTrx);
-            const tx = await this.tronWeb.transactionBuilder.freezeBalanceV2(amountInSun, resourceType, this.ownerAddress);
+            const tx = await this.tronWeb.transactionBuilder.freezeBalanceV2(
+                amountInSun, resourceType, this.ownerAddress
+            );
             const signedTx = await this.tronWeb.trx.sign(tx);
             const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
+            await this.redis.stakeForSelfItemPush(
+                amountInSun, resourceType, this.ownerAddress, receipt.txid
+            );
             return receipt;
         } catch (error) {
             console.error(`❌ 质押失败:`, error);
@@ -39,7 +46,9 @@ class TronResourceManager {
     async unstakeForSelf(amountInTrx, resourceType = 'ENERGY') {
         try {
             const amountInSun = this.tronWeb.toSun(amountInTrx);
-            const tx = await this.tronWeb.transactionBuilder.unfreezeBalanceV2(amountInSun, resourceType, this.ownerAddress);
+            const tx = await this.tronWeb.transactionBuilder.unfreezeBalanceV2(
+                amountInSun, resourceType, this.ownerAddress
+            );
             const signedTx = await this.tronWeb.trx.sign(tx);
             const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
             return receipt;

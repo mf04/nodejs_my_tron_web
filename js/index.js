@@ -20,8 +20,8 @@ app.post("/create-wallet", async (req, res) => {
 // type: "BANDWIDTH" or "ENERGY"
 app.post("/stake-for-self", async (req, res) => {
     const { amountTrx, resourceType } = req.body
+    // console.log(amountTrx, resourceType)
     const receipt = await tronService.stakeForSelf(amountTrx, resourceType)
-    console.log(receipt)
     res.send(reqestWrapper(receipt.result))
 })
 

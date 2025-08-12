@@ -8,15 +8,6 @@ https://nile.trongrid.io
 https://api.shasta.trongrid.io
 ```
 
-// 3316
-TTx2upsPjpFjHNT4qtwwpvXo4JpTumZXWN
-
-// 3315
-TYeVen55WyknWPUpZemobRbs3cUEM8KJhy
-
-// d001
-TXMm8xG54hccDWCYbpvxrvn9W5a1W8r3ih
-
 ```
 pm2 start js\index.js --watch
 ```
