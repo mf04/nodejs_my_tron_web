@@ -1,5 +1,6 @@
 import { TronWeb } from "tronweb"
-import RedisManager from "./MyRedis/RedisManager.js"
+// import RedisManager from "./MyRedis/RedisManager.js"
+import { createStakeForSelf, createDelegateToOther } from "./MyMysql/Index.js"
 
 class TronResourceManager {
 
@@ -13,7 +14,7 @@ class TronResourceManager {
             privateKey,
         });
         this.ownerAddress = this.tronWeb.defaultAddress.base58;
-        this.redis = new RedisManager;
+        // this.redis = new RedisManager;
     }
 
     /**
@@ -29,8 +30,14 @@ class TronResourceManager {
             );
             const signedTx = await this.tronWeb.trx.sign(tx);
             const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
-            await this.redis.stakeForSelfItemPush(
-                amountInSun, resourceType, this.ownerAddress, receipt.txid
+            // await this.redis.stakeForSelfItemPush(
+            //     amountInSun, resourceType, this.ownerAddress, receipt.txid
+            // );
+            await createStakeForSelf(
+                amountInTrx,
+                resourceType,
+                this.ownerAddress,
+                receipt.txid,
             );
             return receipt;
         } catch (error) {
@@ -51,6 +58,13 @@ class TronResourceManager {
             );
             const signedTx = await this.tronWeb.trx.sign(tx);
             const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
+            await createStakeForSelf(
+                amountInTrx,
+                resourceType,
+                this.ownerAddress,
+                receipt.txid,
+                2,
+            );
             return receipt;
         } catch (error) {
             console.error(`❌ 取消质押失败:`, error);
@@ -74,6 +88,13 @@ class TronResourceManager {
             );
             const signedTx = await this.tronWeb.trx.sign(tx);
             const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
+            await createDelegateToOther(
+                amountInTrx,
+                resourceType,
+                this.ownerAddress,
+                receiverAddress,
+                receipt.txid,
+            );
             return receipt;
         } catch (error) {
             console.error(`❌ 委托失败:`, error);
@@ -97,6 +118,14 @@ class TronResourceManager {
             );
             const signedTx = await this.tronWeb.trx.sign(tx);
             const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
+            await createDelegateToOther(
+                amountInTrx,
+                resourceType,
+                this.ownerAddress,
+                receiverAddress,
+                receipt.txid,
+                2,
+            );
             return receipt;
         } catch (error) {
             console.error(`❌ 取消委托失败:`, error);

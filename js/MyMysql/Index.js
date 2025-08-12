@@ -15,7 +15,8 @@ const pool = mysql.createPool({
 
 const promisePool = pool.promise();
 
-export const createStakeForSelf = async (amount, resource_type, owner_address, txid) => {
+// status: { 1: 质押, 2: 取消质押, }
+export const createStakeForSelf = async (amount, resource_type, owner_address, txid, status = 1) => {
     try {
         const [result] = await promisePool.query(
             `INSERT INTO 
@@ -23,7 +24,23 @@ export const createStakeForSelf = async (amount, resource_type, owner_address, t
             (amount, resource_type, owner_address, txid, status) 
             VALUES 
             (?, ?, ?, ?, ?)`,
-            [amount, resource_type, owner_address, txid, 0]
+            [amount, resource_type, owner_address, txid, status]
+        );
+        return result;
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+export const createDelegateToOther = async (amount, resource_type, owner_address, receiver_address, txid, status = 1) => {
+    try {
+        const [result] = await promisePool.query(
+            `INSERT INTO 
+            delegate_to_other 
+            (amount, resource_type, owner_address, receiver_address, txid, status) 
+            VALUES 
+            (?, ?, ?, ?, ?, ?)`,
+            [amount, resource_type, owner_address, receiver_address, txid, status]
         );
         return result;
     } catch (err) {
