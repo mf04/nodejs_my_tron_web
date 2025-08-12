@@ -6,3 +6,8 @@ export const redisHost = "192.168.3.44";
 export const redisPort = 6379;
 export const redisPwd = "kingsai001!@";
 export const redisDb = 6;
+
+export const mysqlHost = "192.168.3.36";
+export const mysqlUser = "root";
+export const mysqlPwd = "root";
+export const mysqlDb = "tronweb";
