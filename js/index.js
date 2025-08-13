@@ -53,4 +53,18 @@ app.get("/get-energy-exchange-rate", async (req, res) => {
     res.send(reqestWrapper(ret));
 })
 
+/**
+ * 
+ * 资源租赁
+ * amount: 65000
+ * resourceType: ENERGY
+ * rentTime: 10
+ * 
+ */
+app.post("/resource/rent", async (req, res) => {
+    const { amount, resourceType, rentTime, receiverAddress } = req.body
+    const ret = await tronService.resourceRent(amount, resourceType, rentTime, receiverAddress)
+    res.send(reqestWrapper(ret))
+})
+
 app.listen(3000)

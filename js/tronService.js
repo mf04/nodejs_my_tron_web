@@ -30,6 +30,15 @@ class TronService {
     async getEnergyExchangeRate() {
         return await this.tronManager.getEnergyExchangeRate();
     }
+
+    async resourceRent(amountResource, resourceType, rentTime, receiverAddress) {
+        const amountTrx = await this.tronManager.getAmountTrxByEnergy(amountResource);
+        // return { amountTrx, resourceType, rentTime, receiverAddress };
+        const receipt = await this.tronManager.delegateToOther(
+            amountTrx, receiverAddress, rentTime, resourceType
+        );
+        return receipt.txid;
+    }
 }
 
 const tronService = new TronService;

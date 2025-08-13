@@ -47,6 +47,17 @@ class TronResourceManager {
 
     /**
      * 
+     * 
+     * 能量兑换trx数量
+     * 
+     */
+    async getAmountTrxByEnergy(amountEnergy) {
+        const { trxPerEnergy } = await this.getEnergyExchangeRate();
+        return trxPerEnergy * amountEnergy;
+    }
+
+    /**
+     * 
      * 为自己质押TRX以获取能量或带宽。
      * 
      */
@@ -110,16 +121,20 @@ class TronResourceManager {
             return;
         }
         try {
+            // console.log(amountInTrx);
             const amountInSun = this.tronWeb.toSun(amountInTrx);
+            // console.log(amountInSun);
+            const amountSunInteger = Math.ceil(amountInSun);
+            // console.log(amountSunInteger);
             const tx = await this.tronWeb.transactionBuilder.delegateResource(
-                amountInSun, receiverAddress, resourceType, this.ownerAddress
+                amountSunInteger, receiverAddress, resourceType, this.ownerAddress
             );
             const signedTx = await this.tronWeb.trx.sign(tx);
             const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
             const currentTime = +new Date();
             const delegateDeadline = currentTime + delegateTime * 1000;
             const delegateDeadlineDate = new Date(delegateDeadline);
-            console.log(delegateDeadlineDate);
+            // console.log(delegateDeadlineDate);
             await createDelegateToOther(
                 amountInTrx,
                 resourceType,
