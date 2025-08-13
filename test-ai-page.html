@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixiJS 渲染页面 (已修正)</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+    <!-- 引入 PixiJS 库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/6.5.10/browser/pixi.min.js"></script>
+</head>
+
+<body>
+
+    <script>
+        // 检查 PixiJS 是否已加载
+        if (!PIXI) {
+            document.body.innerHTML = "错误: 无法加载 PixiJS 库。";
+        } else {
+            runApp();
+        }
+
+        // =================================================================
+        // 主执行函数
+        // =================================================================
+        function runApp() {
+            // 配置对象 (用于存储样式、尺寸和颜色)
+            const CONFIG = {
+                MODAL_WIDTH: 420,
+                MODAL_HEIGHT: 340,
+                PADDING: 24,
+                COLORS: {
+                    BACKGROUND: 0xf0f2f5,
+                    OVERLAY: 0x000000,
+                    MODAL_BG: 0xFFFFFF,
+                    PRIMARY_GREEN: 0x008060,
+                    TEXT_TITLE: 0x333333,
+                    TEXT_LABEL: 0x595959,
+                    TEXT_VALUE: 0x333333,
+                    TEXT_WHITE: 0xFFFFFF,
+                    TEXT_ERROR: 0xe54949,
+                    SEPARATOR: 0xd9d9d9,
+                    TOTAL_AMOUNT: 0x000000,
+                },
+                FONT_FAMILY: {
+                    DEFAULT: 'Arial, "Microsoft YaHei", sans-serif',
+                    MONO: '"SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace'
+                }
+            };
+
+            // 预定义的文本样式
+            const STYLES = {
+                TOP_BAR: new PIXI.TextStyle({ fontFamily: CONFIG.FONT_FAMILY.DEFAULT, fontSize: 18, fill: CONFIG.COLORS.PRIMARY_GREEN }),
+                MODAL_TITLE: new PIXI.TextStyle({ fontFamily: CONFIG.FONT_FAMILY.DEFAULT, fontSize: 18, fontWeight: '600', fill: CONFIG.COLORS.TEXT_TITLE }),
+                MODAL_CLOSE: new PIXI.TextStyle({ fontSize: 30, fill: '#8c8c8c' }),
+                INFO_LABEL: new PIXI.TextStyle({ fontFamily: CONFIG.FONT_FAMILY.DEFAULT, fontSize: 14, fill: CONFIG.COLORS.TEXT_LABEL }),
+                INFO_VALUE: new PIXI.TextStyle({ fontFamily: CONFIG.FONT_FAMILY.MONO, fontSize: 14, fill: CONFIG.COLORS.TEXT_VALUE }),
+                INFO_VALUE_ADDRESS: new PIXI.TextStyle({ fontFamily: CONFIG.FONT_FAMILY.MONO, fontSize: 14, fill: CONFIG.COLORS.TEXT_VALUE, breakWords: true, wordWrap: true, wordWrapWidth: CONFIG.MODAL_WIDTH - CONFIG.PADDING * 2 - 120 }),
+                TOTAL_LABEL: new PIXI.TextStyle({ fontFamily: CONFIG.FONT_FAMILY.DEFAULT, fontSize: 16, fontWeight: '500', fill: CONFIG.COLORS.TEXT_TITLE }),
+                TOTAL_AMOUNT: new PIXI.TextStyle({ fontSize: 20, fontWeight: 'bold', fill: CONFIG.COLORS.TOTAL_AMOUNT }),
+                WAIT_TIME: new PIXI.TextStyle({ fontFamily: CONFIG.FONT_FAMILY.DEFAULT, fontSize: 12, fill: CONFIG.COLORS.TEXT_ERROR }),
+                BUTTON: new PIXI.TextStyle({ fontFamily: CONFIG.FONT_FAMILY.DEFAULT, fontSize: 16, fontWeight: '500', fill: CONFIG.COLORS.TEXT_WHITE })
+            };
+
+            // 全局应用变量声明
+            let app = {};
+            let containers = {};
+            let elements = {};
+
+            /**
+             * 初始化 Pixi 应用
+             */
+            function initApp() {
+                app.instance = new PIXI.Application({
+                    width: window.innerWidth,
+                    height: window.innerHeight,
+                    backgroundColor: CONFIG.COLORS.BACKGROUND,
+                    resolution: window.devicePixelRatio || 1,
+                    autoDensity: true,
+                });
+                document.body.appendChild(app.instance.view);
+            }
+
+            /**
+             * 创建模糊的背景元素
+             */
+            function createBackground() {
+                containers.background = new PIXI.Container();
+                app.instance.stage.addChild(containers.background);
+
+                const topBar = new PIXI.Graphics().beginFill(CONFIG.COLORS.MODAL_BG).drawRect(0, 0, window.innerWidth, 60).endFill();
+                const topBarText = new PIXI.Text('租能量', STYLES.TOP_BAR);
+                topBarText.position.set(20, (60 - topBarText.height) / 2);
+                topBar.addChild(topBarText);
+                containers.background.addChild(topBar);
+
+                elements.bottomButton = new PIXI.Graphics().beginFill(CONFIG.COLORS.PRIMARY_GREEN).drawRoundedRect(0, 0, 420, 45, 8).endFill();
+                const bottomButtonText = new PIXI.Text('下一步 (总额: 1.78 TRX)', STYLES.BUTTON);
+                bottomButtonText.anchor.set(0.5);
+                bottomButtonText.position.set(elements.bottomButton.width / 2, elements.bottomButton.height / 2);
+                elements.bottomButton.addChild(bottomButtonText);
+                containers.background.addChild(elements.bottomButton);
+
+                containers.background.filters = [new PIXI.filters.BlurFilter(5)];
+            }
+
+            /**
+             * 创建半透明遮罩层
+             */
+            function createOverlay() {
+                elements.overlay = new PIXI.Graphics().beginFill(CONFIG.COLORS.OVERLAY, 0.4).drawRect(0, 0, window.innerWidth, window.innerHeight).endFill();
+                app.instance.stage.addChild(elements.overlay);
+            }
+
+            /**
+             * 创建前景模态框及其所有内容
+             */
+            function createModal() {
+                containers.modal = new PIXI.Container();
+                app.instance.stage.addChild(containers.modal);
+
+                const modalBg = new PIXI.Graphics().beginFill(CONFIG.COLORS.MODAL_BG).drawRoundedRect(0, 0, CONFIG.MODAL_WIDTH, CONFIG.MODAL_HEIGHT, 8).endFill();
+                containers.modal.addChild(modalBg);
+
+                let currentY = CONFIG.PADDING;
+
+                const title = new PIXI.Text('能量租赁单', STYLES.MODAL_TITLE);
+                title.position.set(CONFIG.PADDING, currentY);
+                containers.modal.addChild(title);
+
+                const closeButton = new PIXI.Text('×', STYLES.MODAL_CLOSE);
+                closeButton.position.set(CONFIG.MODAL_WIDTH - CONFIG.PADDING - closeButton.width / 2, currentY - 5);
+                closeButton.interactive = true;
+                closeButton.buttonMode = true;
+                containers.modal.addChild(closeButton);
+
+                currentY += 60;
+
+                const createInfoRow = (label, value, style) => {
+                    const labelText = new PIXI.Text(label, STYLES.INFO_LABEL);
+                    labelText.position.set(CONFIG.PADDING, currentY);
+                    containers.modal.addChild(labelText);
+
+                    const valueText = new PIXI.Text(value, style);
+                    valueText.anchor.set(1, 0);
+                    valueText.position.set(CONFIG.MODAL_WIDTH - CONFIG.PADDING, currentY);
+                    containers.modal.addChild(valueText);
+
+                    currentY += Math.max(labelText.height, valueText.height) + 18;
+                };
+
+                createInfoRow('能量接收地址', 'TUMdMiYQGZef5PYev3HFaBCsXy5rsuWwsC', STYLES.INFO_VALUE_ADDRESS);
+                createInfoRow('能量租赁数量', '65,000', STYLES.INFO_VALUE);
+                createInfoRow('租赁时长', '10 分钟', STYLES.INFO_VALUE);
+
+                currentY += 5;
+
+                const separator = new PIXI.Graphics().lineStyle(1, CONFIG.COLORS.SEPARATOR);
+                for (let i = CONFIG.PADDING; i < CONFIG.MODAL_WIDTH - CONFIG.PADDING; i += 8) {
+                    separator.moveTo(i, 0).lineTo(i + 5, 0);
+                }
+                separator.y = currentY;
+                containers.modal.addChild(separator);
+
+                currentY += 25;
+
+                const totalLabel = new PIXI.Text('总计', STYLES.TOTAL_LABEL);
+                totalLabel.position.set(CONFIG.PADDING, currentY);
+                containers.modal.addChild(totalLabel);
+
+                const totalAmount = new PIXI.Text('1.78 TRX', STYLES.TOTAL_AMOUNT);
+                totalAmount.anchor.set(1, 0);
+                totalAmount.position.set(CONFIG.MODAL_WIDTH - CONFIG.PADDING, currentY - 4);
+                containers.modal.addChild(totalAmount);
+
+                currentY += 45;
+
+                const waitTimeInfo = new PIXI.Text('订单最大等待时间: 1 分钟', STYLES.WAIT_TIME);
+                waitTimeInfo.anchor.set(1, 0);
+                waitTimeInfo.position.set(CONFIG.MODAL_WIDTH - CONFIG.PADDING, currentY);
+                containers.modal.addChild(waitTimeInfo);
+
+                currentY += 30;
+
+                const submitButton = new PIXI.Graphics().beginFill(CONFIG.COLORS.PRIMARY_GREEN).drawRoundedRect(0, 0, CONFIG.MODAL_WIDTH - CONFIG.PADDING * 2, 45, 8).endFill();
+                const submitButtonText = new PIXI.Text('下单', STYLES.BUTTON);
+                submitButtonText.anchor.set(0.5);
+                submitButtonText.position.set(submitButton.width / 2, submitButton.height / 2);
+                submitButton.addChild(submitButtonText);
+                submitButton.position.set(CONFIG.PADDING, currentY);
+                submitButton.interactive = true;
+                submitButton.buttonMode = true;
+                containers.modal.addChild(submitButton);
+            }
+
+            /**
+             * 设置窗口尺寸调整监听器
+             */
+            function setupResizeListener() {
+                const onResize = () => {
+                    app.instance.renderer.resize(window.innerWidth, window.innerHeight);
+                    containers.background.width = window.innerWidth;
+                    containers.background.height = window.innerHeight;
+                    elements.overlay.width = window.innerWidth;
+                    elements.overlay.height = window.innerHeight;
+                    containers.modal.position.set(
+                        (window.innerWidth - CONFIG.MODAL_WIDTH) / 2,
+                        (window.innerHeight - CONFIG.MODAL_HEIGHT) / 2
+                    );
+                    elements.bottomButton.position.set(
+                        (window.innerWidth - elements.bottomButton.width) / 2,
+                        containers.modal.y + CONFIG.MODAL_HEIGHT + 20
+                    );
+                };
+                window.addEventListener('resize', onResize);
+                onResize();
+            }
+
+            /**
+             * 主启动函数
+             */
+            function main() {
+                initApp();
+                createBackground();
+                createOverlay();
+                createModal();
+                setupResizeListener();
+            }
+
+            // =================================================================
+            // ==  在这里启动应用，确保所有变量和函数都已定义  ==
+            // =================================================================
+            main();
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,6 +1,7 @@
 import { TronWeb } from "tronweb"
 // import RedisManager from "./MyRedis/RedisManager.js"
 import { createStakeForSelf, createDelegateToOther } from "./MyMysql/Index.js"
+// import TronStation from "tronstation"
 
 class TronResourceManager {
 
@@ -15,6 +16,33 @@ class TronResourceManager {
         });
         this.ownerAddress = this.tronWeb.defaultAddress.base58;
         // this.redis = new RedisManager;
+    }
+
+    /**
+     * 
+     * 实时查询并计算当前波场网络上TRX与能量的兑换率。
+     * 
+     */
+    async getEnergyExchangeRate() {
+        try {
+            const genesisAddress = 'T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb';
+            const accountResources = await this.tronWeb.trx.getAccountResources(genesisAddress);
+
+            if (!accountResources || !('TotalEnergyLimit' in accountResources) || !('TotalEnergyWeight' in accountResources)) {
+                console.error("未能从 getAccountResources 的返回结果中获取到必要的全网能量信息。返回结果:", accountResources);
+                throw new Error("API返回格式可能已更改。");
+            }
+
+            const totalEnergyLimit = accountResources.TotalEnergyLimit;   // 每日网络产生的总能量
+            const totalEnergyWeight = accountResources.TotalEnergyWeight; // 全网为获取能量而质押的TRX总数
+
+            const energyPerTrx = totalEnergyLimit / totalEnergyWeight;
+            const trxPerEnergy = totalEnergyWeight / totalEnergyLimit;
+
+            return { energyPerTrx, trxPerEnergy }
+        } catch (error) {
+            console.error(`❌ 质押失败:`, error.message);
+        }
     }
 
     /**
@@ -41,7 +69,7 @@ class TronResourceManager {
             );
             return receipt;
         } catch (error) {
-            console.error(`❌ 质押失败:`, error);
+            console.error(`❌ 质押失败:`, error.message);
         }
     }
 
@@ -67,7 +95,7 @@ class TronResourceManager {
             );
             return receipt;
         } catch (error) {
-            console.error(`❌ 取消质押失败:`, error);
+            console.error(`❌ 取消质押失败:`, error.message);
         }
     }
 
@@ -76,7 +104,7 @@ class TronResourceManager {
      * 将质押TRX产生的能量/带宽委托给其他账户。
      * 
      */
-    async delegateToOther(amountInTrx, receiverAddress, resourceType = 'ENERGY') {
+    async delegateToOther(amountInTrx, receiverAddress, delegateTime, resourceType = 'ENERGY') {
         if (!this.tronWeb.isAddress(receiverAddress)) {
             console.error("❌ 失败: 无效的接收者地址。");
             return;
@@ -88,16 +116,23 @@ class TronResourceManager {
             );
             const signedTx = await this.tronWeb.trx.sign(tx);
             const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
+            const currentTime = +new Date();
+            const delegateDeadline = currentTime + delegateTime * 1000;
+            const delegateDeadlineDate = new Date(delegateDeadline);
+            console.log(delegateDeadlineDate);
             await createDelegateToOther(
                 amountInTrx,
                 resourceType,
                 this.ownerAddress,
                 receiverAddress,
                 receipt.txid,
+                1,
+                delegateTime,
+                delegateDeadlineDate,
             );
             return receipt;
         } catch (error) {
-            console.error(`❌ 委托失败:`, error);
+            console.error(`❌ 委托失败:`, error.message);
         }
     }
 
@@ -128,7 +163,7 @@ class TronResourceManager {
             );
             return receipt;
         } catch (error) {
-            console.error(`❌ 取消委托失败:`, error);
+            console.error(`❌ 取消委托失败:`, error.message);
         }
     }
 
@@ -160,7 +195,7 @@ class TronResourceManager {
             if (error.toString().includes("no withdrawable TRX")) {
                 console.log("   ℹ️  API确认：当前没有可供领取的TRX。");
             } else {
-                console.error(`❌ 取回失败:`, error);
+                console.error(`❌ 取回失败:`, error.message);
             }
         }
     }

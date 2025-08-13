@@ -32,8 +32,8 @@ app.post("/unstake-for-self", async (req, res) => {
 })
 
 app.post("/delegate-to-other", async (req, res) => {
-    const { amountTrx, receiverAddress, resourceType } = req.body
-    const receipt = await tronService.delegateToOther(amountTrx, receiverAddress, resourceType)
+    const { amountTrx, receiverAddress, delegateTime, resourceType } = req.body
+    const receipt = await tronService.delegateToOther(amountTrx, receiverAddress, delegateTime, resourceType)
     res.send(reqestWrapper(receipt.result))
 })
 
@@ -46,6 +46,11 @@ app.post("/undelegate-from-other", async (req, res) => {
 app.post("/withdraw-expired-balance", async (req, res) => {
     const receipt = await tronService.withdrawExpiredBalance()
     res.send(reqestWrapper(receipt.result));
+})
+
+app.get("/get-energy-exchange-rate", async (req, res) => {
+    const ret = await tronService.getEnergyExchangeRate();
+    res.send(reqestWrapper(ret));
 })
 
 app.listen(3000)

@@ -2,8 +2,10 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "lodash": "^4.17.21",
     "mysql2": "^3.14.3",
     "redis": "^5.8.0",
+    "tronstation": "^1.0.1",
     "tronweb": "^6.0.4"
   },
   "name": "my_tronweb",

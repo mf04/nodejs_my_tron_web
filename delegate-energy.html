@@ -43,6 +43,8 @@
 
     <script>
 
+        const address3315 = "TYeVen55WyknWPUpZemobRbs3cUEM8KJhy";
+        const privateKey3315 = "C3006D24BAF70ED71349E85FFC1004769BCDB6A62AA309F259E82F061952ADC9";
         const address3316 = "TTx2upsPjpFjHNT4qtwwpvXo4JpTumZXWN";
         const privateKey3316 = "8C32CC921FA507BDADEA87A3EBF2CFA061DB4148761331F9397BE04493ED55BB";
 
@@ -53,7 +55,7 @@
             const tronWeb = new TronWeb.TronWeb({
                 // fullHost: 'https://api.shasta.trongrid.io',
                 fullHost: 'https://nile.trongrid.io',
-                privateKey: privateKey3316,
+                privateKey: privateKey3315,
             });
 
             const isValideAddress = tronWeb.isAddress(receiverAddress);
@@ -98,7 +100,8 @@
             const address = addressDom.value;
             if (!address) return;
             // delegateEnergyHandle(amount, address);
-            delegateEnergyHandle(amount, address, "BANDWIDTH");
+            // delegateEnergyHandle(amount, address, "BANDWIDTH");
+            delegateEnergyHandle(amount, address);
             // console.log(amount, address);
             // delegateEnergyHandle(500, "TYeVen55WyknWPUpZemobRbs3cUEM8KJhy");
             // delegateEnergyHandle(15, "TYeVen55WyknWPUpZemobRbs3cUEM8KJhy", "BANDWIDTH");
@@ -110,3 +113,5 @@
 </body>
 
 </html>
+
+<!-- 381,431 -->

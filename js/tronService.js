@@ -1,5 +1,6 @@
 import TronResourceManager from "./TronResourceManager.js"
 import { myPrivateKey3315 as myPrivateKey } from "./config.js"
+// import { myPrivateKey3316 as myPrivateKey } from "./config.js"
 
 class TronService {
     constructor() {
@@ -14,8 +15,8 @@ class TronService {
         return await this.tronManager.unstakeForSelf(amountTrx, resourceType)
     }
 
-    async delegateToOther(amountTrx, receiverAddress, resourceType) {
-        return await this.tronManager.delegateToOther(amountTrx, receiverAddress, resourceType)
+    async delegateToOther(amountTrx, receiverAddress, delegateTime, resourceType) {
+        return await this.tronManager.delegateToOther(amountTrx, receiverAddress, delegateTime, resourceType)
     }
 
     async undelegateFromOther(amountTrx, receiverAddress, resourceType) {
@@ -24,6 +25,10 @@ class TronService {
 
     async withdrawExpiredBalance() {
         return await this.tronManager.withdrawExpiredBalance()
+    }
+
+    async getEnergyExchangeRate() {
+        return await this.tronManager.getEnergyExchangeRate();
     }
 }
 
