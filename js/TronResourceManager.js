@@ -41,19 +41,36 @@ class TronResourceManager {
 
             return { energyPerTrx, trxPerEnergy }
         } catch (error) {
-            console.error(`❌ 质押失败:`, error.message);
+            return error.message;
         }
     }
 
     /**
      * 
      * 
-     * 能量兑换trx数量
+     * 能量兑换trx
      * 
      */
-    async getAmountTrxByEnergy(amountEnergy) {
+    async swapEnergyToTrx(amountEnergy) {
         const { trxPerEnergy } = await this.getEnergyExchangeRate();
         return trxPerEnergy * amountEnergy;
+    }
+
+    /**
+     * 
+     * trx兑换能量
+     * 
+     * 
+     */
+    async swapTrxToEnergy(amountTrx) {
+        const { energyPerTrx } = await this.getEnergyExchangeRate();
+        return energyPerTrx * amountTrx;
+    }
+
+    contractExcuteValidate(receipt) {
+        if (receipt && receipt.code == "CONTRACT_VALIDATE_ERROR") {
+            throw new Error("CONTRACT_VALIDATE_ERROR");
+        }
     }
 
     /**
@@ -69,9 +86,7 @@ class TronResourceManager {
             );
             const signedTx = await this.tronWeb.trx.sign(tx);
             const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
-            // await this.redis.stakeForSelfItemPush(
-            //     amountInSun, resourceType, this.ownerAddress, receipt.txid
-            // );
+            this.contractExcuteValidate(receipt);
             await createStakeForSelf(
                 amountInTrx,
                 resourceType,
@@ -79,9 +94,9 @@ class TronResourceManager {
                 receipt.txid,
                 1,
             );
-            return receipt;
+            return [receipt.txid];
         } catch (error) {
-            console.error(`❌ 质押失败:`, error.message);
+            return [`质押失败: ${error.message}`, "fail"];
         }
     }
 
@@ -98,6 +113,7 @@ class TronResourceManager {
             );
             const signedTx = await this.tronWeb.trx.sign(tx);
             const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
+            this.contractExcuteValidate(receipt);
             await createStakeForSelf(
                 amountInTrx,
                 resourceType,
@@ -105,9 +121,9 @@ class TronResourceManager {
                 receipt.txid,
                 2,
             );
-            return receipt;
+            return [receipt.txid];
         } catch (error) {
-            console.error(`❌ 取消质押失败:`, error.message);
+            return [`取消质押失败: ${error.message}`, "fail"];
         }
     }
 
@@ -118,24 +134,20 @@ class TronResourceManager {
      */
     async delegateToOther(amountInTrx, receiverAddress, delegateTime, resourceType = 'ENERGY') {
         if (!this.tronWeb.isAddress(receiverAddress)) {
-            console.error("❌ 失败: 无效的接收者地址。");
-            return;
+            throw new Error("失败: 无效的接收者地址。");
         }
         try {
-            // console.log(amountInTrx);
             const amountInSun = this.tronWeb.toSun(amountInTrx);
-            // console.log(amountInSun);
             const amountSunInteger = Math.ceil(amountInSun);
-            // console.log(amountSunInteger);
             const tx = await this.tronWeb.transactionBuilder.delegateResource(
                 amountSunInteger, receiverAddress, resourceType, this.ownerAddress
             );
             const signedTx = await this.tronWeb.trx.sign(tx);
             const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
+            this.contractExcuteValidate(receipt);
             const currentTime = +new Date();
             const delegateDeadline = currentTime + delegateTime * 1000;
             const delegateDeadlineDate = new Date(delegateDeadline);
-            // console.log(delegateDeadlineDate);
             await createDelegateToOther(
                 amountInTrx,
                 resourceType,
@@ -146,9 +158,9 @@ class TronResourceManager {
                 delegateTime,
                 delegateDeadlineDate,
             );
-            return receipt;
+            return [receipt.txid];
         } catch (error) {
-            console.error(`❌ 委托失败:`, error.message);
+            return [`委托失败: ${error.message}`, "fail"];
         }
     }
 
@@ -159,8 +171,7 @@ class TronResourceManager {
      */
     async undelegateFromOther(amountInTrx, receiverAddress, resourceType = 'ENERGY') {
         if (!this.tronWeb.isAddress(receiverAddress)) {
-            console.error("❌ 失败: 无效的接收者地址。");
-            return;
+            throw new Error("失败: 无效的接收者地址。");
         }
         try {
             const amountInSun = this.tronWeb.toSun(amountInTrx);
@@ -169,6 +180,7 @@ class TronResourceManager {
             );
             const signedTx = await this.tronWeb.trx.sign(tx);
             const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
+            this.contractExcuteValidate(receipt);
             await createDelegateToOther(
                 amountInTrx,
                 resourceType,
@@ -177,9 +189,9 @@ class TronResourceManager {
                 receipt.txid,
                 2,
             );
-            return receipt;
+            return [receipt.txid];
         } catch (error) {
-            console.error(`❌ 取消委托失败:`, error.message);
+            return [`取消委托失败: ${error.message}`, "fail"];
         }
     }
 
@@ -222,9 +234,9 @@ class TronResourceManager {
                 );
                 retTxid.push(receipt.txid);
             });
-            return retTxid;
+            return [retTxid];
         } catch (error) {
-            return error.message;
+            return [error.message, "fail"];
         }
     }
 }

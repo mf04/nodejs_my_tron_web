@@ -20,27 +20,26 @@ app.post("/create-wallet", async (req, res) => {
 // type: "BANDWIDTH" or "ENERGY"
 app.post("/stake-for-self", async (req, res) => {
     const { amountTrx, resourceType } = req.body
-    // console.log(amountTrx, resourceType)
-    const receipt = await tronService.stakeForSelf(amountTrx, resourceType)
-    res.send(reqestWrapper(receipt.result))
+    const result = await tronService.stakeForSelf(amountTrx, resourceType)
+    res.send(reqestWrapper(...result))
 })
 
 app.post("/unstake-for-self", async (req, res) => {
     const { amountTrx, resourceType } = req.body
-    const receipt = await tronService.unstakeForSelf(amountTrx, resourceType)
-    res.send(reqestWrapper(receipt.result))
+    const result = await tronService.unstakeForSelf(amountTrx, resourceType)
+    res.send(reqestWrapper(...result))
 })
 
 app.post("/delegate-to-other", async (req, res) => {
     const { amountTrx, receiverAddress, delegateTime, resourceType } = req.body
-    const receipt = await tronService.delegateToOther(amountTrx, receiverAddress, delegateTime, resourceType)
-    res.send(reqestWrapper(receipt.result))
+    const result = await tronService.delegateToOther(amountTrx, receiverAddress, delegateTime, resourceType)
+    res.send(reqestWrapper(...result))
 })
 
 app.post("/undelegate-from-other", async (req, res) => {
     const { amountTrx, receiverAddress, resourceType } = req.body
-    const receipt = await tronService.undelegateFromOther(amountTrx, receiverAddress, resourceType)
-    res.send(reqestWrapper(receipt.result))
+    const result = await tronService.undelegateFromOther(amountTrx, receiverAddress, resourceType)
+    res.send(reqestWrapper(...result))
 })
 
 app.post("/withdraw-expired-balance", async (req, res) => {
