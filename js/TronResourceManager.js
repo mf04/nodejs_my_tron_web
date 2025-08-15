@@ -77,6 +77,7 @@ class TronResourceManager {
                 resourceType,
                 this.ownerAddress,
                 receipt.txid,
+                1,
             );
             return receipt;
         } catch (error) {
@@ -191,27 +192,39 @@ class TronResourceManager {
         try {
             const accountData = await this.tronWeb.trx.getAccount(this.ownerAddress);
             if (!accountData.unfrozenV2 || accountData.unfrozenV2.length === 0) {
-                console.log("   ℹ️  未发现任何处于解冻中的TRX。无需操作。");
-                return;
+                throw new Error("未发现任何处于解冻中的TRX, 无需操作。");
             }
             const now = Date.now();
             const canWithdraw = accountData.unfrozenV2.some(
                 entry => entry.unfreeze_expire_time <= now
             );
             if (!canWithdraw) {
-                console.log("   ℹ️  有待解冻的TRX，但它们的14天锁定期尚未结束。");
-                return;
+                throw new Error("有待解冻的TRX, 但它们的14天锁定期尚未结束。");
             }
-            const tx = await this.tronWeb.transactionBuilder.withdrawExpireUnfreeze(this.ownerAddress);
-            const signedTx = await this.tronWeb.trx.sign(tx);
-            const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
-            return receipt;
+            const unfrozenV2Filter = accountData.unfrozenV2.filter(
+                entry => entry.unfreeze_expire_time <= now
+            );
+            let retTxid = [];
+            unfrozenV2Filter.map(async unfrozenV2Item => {
+                const tx = await this.tronWeb.transactionBuilder.withdrawExpireUnfreeze(
+                    this.ownerAddress
+                );
+                const signedTx = await this.tronWeb.trx.sign(tx);
+                const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
+                const amountInTrx = this.tronWeb.fromSun(unfrozenV2Item.unfreeze_amount);
+                const resourceType = unfrozenV2Item.type;
+                await createStakeForSelf(
+                    amountInTrx,
+                    resourceType,
+                    this.ownerAddress,
+                    receipt.txid,
+                    3,
+                );
+                retTxid.push(receipt.txid);
+            });
+            return retTxid;
         } catch (error) {
-            if (error.toString().includes("no withdrawable TRX")) {
-                console.log("   ℹ️  API确认：当前没有可供领取的TRX。");
-            } else {
-                console.error(`❌ 取回失败:`, error.message);
-            }
+            return error.message;
         }
     }
 }

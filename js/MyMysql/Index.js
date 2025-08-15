@@ -15,7 +15,7 @@ const pool = mysql.createPool({
 
 const promisePool = pool.promise();
 
-// status: { 1: 质押, 2: 取消质押, }
+// status: { 1: 质押, 2: 解锁, 3：提取 }
 export const createStakeForSelf = async (amount, resource_type, owner_address, txid, status = 1) => {
     try {
         const [result] = await promisePool.query(
