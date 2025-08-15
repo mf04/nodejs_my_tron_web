@@ -43,8 +43,8 @@ app.post("/undelegate-from-other", async (req, res) => {
 })
 
 app.post("/withdraw-expired-balance", async (req, res) => {
-    const ret = await tronService.withdrawExpiredBalance()
-    res.send(reqestWrapper(ret));
+    const result = await tronService.withdrawExpiredBalance()
+    res.send(reqestWrapper(...result));
 })
 
 app.get("/get-energy-exchange-rate", async (req, res) => {
