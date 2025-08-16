@@ -2,6 +2,7 @@ import mysql from "mysql2"
 import {
     mysqlHost, mysqlUser, mysqlPwd, mysqlDb
 } from "../config.js"
+import { jsDate } from "../util.js"
 
 const pool = mysql.createPool({
     host: mysqlHost,
@@ -50,4 +51,13 @@ export const createDelegateToOther = async (
     } catch (err) {
         console.error(err);
     }
+}
+
+export const delegateToOtherExpireList = async () => {
+    const nowStr = jsDate("Y-m-d H:i:s", new Date().getTime())
+    const [result] = await promisePool.query(
+        `SELECT * from delegate_to_other
+        where delegate_deadline <= '${nowStr}'`
+    );
+    return result;
 }

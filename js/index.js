@@ -55,15 +55,34 @@ app.get("/get-energy-exchange-rate", async (req, res) => {
 /**
  * 
  * 资源租赁
- * amount: 65000
+ * resourceAmount: 65000
  * resourceType: ENERGY
  * rentTime: 10
  * 
  */
 app.post("/resource/rent", async (req, res) => {
-    const { amount, resourceType, rentTime, receiverAddress } = req.body
-    const ret = await tronService.resourceRent(amount, resourceType, rentTime, receiverAddress)
-    res.send(reqestWrapper(ret))
+    const { resourceAmount, resourceType, rentTime, receiverAddress } = req.body
+    let result;
+    switch (resourceType) {
+        case "ENERGY":
+            result = await tronService.energyRent(resourceAmount, rentTime, receiverAddress);
+            break;
+        case "BANDWIDTH":
+            result = await tronService.bandwidthRent(resourceAmount, rentTime, receiverAddress);
+            break;
+    }
+    res.send(reqestWrapper(...result))
 })
+
+/**
+ * 
+ * 租赁的资源回收
+ * 
+ */
+app.post("/resource/recover", async (req, res) => {
+    const result = await tronService.resourceRecover();
+    res.send(reqestWrapper(...result))
+})
+
 
 app.listen(3000)

@@ -1,7 +1,9 @@
 import { TronWeb } from "tronweb"
 // import RedisManager from "./MyRedis/RedisManager.js"
-import { createStakeForSelf, createDelegateToOther } from "./MyMysql/Index.js"
-// import TronStation from "tronstation"
+import {
+    createStakeForSelf,
+    createDelegateToOther,
+} from "./MyMysql/Index.js"
 
 class TronResourceManager {
 
@@ -66,6 +68,46 @@ class TronResourceManager {
         const { energyPerTrx } = await this.getEnergyExchangeRate();
         return energyPerTrx * amountTrx;
     }
+
+    /**
+     * 
+     * 实时查询并计算当前波场网络上TRX与带宽的兑换率。
+     * 
+     */
+    async getBandwidthExchangeRate() {
+
+    }
+
+    /**
+     * 
+     * 带宽兑换trx
+     * 
+     */
+    async swapBandwidthToTrx(amountBandwidth) {
+        const rate = this.getBandwidthExchangeRate();
+        console.log(rate);
+        return rate;
+    }
+
+    /**
+     * 
+     * trx兑换带宽
+     * 
+     */
+    async swapTrxToBandWidth(amountTrx) {
+        const { trxPerBandwidth } = this.getBandwidthExchangeRate();
+        return trxPerBandwidth * amountTrx;
+    }
+
+    /**
+     * 
+     * trx兑换带宽
+     * 
+     */
+    async swapTrxToBandwidth(amountTrx) {
+
+    }
+
 
     contractExcuteValidate(receipt) {
         if (receipt && receipt.code == "CONTRACT_VALIDATE_ERROR") {
@@ -149,7 +191,7 @@ class TronResourceManager {
             const delegateDeadline = currentTime + delegateTime * 1000;
             const delegateDeadlineDate = new Date(delegateDeadline);
             await createDelegateToOther(
-                amountInTrx,
+                amountSunInteger,
                 resourceType,
                 this.ownerAddress,
                 receiverAddress,
@@ -182,7 +224,7 @@ class TronResourceManager {
             const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
             this.contractExcuteValidate(receipt);
             await createDelegateToOther(
-                amountInTrx,
+                amountInSun,
                 resourceType,
                 this.ownerAddress,
                 receiverAddress,
@@ -210,14 +252,19 @@ class TronResourceManager {
             const canWithdraw = accountData.unfrozenV2.some(
                 entry => entry.unfreeze_expire_time <= now
             );
+            console.log("-----canWithdraw-----");
+            console.log(canWithdraw);
             if (!canWithdraw) {
                 throw new Error("有待解冻的TRX, 但它们的14天锁定期尚未结束。");
             }
             const unfrozenV2Filter = accountData.unfrozenV2.filter(
                 entry => entry.unfreeze_expire_time <= now
             );
+            console.log("-----unfrozenV2Filter-----");
+            console.log(unfrozenV2Filter);
             let retTxid = [];
             unfrozenV2Filter.map(async unfrozenV2Item => {
+                console.log(unfrozenV2Item);
                 const tx = await this.tronWeb.transactionBuilder.withdrawExpireUnfreeze(
                     this.ownerAddress
                 );
@@ -232,8 +279,12 @@ class TronResourceManager {
                     receipt.txid,
                     3,
                 );
+                console.log("------receipt.txid------");
+                console.log(receipt.txid);
                 retTxid.push(receipt.txid);
             });
+            console.log("------retTxid-----");
+            console.log(retTxid);
             return [retTxid];
         } catch (error) {
             return [error.message, "fail"];
