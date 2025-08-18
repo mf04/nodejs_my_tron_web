@@ -3,7 +3,10 @@ import { TronWeb } from "tronweb"
 import {
     createStakeForSelf,
     createDelegateToOther,
+    delegateToOtherExpireList,
 } from "./MyMysql/Index.js"
+import axios from "axios";
+import { TRONGRID_API_URL } from "./config.js"
 
 class TronResourceManager {
 
@@ -60,8 +63,8 @@ class TronResourceManager {
 
     /**
      * 
-     * trx兑换能量
      * 
+     * trx兑换能量
      * 
      */
     async swapTrxToEnergy(amountTrx) {
@@ -75,7 +78,19 @@ class TronResourceManager {
      * 
      */
     async getBandwidthExchangeRate() {
-
+        const TOTAL_BANDWIDTH_POINTS = 43200000000;
+        const URL = TRONGRID_API_URL + "/wallet/getaccountresource";
+        const DUMMY_POST_DATA = { address: this.ownerAddress, visible: true };
+        const response = await axios.post(URL, DUMMY_POST_DATA);
+        if (response.status !== 200 || !response.data) {
+            throw new Error('从 TronGrid API 获取网络数据失败，未收到有效响应。');
+        }
+        const networkData = response.data;
+        const totalStakedForBandwidthTrx = networkData.TotalNetWeight;
+        if (typeof totalStakedForBandwidthTrx === 'undefined') {
+            throw new Error('无法从API响应中检索到总质押TRX数据。');
+        }
+        return TOTAL_BANDWIDTH_POINTS / totalStakedForBandwidthTrx;
     }
 
     /**
@@ -84,9 +99,9 @@ class TronResourceManager {
      * 
      */
     async swapBandwidthToTrx(amountBandwidth) {
-        const rate = this.getBandwidthExchangeRate();
-        console.log(rate);
-        return rate;
+        const rate = await this.getBandwidthExchangeRate();
+        console.log(amountBandwidth, rate);
+        return amountBandwidth / rate;
     }
 
     /**
@@ -211,12 +226,15 @@ class TronResourceManager {
      * 取消对其他账户的能量/带宽委托。
      * 
      */
-    async undelegateFromOther(amountInTrx, receiverAddress, resourceType = 'ENERGY') {
+    async undelegateFromOther(amount, receiverAddress, resourceType = 'ENERGY', isSunTrx = false) {
         if (!this.tronWeb.isAddress(receiverAddress)) {
             throw new Error("失败: 无效的接收者地址。");
         }
         try {
-            const amountInSun = this.tronWeb.toSun(amountInTrx);
+            let amountInSun = amount;
+            if (!isSunTrx) {
+                amountInSun = this.tronWeb.toSun(amount);
+            }
             const tx = await this.tronWeb.transactionBuilder.undelegateResource(
                 amountInSun, receiverAddress, resourceType, this.ownerAddress
             );
@@ -245,6 +263,8 @@ class TronResourceManager {
     async withdrawExpiredBalance() {
         try {
             const accountData = await this.tronWeb.trx.getAccount(this.ownerAddress);
+            console.log("----accountData-----");
+            console.log(accountData);
             if (!accountData.unfrozenV2 || accountData.unfrozenV2.length === 0) {
                 throw new Error("未发现任何处于解冻中的TRX, 无需操作。");
             }
@@ -252,19 +272,14 @@ class TronResourceManager {
             const canWithdraw = accountData.unfrozenV2.some(
                 entry => entry.unfreeze_expire_time <= now
             );
-            console.log("-----canWithdraw-----");
-            console.log(canWithdraw);
             if (!canWithdraw) {
                 throw new Error("有待解冻的TRX, 但它们的14天锁定期尚未结束。");
             }
             const unfrozenV2Filter = accountData.unfrozenV2.filter(
                 entry => entry.unfreeze_expire_time <= now
             );
-            console.log("-----unfrozenV2Filter-----");
-            console.log(unfrozenV2Filter);
             let retTxid = [];
             unfrozenV2Filter.map(async unfrozenV2Item => {
-                console.log(unfrozenV2Item);
                 const tx = await this.tronWeb.transactionBuilder.withdrawExpireUnfreeze(
                     this.ownerAddress
                 );
@@ -279,13 +294,36 @@ class TronResourceManager {
                     receipt.txid,
                     3,
                 );
-                console.log("------receipt.txid------");
-                console.log(receipt.txid);
                 retTxid.push(receipt.txid);
             });
-            console.log("------retTxid-----");
-            console.log(retTxid);
             return [retTxid];
+        } catch (error) {
+            return [error.message, "fail"];
+        }
+    }
+
+    /**
+     * 
+     * 查看租赁的资源，过期回收
+     * 
+     */
+    async resourceRecover() {
+        try {
+            const result = await delegateToOtherExpireList();
+            if (!result || !result.length) {
+                throw new Error("没有到期的租赁记录");
+            }
+            for (let i = 0, item; item = result[i++];) {
+                const { amount, receiver_address, resource_type } = item;
+                const ret = await this.undelegateFromOther(
+                    amount,
+                    receiver_address,
+                    resource_type,
+                    true
+                );
+                console.log(ret);
+            }
+            return [true];
         } catch (error) {
             return [error.message, "fail"];
         }

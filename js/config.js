@@ -31,3 +31,6 @@ const NILE_TESTNET_CONFIG = {
 };
 
 export const currentConfig = NILE_TESTNET_CONFIG;
+
+// export const TRONGRID_API_URL = "https://api.trongrid.io";
+export const TRONGRID_API_URL = "https://nile.trongrid.io";

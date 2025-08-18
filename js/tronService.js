@@ -1,7 +1,7 @@
 import TronResourceManager from "./TronResourceManager.js"
 import { myPrivateKey3315 as myPrivateKey } from "./config.js"
 // import { myPrivateKey3316 as myPrivateKey } from "./config.js"
-import { delegateToOtherExpireList } from "./MyMysql/Index.js"
+// import { delegateToOtherExpireList } from "./MyMysql/Index.js"
 
 class TronService {
     constructor() {
@@ -41,24 +41,20 @@ class TronService {
 
     async bandwidthRent(resourceAmount, rentTime, receiverAddress) {
         // const amountTrx = await this.tronManager.swapBandwidthToTrx(resourceAmount);
-        return [3314];
+        // return [resourceAmount, rentTime, receiverAddress, 3314];
+        // return await this.tronManager.delegateToOther(
+        //     1, receiverAddress, rentTime, "BANDWIDTH"
+        // );
+        const amountTrx = await this.tronManager.swapBandwidthToTrx(resourceAmount);
+        // console.log(amountTrx);
+        // return [amountTrx];
+        return await this.tronManager.delegateToOther(
+            amountTrx, receiverAddress, rentTime, "BANDWIDTH"
+        );
     }
 
     async resourceRecover() {
-        try {
-            const result = await delegateToOtherExpireList();
-            if (!result || !result.length) {
-                throw new Error("没有到期的租赁记录");
-            }
-            for (let i = 0, item; item = result[i++];) {
-                const { amount, receiver_address, resource_type } = item;
-                const amountTrx = amount / (10 ** 6);
-                await this.tronManager.undelegateFromOther(amountTrx, receiver_address, resource_type);
-            }
-            return [true];
-        } catch (error) {
-            return [error.message, "fail"];
-        }
+        return await this.tronManager.resourceRecover();
     }
 }
 
