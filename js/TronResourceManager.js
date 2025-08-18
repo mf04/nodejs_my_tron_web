@@ -100,7 +100,6 @@ class TronResourceManager {
      */
     async swapBandwidthToTrx(amountBandwidth) {
         const rate = await this.getBandwidthExchangeRate();
-        console.log(amountBandwidth, rate);
         return amountBandwidth / rate;
     }
 
@@ -199,6 +198,7 @@ class TronResourceManager {
             const tx = await this.tronWeb.transactionBuilder.delegateResource(
                 amountSunInteger, receiverAddress, resourceType, this.ownerAddress
             );
+            console.log(tx);
             const signedTx = await this.tronWeb.trx.sign(tx);
             const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
             this.contractExcuteValidate(receipt);
@@ -314,6 +314,7 @@ class TronResourceManager {
                 throw new Error("没有到期的租赁记录");
             }
             for (let i = 0, item; item = result[i++];) {
+                console.log(item);
                 const { amount, receiver_address, resource_type } = item;
                 const ret = await this.undelegateFromOther(
                     amount,

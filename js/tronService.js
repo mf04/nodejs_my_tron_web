@@ -40,14 +40,7 @@ class TronService {
     }
 
     async bandwidthRent(resourceAmount, rentTime, receiverAddress) {
-        // const amountTrx = await this.tronManager.swapBandwidthToTrx(resourceAmount);
-        // return [resourceAmount, rentTime, receiverAddress, 3314];
-        // return await this.tronManager.delegateToOther(
-        //     1, receiverAddress, rentTime, "BANDWIDTH"
-        // );
         const amountTrx = await this.tronManager.swapBandwidthToTrx(resourceAmount);
-        // console.log(amountTrx);
-        // return [amountTrx];
         return await this.tronManager.delegateToOther(
             amountTrx, receiverAddress, rentTime, "BANDWIDTH"
         );
