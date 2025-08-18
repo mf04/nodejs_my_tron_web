@@ -3,6 +3,7 @@ import cors from "cors"
 import { reqestWrapper } from "./util.js"
 import { TronWeb } from "tronweb"
 import tronService from "./tronService.js"
+import userService from "./userService.js"
 
 const app = express()
 
@@ -11,6 +12,16 @@ app.use(cors())
 app.use(express.json())
 
 app.use(express.urlencoded({ extended: true }))
+
+app.post("/register", async (req, res) => {
+    return "-----register-----";
+})
+
+app.post("/login", async (req, res) => {
+    const { userName, password } = req.body;
+    const ret = await userService.login(userName, password);
+    res.send(reqestWrapper(ret));
+})
 
 app.post("/create-wallet", async (req, res) => {
     const account = await TronWeb.createAccount()
