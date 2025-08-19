@@ -89,3 +89,16 @@ export const userItemGenerate = async (
         console.error(err);
     }
 }
+
+export const userItemGet = async (userName) => {
+    try {
+        const [result] = await promisePool.query(
+            `select password_hash from users where user_name = ? limit 1`,
+            [userName]
+        );
+        return result[0] && result[0]["password_hash"] || "";
+    } catch (err) {
+        console.err(err);
+    }
+
+}

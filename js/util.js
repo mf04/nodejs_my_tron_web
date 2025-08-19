@@ -1,10 +1,19 @@
 import bcrypt from "bcrypt";
 import md5 from "md5";
 
-export const pwdWrapper = async (password) => {
+export const getPwdSalt = (password) => {
     const salt = "cdqdafadf!@SWW!";
-    const pwdSalt = md5(salt + password);
+    return md5(salt + password);
+}
+
+export const pwdWrapper = async (password) => {
+    const pwdSalt = getPwdSalt(password);
     return await bcrypt.hash(pwdSalt, 10);
+}
+
+export const pwdCompare = async (password, hashPwd) => {
+    const pwdSalt = getPwdSalt(password);
+    return await bcrypt.compare(pwdSalt, hashPwd);
 }
 
 export const reqestWrapper = (data, msg = "success", code = 200) => {

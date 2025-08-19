@@ -1,19 +1,10 @@
-import { pwdWrapper } from "./util.js";
-import { userItemGenerate, isUserItemExist } from "./MyMysql/Index.js"
+import { pwdWrapper, pwdCompare } from "./util.js";
+import { userItemGenerate, isUserItemExist, userItemGet } from "./MyMysql/Index.js"
 
 class UserService {
     async login(userName, password) {
-        const salt = "cdqdafadf!@SWW!";
-        const pwdSalt = md5(salt + password);
-        console.log(pwdSalt);
-
-        const hashPwd = await bcrypt.hash(pwdSalt, 10);
-        console.log(hashPwd);
-
-        const match = await bcrypt.compare(pwdSalt, hashPwd);
-        console.log(match);
-
-        return 3313;
+        const dbPwd = await userItemGet(userName);
+        return await pwdCompare(password, dbPwd);
     }
 
     async register(userName, nickName, password, email) {
