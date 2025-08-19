@@ -30,7 +30,7 @@ const NILE_TESTNET_CONFIG = {
     fullHost: 'https://api.nileex.io'
 };
 
-export const currentConfig = NILE_TESTNET_CONFIG;
+export const currentConfig = MAINNET_CONFIG;
 
-// export const TRONGRID_API_URL = "https://api.trongrid.io";
-export const TRONGRID_API_URL = "https://nile.trongrid.io";
+export const TRONGRID_API_URL = "https://api.trongrid.io";
+// export const TRONGRID_API_URL = "https://nile.trongrid.io";

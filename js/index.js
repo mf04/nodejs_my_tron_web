@@ -33,6 +33,10 @@ app.post("/login", async (req, res) => {
     res.send(reqestWrapper(ret));
 })
 
+app.post("/upload", async (req, res) => {
+
+})
+
 app.post("/create-wallet", async (req, res) => {
     const account = await TronWeb.createAccount()
     res.send(reqestWrapper(account))
