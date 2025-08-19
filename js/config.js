@@ -34,3 +34,5 @@ export const currentConfig = MAINNET_CONFIG;
 
 export const TRONGRID_API_URL = "https://api.trongrid.io";
 // export const TRONGRID_API_URL = "https://nile.trongrid.io";
+
+export const myServicePort = 3090;

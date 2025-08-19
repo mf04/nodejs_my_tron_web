@@ -5,6 +5,7 @@ import { reqestWrapper } from "./util.js"
 import { TronWeb } from "tronweb"
 import tronService from "./tronService.js"
 import userService from "./userService.js"
+import { myServicePort } from "./config.js"
 
 const app = express()
 
@@ -31,10 +32,6 @@ app.post("/login", async (req, res) => {
     const { userName, password } = req.body;
     const ret = await userService.login(userName, password);
     res.send(reqestWrapper(ret));
-})
-
-app.post("/upload", async (req, res) => {
-
 })
 
 app.post("/create-wallet", async (req, res) => {
@@ -109,4 +106,4 @@ app.post("/resource/recover", async (req, res) => {
     res.send(reqestWrapper(...result))
 })
 
-app.listen(3000)
+app.listen(myServicePort)
