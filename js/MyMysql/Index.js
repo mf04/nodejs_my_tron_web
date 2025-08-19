@@ -65,7 +65,7 @@ export const delegateToOtherExpireList = async () => {
 export const isUserItemExist = async (userName, email) => {
     try {
         const [result] = await promisePool.query(
-            `select id from users where user_name = ? or email = ?`,
+            `select id from nodejs_users where user_name = ? or email = ?`,
             [userName, email]
         );
         return result;
@@ -80,7 +80,7 @@ export const userItemGenerate = async (
 ) => {
     try {
         const [result] = await promisePool.query(
-            `INSERT INTO users (user_name, nick_name, password_hash, password_txt, email, balance) 
+            `INSERT INTO nodejs_users (user_name, nick_name, password_hash, password_txt, email, balance) 
             VALUES (?, ?, ?, ?, ?, ?)`,
             [user_name, nick_name, password, password_txt, email, balance]
         );
@@ -93,7 +93,7 @@ export const userItemGenerate = async (
 export const userItemGet = async (userName) => {
     try {
         const [result] = await promisePool.query(
-            `select password_hash from users where user_name = ? limit 1`,
+            `select password_hash from nodejs_users where user_name = ? limit 1`,
             [userName]
         );
         return result[0] && result[0]["password_hash"] || "";
