@@ -1,5 +1,6 @@
 import express from "express"
 import cors from "cors"
+import session from "express-session"
 import { reqestWrapper } from "./util.js"
 import { TronWeb } from "tronweb"
 import tronService from "./tronService.js"
@@ -13,8 +14,17 @@ app.use(express.json())
 
 app.use(express.urlencoded({ extended: true }))
 
+app.use(session({
+    secret: 'my-secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false }
+}));
+
 app.post("/register", async (req, res) => {
-    return "-----register-----";
+    const { userName, nickName, password, email } = req.body;
+    const result = await userService.register(userName, nickName, password, email);
+    res.send(reqestWrapper(...result));
 })
 
 app.post("/login", async (req, res) => {
@@ -94,6 +104,5 @@ app.post("/resource/recover", async (req, res) => {
     const result = await tronService.resourceRecover();
     res.send(reqestWrapper(...result))
 })
-
 
 app.listen(3000)

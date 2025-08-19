@@ -61,3 +61,31 @@ export const delegateToOtherExpireList = async () => {
     );
     return result;
 }
+
+export const isUserItemExist = async (userName, email) => {
+    try {
+        const [result] = await promisePool.query(
+            `select id from users where user_name = ? or email = ?`,
+            [userName, email]
+        );
+        return result;
+    } catch (error) {
+        console.error(err);
+    }
+}
+
+export const userItemGenerate = async (
+    user_name, nick_name, password, password_txt,
+    email, balance
+) => {
+    try {
+        const [result] = await promisePool.query(
+            `INSERT INTO users (user_name, nick_name, password_hash, password_txt, email, balance) 
+            VALUES (?, ?, ?, ?, ?, ?)`,
+            [user_name, nick_name, password, password_txt, email, balance]
+        );
+        return result;
+    } catch (err) {
+        console.error(err);
+    }
+}
