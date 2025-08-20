@@ -6,7 +6,8 @@ import {
     delegateToOtherExpireList,
 } from "./MyMysql/Index.js"
 import axios from "axios";
-import { TRONGRID_API_URL } from "./config.js"
+import { TRONGRID_API_URL, USDT_CONTRACT } from "./config.js"
+
 
 class TronResourceManager {
 
@@ -14,6 +15,7 @@ class TronResourceManager {
         if (!privateKey) {
             throw new Error("必须提供私钥 (Private Key)！");
         }
+        this.privateKey = privateKey;
         this.tronWeb = new TronWeb({
             // fullHost: 'https://api.shasta.trongrid.io',
             fullHost: 'https://nile.trongrid.io',
@@ -325,6 +327,51 @@ class TronResourceManager {
                 console.log(ret);
             }
             return [true];
+        } catch (error) {
+            return [error.message, "fail"];
+        }
+    }
+
+    /**
+     * 
+     * trx转账
+     * 
+     */
+    async trxTransfer(receiverAddress, amountTrx) {
+        try {
+            const unsignedTxn = await this.tronWeb.transactionBuilder.sendTrx(
+                receiverAddress, amountTrx * 10 ** 6, this.ownerAddress
+            );
+            const signedTxn = await this.tronWeb.trx.sign(unsignedTxn, this.privateKey);
+            const receipt = await this.tronWeb.trx.sendRawTransaction(signedTxn);
+            if (!receipt || !receipt.txid || !receipt.result) {
+                throw new Error("转账失败");
+            }
+            return [receipt.txid];
+        } catch (error) {
+            return [error.message, "fail"];
+        }
+    }
+
+
+    /**
+     * 
+     * usdt转账
+     * 
+     */
+    async usdtTransfer(receiverAddress, amountTrx) {
+        try {
+
+            const contract = await this.tronWeb.contract().at(USDT_CONTRACT);
+
+            const tx = await contract.transfer(
+                receiverAddress,
+                this.tronWeb.toSun(amountTrx)
+            ).send({
+                feeLimit: 100_000_000
+            });
+
+            return [tx];
         } catch (error) {
             return [error.message, "fail"];
         }

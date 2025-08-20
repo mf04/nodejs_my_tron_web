@@ -2,10 +2,21 @@ import TronResourceManager from "./TronResourceManager.js"
 import { myPrivateKey3315 as myPrivateKey } from "./config.js"
 // import { myPrivateKey3316 as myPrivateKey } from "./config.js"
 // import { delegateToOtherExpireList } from "./MyMysql/Index.js"
+import RedisManager from "./MyRedis/RedisManager.js"
 
 class TronService {
     constructor() {
-        this.tronManager = new TronResourceManager(myPrivateKey);
+
+        this.tronManager = null;
+        this.init();
+
+        // this.tronManager = new TronResourceManager(myPrivateKey);
+    }
+
+    async init() {
+        this.redis = new RedisManager;
+        const privateKey = await this.redis.getMyPrimaryKey();
+        this.tronManager = new TronResourceManager(privateKey);
     }
 
     async stakeForSelf(amountTrx, resourceType) {
@@ -48,6 +59,14 @@ class TronService {
 
     async resourceRecover() {
         return await this.tronManager.resourceRecover();
+    }
+
+    async trxTransfer(receiverAddress, amountTrx) {
+        return await this.tronManager.trxTransfer(receiverAddress, amountTrx);
+    }
+
+    async usdtTransfer(receiverAddress, amountTrx) {
+        return await this.tronManager.usdtTransfer(receiverAddress, amountTrx);
     }
 }
 

@@ -34,6 +34,11 @@ class RedisManager {
         this.client.hSet("Hash_stake_for_self", parmas.txid, JSON.stringify(parmas));
     }
 
+    async getMyPrimaryKey() {
+        await this.connect();
+        const ret = await this.client.get("my01") || "";
+        return ret;
+    }
 
 }
 

@@ -106,4 +106,27 @@ app.post("/resource/recover", async (req, res) => {
     res.send(reqestWrapper(...result))
 })
 
+/**
+ * 
+ * trx transfer
+ * 
+ */
+app.post("/trx/transfer", async (req, res) => {
+    const { receiverAddress, amountTrx } = req.body;
+    const result = await tronService.trxTransfer(receiverAddress, amountTrx);
+    res.send(reqestWrapper(...result));
+})
+
+
+/**
+ * 
+ * usdt transfer
+ * 
+ */
+app.post("/usdt/transfer", async (req, res) => {
+    const { receiverAddress, amountTrx } = req.body;
+    const result = await tronService.usdtTransfer(receiverAddress, amountTrx);
+    res.send(reqestWrapper(...result));
+})
+
 app.listen(myServicePort)
