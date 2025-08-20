@@ -40,3 +40,22 @@ export const jsDate = (format, timestamp) => {
     };
     return format.replace(/Y|y|m|n|d|j|H|G|i|s/g, match => map[match]);
 }
+
+export const generateSequence = (n) => {
+    function collectOdd(num) {
+        if (num > n) return [];
+        return num % 2 ? [num, ...collectOdd(num + 1)] : collectOdd(num + 1);
+    }
+    function collectEven(num) {
+        if (num > n) return [];
+        return num % 2 === 0 ? [num, ...collectEven(num + 1)] : collectEven(num + 1);
+    }
+    return [...collectOdd(1), ...collectEven(1)];
+}
+
+export const asyncReduce = (arr, asyncCallback, initialValue) => {
+    return arr.reduce(async (accPromise, current) => {
+        const acc = await accPromise;
+        return asyncCallback(acc, current);
+    }, Promise.resolve(initialValue));
+}

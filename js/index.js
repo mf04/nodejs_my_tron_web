@@ -6,6 +6,8 @@ import { TronWeb } from "tronweb"
 import tronService from "./tronService.js"
 import userService from "./userService.js"
 import { myServicePort } from "./config.js"
+import cryptoService from "./cryptoService.js";
+import { readPrivateKeyFile } from "./fsService.js"
 
 const app = express()
 
@@ -127,6 +129,39 @@ app.post("/usdt/transfer", async (req, res) => {
     const { receiverAddress, amountTrx } = req.body;
     const result = await tronService.usdtTransfer(receiverAddress, amountTrx);
     res.send(reqestWrapper(...result));
+})
+
+
+/**
+ * 
+ * 字符串加密
+ * 
+ */
+app.post("/encrypt", (req, res) => {
+    const { message } = req.body;
+    const result = cryptoService.encrypt(message);
+    res.send(reqestWrapper(result));
+})
+
+/**
+ * 
+ * 字符串解密
+ * 
+ */
+app.post("/decrypt", (req, res) => {
+    const { message } = req.body;
+    const result = cryptoService.decrypt(message);
+    res.send(reqestWrapper(result));
+})
+
+/**
+ * 
+ * 读取私钥
+ * 
+ */
+app.post("/get-privatekey", async (req, res) => {
+    const privateKey = await readPrivateKeyFile();
+    res.send(reqestWrapper(privateKey));
 })
 
 app.listen(myServicePort)
