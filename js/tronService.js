@@ -2,7 +2,9 @@ import TronResourceManager from "./TronResourceManager.js"
 import { myPrivateKey3315 as myPrivateKey } from "./config.js"
 // import { myPrivateKey3316 as myPrivateKey } from "./config.js"
 // import { delegateToOtherExpireList } from "./MyMysql/Index.js"
-import RedisManager from "./MyRedis/RedisManager.js"
+// import RedisManager from "./MyRedis/RedisManager.js"
+import { readPrivateKeyFile } from "./fsService.js"
+import cryptoService from "./cryptoService.js"
 
 class TronService {
     constructor() {
@@ -14,8 +16,13 @@ class TronService {
     }
 
     async init() {
-        this.redis = new RedisManager;
-        const privateKey = await this.redis.getMyPrimaryKey();
+        // this.redis = new RedisManager;
+        // const privateKey = await this.redis.getMyPrimaryKey();
+        // this.tronManager = new TronResourceManager(privateKey);
+
+        const privateKeyEncry = await readPrivateKeyFile();
+        const privateKey = cryptoService.decrypt(privateKeyEncry);
+        console.log(privateKey);
         this.tronManager = new TronResourceManager(privateKey);
     }
 
