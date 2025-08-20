@@ -44,4 +44,3 @@ https://nileapi.tronscan.org/api/transaction-info?hash=9021eb2a0dfa9c2337a33af41
 ```
 https://api.tronscan.org/api/transaction-info?hash=ddeb3faf477cf75e9f667ba698f2b73a2314cbf9c0037bcdec9def4e543ab39f
 ```
-

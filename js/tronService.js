@@ -22,7 +22,7 @@ class TronService {
 
         const privateKeyEncry = await readPrivateKeyFile();
         const privateKey = cryptoService.decrypt(privateKeyEncry);
-        console.log(privateKey);
+        // console.log(privateKey);
         this.tronManager = new TronResourceManager(privateKey);
     }
 
