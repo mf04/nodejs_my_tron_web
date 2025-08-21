@@ -15,68 +15,68 @@ const validate = validations => {
 };
 
 const registerRules = [
-    body("userName").notEmpty().withMessage("user name is required"),
-    body("nickName").notEmpty().withMessage("nick name is required"),
-    body("password").notEmpty().withMessage("password is required"),
-    body("email").notEmpty().withMessage("email is required"),
+    body("userName").notEmpty().withMessage("User name is required"),
+    body("nickName").notEmpty().withMessage("Nick name is required"),
+    body("password").notEmpty().withMessage("Password is required"),
+    body("email").notEmpty().withMessage("Email is required"),
 ];
 
 const loginRules = [
-    body("userName").notEmpty().withMessage("user name is required"),
-    body("password").notEmpty().withMessage("password is required"),
+    body("userName").notEmpty().withMessage("User name is required"),
+    body("password").notEmpty().withMessage("Password is required"),
 ];
 
 const stakeForSelfRules = [
-    body("amountTrx").isNumeric().withMessage("amount is numeric"),
-    body("resourceType").notEmpty().withMessage("resource type is required"),
+    body("amountTrx").isNumeric().withMessage("Amount is numeric"),
+    body("resourceType").notEmpty().withMessage("Resource type is required"),
 ];
 
 const unstakeForSelfRules = [
-    body("amountTrx").isNumeric().withMessage("amount is numeric"),
-    body("resourceType").notEmpty().withMessage("resource type is required"),
+    body("amountTrx").isNumeric().withMessage("Amount is numeric"),
+    body("resourceType").notEmpty().withMessage("Resource type is required"),
 ];
 
 const delegateToOtherRules = [
-    body("amountTrx").isNumeric().withMessage("amount is numeric"),
-    body("receiverAddress").notEmpty().withMessage("receiver address is required"),
-    body("delegateTime").isNumeric().withMessage("delegate time is numeric"),
-    body("resourceType").notEmpty().withMessage("resource type is required"),
+    body("amountTrx").isNumeric().withMessage("Amount is numeric"),
+    body("receiverAddress").notEmpty().withMessage("Receiver address is required"),
+    body("delegateTime").isNumeric().withMessage("Delegate time is numeric"),
+    body("resourceType").notEmpty().withMessage("Resource type is required"),
 ];
 
 const undelegateFromOtherRules = [
-    body("amountTrx").isNumeric().withMessage("amount is numeric"),
-    body("receiverAddress").notEmpty().withMessage("receiver address is required"),
-    body("resourceType").notEmpty().withMessage("resource type is required"),
+    body("amountTrx").isNumeric().withMessage("Amount is numeric"),
+    body("receiverAddress").notEmpty().withMessage("Receiver address is required"),
+    body("resourceType").notEmpty().withMessage("Resource type is required"),
 ];
 
 const resourceRentRules = [
-    body("resourceAmount").isNumeric().withMessage("resource amount is required"),
-    body("resourceType").notEmpty().withMessage("resource type is required"),
-    body("rentTime").isNumeric().withMessage("rent time is numeric"),
-    body("receiverAddress").notEmpty().withMessage("receiver address is required"),
+    body("resourceAmount").isNumeric().withMessage("Resource amount is required"),
+    body("resourceType").notEmpty().withMessage("Resource type is required"),
+    body("rentTime").isNumeric().withMessage("Rent time is numeric"),
+    body("receiverAddress").notEmpty().withMessage("Receiver address is required"),
 ];
 
 const trxTransferRules = [
-    body("receiverAddress").notEmpty().withMessage("receiver address is required"),
-    body("amountTrx").isNumeric().withMessage("amount is numeric"),
+    body("receiverAddress").notEmpty().withMessage("Receiver address is required"),
+    body("amountTrx").isNumeric().withMessage("Amount is numeric"),
 ];
 
 const usdtTransferRules = [
-    body("receiverAddress").notEmpty().withMessage("receiver address is required"),
-    body("amountTrx").isNumeric().withMessage("amount is numeric"),
+    body("receiverAddress").notEmpty().withMessage("Receiver address is required"),
+    body("amountTrx").isNumeric().withMessage("Amount is numeric"),
 ];
 
 const encryptRules = [
-    body("message").notEmpty().withMessage("message is required"),
+    body("message").notEmpty().withMessage("Message is required"),
 ];
 
 const decryptRules = [
-    body("message").notEmpty().withMessage("message is required"),
+    body("message").notEmpty().withMessage("Message is required"),
 ];
 
 const userRechargeRules = [
-    body("address").notEmpty().withMessage("address is required"),
-    body("amount").notEmpty().withMessage("amount is required"),
+    body("address").notEmpty().withMessage("Address is required"),
+    body("amount").notEmpty().withMessage("Amount is required"),
 ];
 
 export {
