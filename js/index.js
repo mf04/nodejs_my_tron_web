@@ -175,9 +175,10 @@ app.post("/get-privatekey", async (req, res) => {
  */
 app.post("/user-recharge", v.validate(v.userRechargeRules), authenticateToken,
     async (req, res) => {
-        const { id } = req.user;
-        const { address, amount } = req.body;
-        res.send(reqestWrapper([[id, address, amount]]));
+        const { id: userId } = req.user;
+        const { address, amount, type } = req.body;
+        const result = await userService.userRecharge(userId, address, amount, type);
+        res.send(reqestWrapper(...result));
     })
 
 app.listen(myServicePort)

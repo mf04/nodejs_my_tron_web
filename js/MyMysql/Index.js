@@ -97,9 +97,21 @@ export const userItemGet = async (userName) => {
             [userName]
         );
         return result[0] || {};
-        // return result[0] && result[0]["password_hash"] || "";
     } catch (err) {
         console.err(err);
     }
-
 }
+
+export const userRechargeGenerate = async (userId, address, amount, type) => {
+    try {
+        const [result] = await promisePool.query(
+            `INSERT INTO user_recharge (user_id, address, amount, type, status)
+            VALUES (?, ?, ?, ?, ?)`,
+            [userId, address, amount, type, 0]
+        );
+        return result;
+    } catch (err) {
+        console.err(err);
+    }
+}
+

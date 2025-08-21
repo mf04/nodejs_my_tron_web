@@ -2,6 +2,7 @@ import { pwdWrapper, pwdCompare } from "./util.js";
 import { userItemGenerate, isUserItemExist, userItemGet } from "./MyMysql/Index.js"
 import jwt from "jsonwebtoken"
 import { JWT_SECRET } from "./config.js"
+import { userRechargeGenerate } from "./MyMysql/Index.js"
 
 class UserService {
     async login(userName, password) {
@@ -33,6 +34,11 @@ class UserService {
         const res = await userItemGenerate(
             userName, nickName, hashPwd, password, email, 0
         );
+        return [res.insertId || -1];
+    }
+
+    async userRecharge(userId, address, amount, type) {
+        const res = await userRechargeGenerate(userId, address, amount, type);
         return [res.insertId || -1];
     }
 }
