@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
 import { JWT_SECRET } from "../config.js"
-import { reqestWrapper } from "./util.js"
+import { reqestWrapper } from "../util.js"
 
 // 中间件：验证 JWT
 const authenticateToken = (req, res, next) => {
