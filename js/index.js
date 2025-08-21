@@ -9,6 +9,7 @@ import { myServicePort } from "./config.js"
 import cryptoService from "./cryptoService.js";
 import { readPrivateKeyFile } from "./fsService.js"
 import { authenticateToken } from "./middleware/token.js"
+import * as v from "./validation.js"
 
 const app = express()
 
@@ -25,13 +26,13 @@ app.use(express.urlencoded({ extended: true }))
 //     cookie: { secure: false }
 // }));
 
-app.post("/register", async (req, res) => {
+app.post("/register", v.validate(v.registerRules), async (req, res) => {
     const { userName, nickName, password, email } = req.body;
     const result = await userService.register(userName, nickName, password, email);
     res.send(reqestWrapper(...result));
 })
 
-app.post("/login", async (req, res) => {
+app.post("/login", v.validate(v.loginRules), async (req, res) => {
     const { userName, password } = req.body;
     const ret = await userService.login(userName, password);
     res.send(reqestWrapper(ret));
@@ -47,25 +48,25 @@ app.post("/create-wallet", async (req, res) => {
 })
 
 // type: "BANDWIDTH" or "ENERGY"
-app.post("/stake-for-self", async (req, res) => {
+app.post("/stake-for-self", v.validate(stakeForSelfRules), async (req, res) => {
     const { amountTrx, resourceType } = req.body
     const result = await tronService.stakeForSelf(amountTrx, resourceType)
     res.send(reqestWrapper(...result))
 })
 
-app.post("/unstake-for-self", async (req, res) => {
+app.post("/unstake-for-self", v.validate(v.unstakeForSelfRules), async (req, res) => {
     const { amountTrx, resourceType } = req.body
     const result = await tronService.unstakeForSelf(amountTrx, resourceType)
     res.send(reqestWrapper(...result))
 })
 
-app.post("/delegate-to-other", async (req, res) => {
+app.post("/delegate-to-other", v.validate(v.delegateToOtherRules), async (req, res) => {
     const { amountTrx, receiverAddress, delegateTime, resourceType } = req.body
     const result = await tronService.delegateToOther(amountTrx, receiverAddress, delegateTime, resourceType)
     res.send(reqestWrapper(...result))
 })
 
-app.post("/undelegate-from-other", async (req, res) => {
+app.post("/undelegate-from-other", v.validate(v.undelegateFromOtherRules), async (req, res) => {
     const { amountTrx, receiverAddress, resourceType } = req.body
     const result = await tronService.undelegateFromOther(amountTrx, receiverAddress, resourceType)
     res.send(reqestWrapper(...result))
@@ -89,7 +90,7 @@ app.get("/get-energy-exchange-rate", async (req, res) => {
  * rentTime: 10
  * 
  */
-app.post("/resource/rent", async (req, res) => {
+app.post("/resource/rent", v.validate(v.resourceRentRules), async (req, res) => {
     const { resourceAmount, resourceType, rentTime, receiverAddress } = req.body
     let result;
     switch (resourceType) {
@@ -118,7 +119,7 @@ app.post("/resource/recover", async (req, res) => {
  * trx transfer
  * 
  */
-app.post("/trx/transfer", async (req, res) => {
+app.post("/trx/transfer", v.validate(v.trxTransferRules), async (req, res) => {
     const { receiverAddress, amountTrx } = req.body;
     const result = await tronService.trxTransfer(receiverAddress, amountTrx);
     res.send(reqestWrapper(...result));
@@ -129,7 +130,7 @@ app.post("/trx/transfer", async (req, res) => {
  * usdt transfer
  * 
  */
-app.post("/usdt/transfer", async (req, res) => {
+app.post("/usdt/transfer", v.validate(v.usdtTransferRules), async (req, res) => {
     const { receiverAddress, amountTrx } = req.body;
     const result = await tronService.usdtTransfer(receiverAddress, amountTrx);
     res.send(reqestWrapper(...result));
@@ -140,7 +141,7 @@ app.post("/usdt/transfer", async (req, res) => {
  * 字符串加密
  * 
  */
-app.post("/encrypt", (req, res) => {
+app.post("/encrypt", v.validate(v.encryptRules), (req, res) => {
     const { message } = req.body;
     const result = cryptoService.encrypt(message);
     res.send(reqestWrapper(result));
@@ -151,7 +152,7 @@ app.post("/encrypt", (req, res) => {
  * 字符串解密
  * 
  */
-app.post("/decrypt", (req, res) => {
+app.post("/decrypt", v.validate(v.decryptRules), (req, res) => {
     const { message } = req.body;
     const result = cryptoService.decrypt(message);
     res.send(reqestWrapper(result));
@@ -172,8 +173,11 @@ app.post("/get-privatekey", async (req, res) => {
  * 会员充值
  * 
  */
-app.post("/user-recharge", async (req, res) => {
-
-})
+app.post("/user-recharge", v.validate(v.userRechargeRules), authenticateToken,
+    async (req, res) => {
+        const { id } = req.user;
+        const { address, amount } = req.body;
+        res.send(reqestWrapper([[id, address, amount]]));
+    })
 
 app.listen(myServicePort)
