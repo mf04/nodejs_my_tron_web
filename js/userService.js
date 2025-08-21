@@ -1,10 +1,27 @@
 import { pwdWrapper, pwdCompare } from "./util.js";
 import { userItemGenerate, isUserItemExist, userItemGet } from "./MyMysql/Index.js"
+import jwt from "jsonwebtoken"
+import { JWT_SECRET } from "./config.js"
 
 class UserService {
     async login(userName, password) {
-        const dbPwd = await userItemGet(userName);
-        return await pwdCompare(password, dbPwd);
+        try {
+            const myUserItem = await userItemGet(userName);
+            if (!myUserItem || !myUserItem["password_hash"]) {
+                throw new Error("用户不存在");
+            }
+            const isLoginSuccess = await pwdCompare(password, myUserItem["password_hash"]);
+            if (!isLoginSuccess) {
+                throw new Error("用户名或密码错误");
+            }
+            const payload = {
+                id: myUserItem.id,
+                username: myUserItem.user_name,
+            }
+            return jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+        } catch (error) {
+            return [error.message, "fail"];
+        }
     }
 
     async register(userName, nickName, password, email) {

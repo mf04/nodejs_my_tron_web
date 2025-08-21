@@ -1,6 +1,6 @@
 import express from "express"
 import cors from "cors"
-import session from "express-session"
+// import session from "express-session"
 import { reqestWrapper } from "./util.js"
 import { TronWeb } from "tronweb"
 import tronService from "./tronService.js"
@@ -8,6 +8,8 @@ import userService from "./userService.js"
 import { myServicePort } from "./config.js"
 import cryptoService from "./cryptoService.js";
 import { readPrivateKeyFile } from "./fsService.js"
+import jwt from "jsonwebtoken"
+import { JWT_SECRET } from "./config.js"
 
 const app = express()
 
@@ -17,12 +19,29 @@ app.use(express.json())
 
 app.use(express.urlencoded({ extended: true }))
 
-app.use(session({
-    secret: 'my-secret',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false }
-}));
+// app.use(session({
+//     secret: 'my-secret',
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: { secure: false }
+// }));
+
+// 中间件：验证 JWT
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null) {
+        return res.status(401).json({ message: '需要提供访问令牌' });
+    }
+    jwt.verify(token, JWT_SECRET, (err, decodedPayload) => {
+        if (err) {
+            console.error('JWT 验证失败:', err.message);
+            return res.status(403).json({ message: '令牌无效或已过期' });
+        }
+        req.user = decodedPayload;
+        next();
+    });
+};
 
 app.post("/register", async (req, res) => {
     const { userName, nickName, password, email } = req.body;
@@ -34,6 +53,10 @@ app.post("/login", async (req, res) => {
     const { userName, password } = req.body;
     const ret = await userService.login(userName, password);
     res.send(reqestWrapper(ret));
+})
+
+app.get("/profile", authenticateToken, (req, res) => {
+    res.send(reqestWrapper(req.user.username));
 })
 
 app.post("/create-wallet", async (req, res) => {
@@ -119,7 +142,6 @@ app.post("/trx/transfer", async (req, res) => {
     res.send(reqestWrapper(...result));
 })
 
-
 /**
  * 
  * usdt transfer
@@ -130,7 +152,6 @@ app.post("/usdt/transfer", async (req, res) => {
     const result = await tronService.usdtTransfer(receiverAddress, amountTrx);
     res.send(reqestWrapper(...result));
 })
-
 
 /**
  * 
@@ -164,5 +185,13 @@ app.post("/get-privatekey", async (req, res) => {
     res.send(reqestWrapper(privateKey));
 })
 
+/**
+ * 
+ * 会员充值
+ * 
+ */
+app.post("/user-recharge", async (req, res) => {
+
+})
 
 app.listen(myServicePort)

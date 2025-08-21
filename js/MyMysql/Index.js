@@ -93,10 +93,11 @@ export const userItemGenerate = async (
 export const userItemGet = async (userName) => {
     try {
         const [result] = await promisePool.query(
-            `select password_hash from nodejs_users where user_name = ? limit 1`,
+            `select id, user_name, nick_name, password_hash from nodejs_users where user_name = ? limit 1`,
             [userName]
         );
-        return result[0] && result[0]["password_hash"] || "";
+        return result[0] || {};
+        // return result[0] && result[0]["password_hash"] || "";
     } catch (err) {
         console.err(err);
     }
