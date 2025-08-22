@@ -81,10 +81,10 @@ const userRechargeRules = [
     body("web").notEmpty().withMessage("Web is required"),
 ];
 
-const getRechargeRecordRules = [
-    body("page").isNumeric().withMessage("Page is numeric"),
-    body("pageSize").isNumeric().withMessage("Page size is numeric"),
-];
+// const getRechargeRecordRules = [
+//     body("page").isNumeric().withMessage("Page is numeric"),
+//     body("pageSize").isNumeric().withMessage("Page size is numeric"),
+// ];
 
 export {
     validate,
@@ -100,5 +100,5 @@ export {
     encryptRules,
     decryptRules,
     userRechargeRules,
-    getRechargeRecordRules,
+    // getRechargeRecordRules,
 }

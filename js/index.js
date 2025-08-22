@@ -191,7 +191,6 @@ app.post("/user-recharge", v.validate(v.userRechargeRules), authenticateToken,
  */
 app.get("/get-recharge-record",
     authenticateToken,
-    v.validate(v.getRechargeRecordRules),
     pagination(),
     async (req, res) => {
         const userId = req.user.id;
