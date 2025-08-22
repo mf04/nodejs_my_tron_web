@@ -2,7 +2,11 @@ import { pwdWrapper, pwdCompare } from "./util.js";
 import { userItemGenerate, isUserItemExist, userItemGet } from "./MyMysql/Index.js"
 import jwt from "jsonwebtoken"
 import { JWT_SECRET } from "./config.js"
-import { userRechargeGenerate, getUserProfileByUserId } from "./MyMysql/Index.js"
+import {
+    userRechargeGenerate,
+    getUserProfileByUserId,
+    getRechargeRecord,
+} from "./MyMysql/Index.js"
 
 class UserService {
 
@@ -45,6 +49,10 @@ class UserService {
 
     async getProfile(userId) {
         return await getUserProfileByUserId(userId);
+    }
+
+    async getRechargeRecord(userId, limit, skip) {
+        return await getRechargeRecord(userId, limit, skip);
     }
 }
 

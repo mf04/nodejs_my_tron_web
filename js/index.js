@@ -10,6 +10,7 @@ import cryptoService from "./cryptoService.js";
 import { readPrivateKeyFile } from "./fsService.js"
 import { authenticateToken } from "./middleware/token.js"
 import * as v from "./validation.js"
+import pagination from "./middleware/pagination.js"
 
 const app = express()
 
@@ -182,5 +183,19 @@ app.post("/user-recharge", v.validate(v.userRechargeRules), authenticateToken,
         const result = await userService.userRecharge(userId, address, amount, type);
         res.send(reqestWrapper(...result));
     })
+
+/**
+ * 
+ * 会员充值记录
+ * 
+ */
+app.get("/get-recharge-record", authenticateToken, pagination(),
+    async (req, res) => {
+        const userId = req.user.id;
+        const { limit, skip } = req.pagination;
+        const list = await userService.getRechargeRecord(userId, limit, skip);
+        res.send(reqestWrapper(list));
+    })
+
 
 app.listen(myServicePort)

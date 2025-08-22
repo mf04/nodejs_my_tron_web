@@ -107,7 +107,9 @@ export const userItemGet = async (userName) => {
 export const getUserProfileByUserId = async (userId) => {
     try {
         const [result] = await promisePool.query(
-            `select id, user_name, nick_name, email, balance_trx, balance_usdt
+            `select id as userId, user_name as userName, nick_name as nickName, 
+                email, balance_trx as balanceTrx, balance_usdt as balanceUsdt, 
+                created_at as generateTime
             from nodejs_users where id = ? limit 1`,
             [userId]
         );
@@ -116,7 +118,6 @@ export const getUserProfileByUserId = async (userId) => {
         console.err(err);
     }
 }
-
 
 export const userRechargeGenerate = async (userId, address, amount, type) => {
     try {
@@ -131,3 +132,25 @@ export const userRechargeGenerate = async (userId, address, amount, type) => {
     }
 }
 
+export const getRechargeRecord = async (userId, limit, skip) => {
+    try {
+        const [totalRows] = await promisePool.query(
+            `select count(*) as total from user_recharge
+            where user_id = ?`,
+            [userId]
+        );
+        const total = totalRows[0]["total"];
+        const [list] = await promisePool.query(
+            `select id, user_id as userId, amount, type, created_at as generateTime
+            from user_recharge
+            where user_id = ?
+            order by id desc
+            limit ? offset ?
+            `,
+            [userId, limit, skip]
+        );
+        return { total, list };
+    } catch (err) {
+        console.err(err);
+    }
+}
