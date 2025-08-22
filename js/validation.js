@@ -78,6 +78,12 @@ const userRechargeRules = [
     body("address").notEmpty().withMessage("Address is required"),
     body("amount").notEmpty().withMessage("Amount is required"),
     body("type").notEmpty().withMessage("Type is required"),
+    body("web").notEmpty().withMessage("Web is required"),
+];
+
+const getRechargeRecordRules = [
+    body("page").isNumeric().withMessage("Page is numeric"),
+    body("pageSize").isNumeric().withMessage("Page size is numeric"),
 ];
 
 export {
@@ -94,4 +100,5 @@ export {
     encryptRules,
     decryptRules,
     userRechargeRules,
+    getRechargeRecordRules,
 }

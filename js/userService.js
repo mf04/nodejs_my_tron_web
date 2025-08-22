@@ -42,8 +42,8 @@ class UserService {
         return [res.insertId || -1];
     }
 
-    async userRecharge(userId, address, amount, type) {
-        const res = await userRechargeGenerate(userId, address, amount, type);
+    async userRecharge(userId, address, amount, type, web) {
+        const res = await userRechargeGenerate(userId, address, amount, type, web);
         return [res.insertId || -1];
     }
 

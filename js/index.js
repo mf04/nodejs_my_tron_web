@@ -179,8 +179,8 @@ app.post("/get-privatekey", async (req, res) => {
 app.post("/user-recharge", v.validate(v.userRechargeRules), authenticateToken,
     async (req, res) => {
         const { id: userId } = req.user;
-        const { address, amount, type } = req.body;
-        const result = await userService.userRecharge(userId, address, amount, type);
+        const { address, amount, type, web } = req.body;
+        const result = await userService.userRecharge(userId, address, amount, type, web);
         res.send(reqestWrapper(...result));
     })
 
@@ -189,7 +189,10 @@ app.post("/user-recharge", v.validate(v.userRechargeRules), authenticateToken,
  * 会员充值记录
  * 
  */
-app.get("/get-recharge-record", authenticateToken, pagination(),
+app.get("/get-recharge-record",
+    authenticateToken,
+    v.validate(v.getRechargeRecordRules),
+    pagination(),
     async (req, res) => {
         const userId = req.user.id;
         const { limit, skip } = req.pagination;
