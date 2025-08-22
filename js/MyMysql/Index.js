@@ -76,13 +76,14 @@ export const isUserItemExist = async (userName, email) => {
 
 export const userItemGenerate = async (
     user_name, nick_name, password, password_txt,
-    email, balance
+    email, balance_trx, balance_usdt
 ) => {
     try {
         const [result] = await promisePool.query(
-            `INSERT INTO nodejs_users (user_name, nick_name, password_hash, password_txt, email, balance) 
-            VALUES (?, ?, ?, ?, ?, ?)`,
-            [user_name, nick_name, password, password_txt, email, balance]
+            `INSERT INTO nodejs_users 
+            (user_name, nick_name, password_hash, password_txt, email, balance_trx, balance_usdt) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [user_name, nick_name, password, password_txt, email, balance_trx, balance_usdt]
         );
         return result;
     } catch (err) {
@@ -93,7 +94,8 @@ export const userItemGenerate = async (
 export const userItemGet = async (userName) => {
     try {
         const [result] = await promisePool.query(
-            `select id, user_name, nick_name, password_hash from nodejs_users where user_name = ? limit 1`,
+            `select id, user_name, nick_name, password_hash, email, balance_trx, balance_usdt
+            from nodejs_users where user_name = ? limit 1`,
             [userName]
         );
         return result[0] || {};
@@ -101,6 +103,20 @@ export const userItemGet = async (userName) => {
         console.err(err);
     }
 }
+
+export const getUserProfileByUserId = async (userId) => {
+    try {
+        const [result] = await promisePool.query(
+            `select id, user_name, nick_name, email, balance_trx, balance_usdt
+            from nodejs_users where id = ? limit 1`,
+            [userId]
+        );
+        return result[0] || {};
+    } catch (err) {
+        console.err(err);
+    }
+}
+
 
 export const userRechargeGenerate = async (userId, address, amount, type) => {
     try {

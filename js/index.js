@@ -38,8 +38,10 @@ app.post("/login", v.validate(v.loginRules), async (req, res) => {
     res.send(reqestWrapper(ret));
 })
 
-app.get("/profile", authenticateToken, (req, res) => {
-    res.send(reqestWrapper(req.user.username));
+app.get("/profile", authenticateToken, async (req, res) => {
+    const userId = req.user.id;
+    const myProfile = await userService.getProfile(userId);
+    res.send(reqestWrapper(myProfile));
 })
 
 app.post("/create-wallet", async (req, res) => {
