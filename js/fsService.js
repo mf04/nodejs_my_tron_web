@@ -7,10 +7,12 @@ async function readPrivateKeyFile() {
     const rankArr = generateSequence(6);
     const result = await asyncReduce(rankArr, async (prev, item) => {
         const addr = my01PostionArr[item - 1];
-        const txt = await fs.promises.readFile(addr, "utf-8");
+        let txt = await fs.promises.readFile(addr, "utf-8");
+        txt = cryptoService.decrypt(txt);
         return prev + txt;
     }, "");
-    return cryptoService.encrypt(result);
+    return result;
+    // return cryptoService.encrypt(result);
 }
 
 export {

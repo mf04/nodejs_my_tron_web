@@ -1,10 +1,8 @@
 import crypto from "crypto";
 import md5 from "md5";
+import { cryptoSalt as salt } from "./config.js";
 
-// 使用 AES-256-CBC
 const algorithm = "aes-256-cbc";
-
-const salt = "dasfa3234234SADFDSAtewarddas235345";
 
 const saltMd5 = md5(salt);
 
