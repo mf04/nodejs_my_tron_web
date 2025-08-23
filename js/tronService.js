@@ -1,5 +1,5 @@
 import TronResourceManager from "./TronResourceManager.js"
-import { myPrivateKey3315 as myPrivateKey } from "./config.js"
+// import { myPrivateKey3315 as myPrivateKey } from "./config.js"
 // import { myPrivateKey3316 as myPrivateKey } from "./config.js"
 // import { delegateToOtherExpireList } from "./MyMysql/Index.js"
 // import RedisManager from "./MyRedis/RedisManager.js"

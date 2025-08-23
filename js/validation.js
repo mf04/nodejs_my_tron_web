@@ -19,6 +19,8 @@ const registerRules = [
     body("nickName").notEmpty().withMessage("Nick name is required"),
     body("password").notEmpty().withMessage("Password is required"),
     body("email").notEmpty().withMessage("Email is required"),
+    body("phone").notEmpty().withMessage("Phone is required"),
+    body("telegram").notEmpty().withMessage("Telegram is required"),
 ];
 
 const loginRules = [

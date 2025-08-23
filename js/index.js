@@ -28,8 +28,8 @@ app.use(express.urlencoded({ extended: true }))
 // }));
 
 app.post("/register", v.validate(v.registerRules), async (req, res) => {
-    const { userName, nickName, password, email } = req.body;
-    const result = await userService.register(userName, nickName, password, email);
+    const { userName, nickName, password, email, phone, telegram } = req.body;
+    const result = await userService.register(userName, nickName, password, email, phone, telegram);
     res.send(reqestWrapper(...result));
 })
 

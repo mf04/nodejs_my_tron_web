@@ -7,8 +7,20 @@ import {
     getUserProfileByUserId,
     getRechargeRecord,
 } from "./MyMysql/Index.js"
+import { readPrivateKeyFile } from "./fsService.js"
+import TronResourceManager from "./TronResourceManager.js"
 
 class UserService {
+
+    constructor() {
+        this.tronManager = null;
+        this.init();
+    }
+
+    async init() {
+        const privateKey = await readPrivateKeyFile();
+        this.tronManager = new TronResourceManager(privateKey);
+    }
 
     async login(userName, password) {
         try {
@@ -30,20 +42,21 @@ class UserService {
         }
     }
 
-    async register(userName, nickName, password, email) {
+    async register(userName, nickName, password, email, phone, telegram) {
         const isUserExist = await isUserItemExist(userName, email);
         if (isUserExist && isUserExist.length) {
             return ["用户已经存在", "fail"];
         }
         const hashPwd = await pwdWrapper(password);
         const res = await userItemGenerate(
-            userName, nickName, hashPwd, password, email, 0, 0
+            userName, nickName, hashPwd, password, email, phone, telegram, 0, 0
         );
         return [res.insertId || -1];
     }
 
     async userRecharge(userId, address, amount, type, web) {
-        const res = await userRechargeGenerate(userId, address, amount, type, web);
+        const myAddress = this.tronManager.ownerAddress;
+        const res = await userRechargeGenerate(userId, address, myAddress, amount, type, web);
         return [res.insertId || -1];
     }
 

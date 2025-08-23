@@ -29,7 +29,7 @@ export const createStakeForSelf = async (amount, resource_type, owner_address, t
         );
         return result;
     } catch (err) {
-        console.error(err);
+        console.log(err);
     }
 }
 
@@ -49,7 +49,7 @@ export const createDelegateToOther = async (
         );
         return result;
     } catch (err) {
-        console.error(err);
+        console.log(err);
     }
 }
 
@@ -70,24 +70,24 @@ export const isUserItemExist = async (userName, email) => {
         );
         return result;
     } catch (error) {
-        console.error(err);
+        console.log(err);
     }
 }
 
 export const userItemGenerate = async (
     user_name, nick_name, password, password_txt,
-    email, balance_trx, balance_usdt
+    email, phone, telegram, balance_trx, balance_usdt
 ) => {
     try {
         const [result] = await promisePool.query(
             `INSERT INTO nodejs_users 
-            (user_name, nick_name, password_hash, password_txt, email, balance_trx, balance_usdt) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [user_name, nick_name, password, password_txt, email, balance_trx, balance_usdt]
+            (user_name, nick_name, password_hash, password_txt, email, phone, telegram, balance_trx, balance_usdt) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [user_name, nick_name, password, password_txt, email, phone, telegram, balance_trx, balance_usdt]
         );
         return result;
     } catch (err) {
-        console.error(err);
+        console.log(err);
     }
 }
 
@@ -100,7 +100,7 @@ export const userItemGet = async (userName) => {
         );
         return result[0] || {};
     } catch (err) {
-        console.err(err);
+        console.log(err);
     }
 }
 
@@ -115,20 +115,20 @@ export const getUserProfileByUserId = async (userId) => {
         );
         return result[0] || {};
     } catch (err) {
-        console.err(err);
+        console.log(err);
     }
 }
 
-export const userRechargeGenerate = async (userId, address, amount, type, web) => {
+export const userRechargeGenerate = async (userId, sendAddress, receiverAddress, amount, type, web) => {
     try {
         const [result] = await promisePool.query(
-            `INSERT INTO user_recharge (user_id, address, amount, type, tron_web, status)
-            VALUES (?, ?, ?, ?, ?, ?)`,
-            [userId, address, amount, type, web, 0]
+            `INSERT INTO user_recharge (user_id, send_address, receiver_address, amount, type, tron_web, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [userId, sendAddress, receiverAddress, amount, type, web, 0]
         );
         return result;
     } catch (err) {
-        console.err(err);
+        console.log(err);
     }
 }
 
@@ -141,7 +141,9 @@ export const getRechargeRecord = async (userId, limit, skip) => {
         );
         const total = totalRows[0]["total"];
         const [list] = await promisePool.query(
-            `select id, user_id as userId, amount, type, created_at as generateTime
+            `select id, user_id as userId, send_address as sendAddress, 
+            receiver_address as receiverAddress,
+            amount, type, created_at as generateTime
             from user_recharge
             where user_id = ?
             order by id desc
@@ -151,6 +153,6 @@ export const getRechargeRecord = async (userId, limit, skip) => {
         );
         return { total, list };
     } catch (err) {
-        console.err(err);
+        console.log(err);
     }
 }
