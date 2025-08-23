@@ -59,3 +59,20 @@ export const asyncReduce = (arr, asyncCallback, initialValue) => {
         return asyncCallback(acc, current);
     }, Promise.resolve(initialValue));
 }
+
+export const readContentFromUrl = async url => {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const textContent = await response.text();
+        return textContent;
+    } catch (error) {
+        console.error('Failed to fetch file from URL:', error);
+    }
+}
+
+export const isLocalPathFnc = (path) => {
+    return !/^(https?:)?\/\//.test(path);
+}
