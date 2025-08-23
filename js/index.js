@@ -199,5 +199,16 @@ app.get("/get-recharge-record",
         res.send(reqestWrapper(list));
     })
 
+/**
+ * 
+ * 会员提款记录
+ * 
+ */
+app.get("/get-withdraw-record",
+    authenticateToken,
+    pagination(),
+    async (req, res) => {
+        const userId = req.user.id;
+    })
 
 app.listen(myServicePort)
