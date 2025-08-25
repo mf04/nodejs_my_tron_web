@@ -5,6 +5,7 @@ import { reqestWrapper } from "./util.js"
 import { TronWeb } from "tronweb"
 import tronService from "./tronService.js"
 import userService from "./userService.js"
+import resourceService from "./resourceService.js"
 import { myServicePort } from "./config.js"
 import cryptoService from "./cryptoService.js";
 import { readPrivateKeyFile } from "./fsService.js"
@@ -229,9 +230,9 @@ app.post("/resource-goods/add", v.validate(v.resourceGoodsRules),
             titleCn, titleEn, titleKr,
             resourceType, price, unit, stock
         } = req.body;
-        const result = await resourceGoodsAdd(
+        const result = await resourceService.resourceGoodsAdd(
             titleCn, titleEn, titleKr,
             resourceType, price, unit, stock
         );
-        res.send(request);
+        res.send(reqestWrapper(...result));
     })

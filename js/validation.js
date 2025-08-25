@@ -88,6 +88,9 @@ const resourceGoodsRules = [
     body("titleEn").notEmpty().withMessage("Title en is required"),
     body("titleKr").notEmpty().withMessage("Title kr is required"),
     body("resourceType").notEmpty().withMessage("Resource type is required"),
+    body("price").isNumeric().withMessage("Price is numeric"),
+    body("unit").notEmpty().withMessage("Unit is required"),
+    body("stock").isNumeric().withMessage("Stock is numeric"),
 ];
 
 export {
