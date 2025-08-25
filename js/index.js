@@ -209,6 +209,11 @@ app.get("/get-withdraw-record",
     pagination(),
     async (req, res) => {
         const userId = req.user.id;
+        const { limit, skip } = req.pagination;
+        console.log(userId, limit, skip);
+        const list = await userService.getWithdrawRecord(userId, limit, skip);
+        console.log(list);
+        res.send(reqestWrapper([userId, limit, skip]));
     })
 
 app.listen(myServicePort)

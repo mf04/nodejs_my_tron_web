@@ -200,7 +200,7 @@ class TronResourceManager {
             const tx = await this.tronWeb.transactionBuilder.delegateResource(
                 amountSunInteger, receiverAddress, resourceType, this.ownerAddress
             );
-            console.log(tx);
+            // console.log(tx);
             const signedTx = await this.tronWeb.trx.sign(tx);
             const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
             this.contractExcuteValidate(receipt);
@@ -265,8 +265,6 @@ class TronResourceManager {
     async withdrawExpiredBalance() {
         try {
             const accountData = await this.tronWeb.trx.getAccount(this.ownerAddress);
-            console.log("----accountData-----");
-            console.log(accountData);
             if (!accountData.unfrozenV2 || accountData.unfrozenV2.length === 0) {
                 throw new Error("未发现任何处于解冻中的TRX, 无需操作。");
             }
@@ -316,7 +314,7 @@ class TronResourceManager {
                 throw new Error("没有到期的租赁记录");
             }
             for (let i = 0, item; item = result[i++];) {
-                console.log(item);
+                // console.log(item);
                 const { amount, receiver_address, resource_type } = item;
                 const ret = await this.undelegateFromOther(
                     amount,
@@ -324,7 +322,7 @@ class TronResourceManager {
                     resource_type,
                     true
                 );
-                console.log(ret);
+                // console.log(ret);
             }
             return [true];
         } catch (error) {

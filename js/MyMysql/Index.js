@@ -136,7 +136,7 @@ export const getRechargeRecord = async (userId, limit, skip) => {
     try {
         const [totalRows] = await promisePool.query(
             `select count(*) as total from user_recharge
-            where user_id = ?`,
+            where user_id = ? and status = 1`,
             [userId]
         );
         const total = totalRows[0]["total"];
@@ -145,13 +145,32 @@ export const getRechargeRecord = async (userId, limit, skip) => {
             receiver_address as receiverAddress,
             amount, type, created_at as generateTime
             from user_recharge
-            where user_id = ?
+            where user_id = ? and status = 1
             order by id desc
             limit ? offset ?
             `,
             [userId, limit, skip]
         );
         return { total, list };
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export const getWithdrawRecord = async (userId, limit, skip) => {
+    try {
+        const [totalRows] = await promisePool.query(
+            `select id, user_id as userId, send_address as sendAddress,
+            receiver_address as receiverAddress,
+            amount, type, created_at as generateTime
+            from user_withdraw
+            where user_id = ? and status = 1
+            `,
+            [userId]
+        );
+        const total = totalRows[0]["total"];
+        console.log(total);
+
     } catch (err) {
         console.log(err);
     }

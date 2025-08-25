@@ -67,6 +67,10 @@ class UserService {
     async getRechargeRecord(userId, limit, skip) {
         return await getRechargeRecord(userId, limit, skip);
     }
+
+    async getWithdrawRecord(userId, limit, skip) {
+        return await getWithdrawRecord(userId, limit, skip);
+    }
 }
 
 const userService = new UserService;
