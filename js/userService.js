@@ -1,5 +1,10 @@
 import { pwdWrapper, pwdCompare } from "./util.js";
-import { userItemGenerate, isUserItemExist, userItemGet } from "./MyMysql/Index.js"
+import {
+    userItemGenerate,
+    isUserItemExist,
+    userItemGet,
+    getWithdrawRecord,
+} from "./MyMysql/Index.js"
 import jwt from "jsonwebtoken"
 import { JWT_SECRET } from "./config.js"
 import {
