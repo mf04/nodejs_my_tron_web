@@ -18,7 +18,7 @@ class TronResourceManager {
         this.privateKey = privateKey;
         this.tronWeb = new TronWeb({
             // fullHost: 'https://api.shasta.trongrid.io',
-            fullHost: 'https://nile.trongrid.io',
+            fullHost: TRONGRID_API_URL,
             privateKey,
         });
         this.ownerAddress = this.tronWeb.defaultAddress.base58;

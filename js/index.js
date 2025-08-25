@@ -216,3 +216,22 @@ app.get("/get-withdraw-record",
     })
 
 app.listen(myServicePort)
+
+
+/**
+ * 
+ * 添加商品
+ * 
+ */
+app.post("/resource-goods/add", v.validate(v.resourceGoodsRules),
+    async (req, res) => {
+        const {
+            titleCn, titleEn, titleKr,
+            resourceType, price, unit, stock
+        } = req.body;
+        const result = await resourceGoodsAdd(
+            titleCn, titleEn, titleKr,
+            resourceType, price, unit, stock
+        );
+        res.send(request);
+    })

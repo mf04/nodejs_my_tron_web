@@ -183,3 +183,11 @@ export const getWithdrawRecord = async (userId, limit, skip) => {
         console.log(err);
     }
 }
+
+export const resourceGoodsAdd = async () => {
+    try {
+        return ["------3314-----"]
+    } catch (err) {
+        console.log(err);
+    }
+}

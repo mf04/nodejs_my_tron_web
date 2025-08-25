@@ -83,6 +83,13 @@ const userRechargeRules = [
     body("web").notEmpty().withMessage("Web is required"),
 ];
 
+const resourceGoodsRules = [
+    body("titleCn").notEmpty().withMessage("Title cn is required"),
+    body("titleEn").notEmpty().withMessage("Title en is required"),
+    body("titleKr").notEmpty().withMessage("Title kr is required"),
+    body("resourceType").notEmpty().withMessage("Resource type is required"),
+];
+
 export {
     validate,
     registerRules,
@@ -97,4 +104,5 @@ export {
     encryptRules,
     decryptRules,
     userRechargeRules,
+    resourceGoodsRules,
 }
