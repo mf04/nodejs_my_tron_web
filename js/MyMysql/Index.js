@@ -188,7 +188,8 @@ export const resourceGoodsAdd =
     async (titleCn, titleEn, titleKr, resourceType, price, unit, stock) => {
         try {
             const [result] = await promisePool.query(
-                `INSERT INTO resource_goods (title_cn, title_en, title_kr, resource_type, price, unit, stock, status)
+                `INSERT INTO resource_goods 
+                (title_cn, title_en, title_kr, resource_type, price, unit, stock, status)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
                 [titleCn, titleEn, titleKr, resourceType, price, unit, stock, 1]
             );
@@ -197,3 +198,18 @@ export const resourceGoodsAdd =
             console.log(err);
         }
     }
+
+export const resourceGoodsGet = async (field) => {
+    try {
+        const [result] = await promisePool.query(
+            `select ${field}
+            from resource_goods
+            where status = 1
+            order by id asc
+            `
+        );
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}

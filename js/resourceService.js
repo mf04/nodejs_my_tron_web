@@ -1,5 +1,5 @@
 import MyService from "./MyService.js"
-import { resourceGoodsAdd } from "./MyMysql/Index.js";
+import { resourceGoodsAdd, resourceGoodsGet } from "./MyMysql/Index.js";
 
 class ResourceService extends MyService {
 
@@ -14,6 +14,16 @@ class ResourceService extends MyService {
         return [res.insertId || -1];
     }
 
+    async resourceGoodsGet(lang) {
+        const titleMap = {
+            "ko": "title_kr",
+            "en": "title_en",
+            "zh": "title_cn",
+        };
+        const title = titleMap[lang] || "title_kr";
+        const field = `id, ${title} as title, resource_type as resourceType, price, unit, stock`;
+        return await resourceGoodsGet(field);
+    }
 }
 
 const resourceService = new ResourceService;

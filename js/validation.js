@@ -1,4 +1,4 @@
-import { body, validationResult } from "express-validator";
+import { body, query, validationResult } from "express-validator";
 import { reqestWrapper } from "./util.js";
 
 const validate = validations => {
@@ -93,6 +93,10 @@ const resourceGoodsRules = [
     body("stock").isNumeric().withMessage("Stock is numeric"),
 ];
 
+const getResourceGoodsRules = [
+    query("lang").notEmpty().withMessage("Lang is required"),
+];
+
 export {
     validate,
     registerRules,
@@ -108,4 +112,5 @@ export {
     decryptRules,
     userRechargeRules,
     resourceGoodsRules,
+    getResourceGoodsRules,
 }

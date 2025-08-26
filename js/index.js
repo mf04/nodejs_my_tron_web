@@ -236,3 +236,15 @@ app.post("/resource-goods/add", v.validate(v.resourceGoodsRules),
         );
         res.send(reqestWrapper(...result));
     })
+
+/**
+ * 
+ * 获取商品列表
+ * 
+ */
+app.get("/get-resource-goods", v.validate(v.getResourceGoodsRules),
+    async (req, res) => {
+        const lang = req.query.lang;
+        const result = await resourceService.resourceGoodsGet(lang);
+        res.send(reqestWrapper(result));
+    })
