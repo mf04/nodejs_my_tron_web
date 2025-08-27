@@ -16,7 +16,7 @@ const validate = validations => {
 
 const registerRules = [
     body("userName").notEmpty().withMessage("User name is required"),
-    body("nickName").notEmpty().withMessage("Nick name is required"),
+    // body("nickName").notEmpty().withMessage("Nick name is required"),
     body("password").notEmpty().withMessage("Password is required"),
     body("email").notEmpty().withMessage("Email is required"),
     body("phone").notEmpty().withMessage("Phone is required"),
