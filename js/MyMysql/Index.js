@@ -185,13 +185,13 @@ export const getWithdrawRecord = async (userId, limit, skip) => {
 }
 
 export const resourceGoodsAdd =
-    async (titleCn, titleEn, titleKr, resourceType, price, unit, stock) => {
+    async (titleCn, titleEn, titleKr, resourceType, price, unit, stock, amount, rentTime) => {
         try {
             const [result] = await promisePool.query(
-                `INSERT INTO resource_goods 
-                (title_cn, title_en, title_kr, resource_type, price, unit, stock, status)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-                [titleCn, titleEn, titleKr, resourceType, price, unit, stock, 1]
+                `INSERT INTO resource_goods
+                (title_cn, title_en, title_kr, resource_type, price, unit, stock, resource_amount, rent_time, status)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [titleCn, titleEn, titleKr, resourceType, price, unit, stock, amount, rentTime, 1]
             );
             return result;
         } catch (err) {

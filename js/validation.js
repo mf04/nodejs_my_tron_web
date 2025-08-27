@@ -91,6 +91,8 @@ const resourceGoodsRules = [
     body("price").isNumeric().withMessage("Price is numeric"),
     body("unit").notEmpty().withMessage("Unit is required"),
     body("stock").isNumeric().withMessage("Stock is numeric"),
+    body("amount").isNumeric().withMessage("Resource amount is numeric"),
+    body("rentTime").isNumeric().withMessage("Rent time is numeric"),
 ];
 
 const getResourceGoodsRules = [

@@ -232,7 +232,7 @@ app.post("/resource-goods/add", v.validate(v.resourceGoodsRules),
         } = req.body;
         const result = await resourceService.resourceGoodsAdd(
             titleCn, titleEn, titleKr,
-            resourceType, price, unit, stock
+            resourceType, price, unit, stock, amount, rentTime
         );
         res.send(reqestWrapper(...result));
     })
