@@ -56,7 +56,10 @@ class UserService extends MyService {
                 phone: myUserItem.phone,
                 telegram: myUserItem.telegram,
                 balanceTrx: myUserItem.balance_trx,
+                balanceTrxLock: myUserItem.balance_trx_lock,
                 balanceUsdt: myUserItem.balance_usdt,
+                balanceUsdtLock: myUserItem.balance_usdt_lock,
+                createdTime: +new Date(myUserItem.created_at),
             }
         } catch (error) {
             return [error.message, "fail"];

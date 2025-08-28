@@ -95,7 +95,8 @@ export const userItemGet = async (userName) => {
     try {
         const [result] = await promisePool.query(
             `select id, user_name, nick_name, avatar, password_hash, email, 
-            phone, telegram, balance_trx, balance_usdt
+            phone, telegram, balance_trx, balance_trx_lock, balance_usdt, 
+            balance_usdt_lock, created_at
             from nodejs_users where user_name = ? limit 1`,
             [userName]
         );
