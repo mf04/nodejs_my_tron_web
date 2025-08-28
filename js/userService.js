@@ -46,7 +46,18 @@ class UserService extends MyService {
                 id: myUserItem.id,
                 username: myUserItem.user_name,
             }
-            return jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+            const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+            return {
+                token,
+                userName: myUserItem.user_name,
+                nickName: myUserItem.nick_name,
+                avatar: myUserItem.avatar,
+                email: myUserItem.email,
+                phone: myUserItem.phone,
+                telegram: myUserItem.telegram,
+                balanceTrx: myUserItem.balance_trx,
+                balanceUsdt: myUserItem.balance_usdt,
+            }
         } catch (error) {
             return [error.message, "fail"];
         }
