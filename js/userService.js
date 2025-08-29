@@ -54,7 +54,7 @@ class UserService extends MyService {
                 avatar: myUserItem.avatar,
                 email: myUserItem.email,
                 phone: myUserItem.phone,
-                telegram: myUserItem.telegram,
+                telegramId: myUserItem.telegram,
                 balanceTrx: myUserItem.balance_trx,
                 balanceTrxLock: myUserItem.balance_trx_lock,
                 balanceUsdt: myUserItem.balance_usdt,
