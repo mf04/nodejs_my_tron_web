@@ -27,8 +27,10 @@ app.use(express.urlencoded({ extended: true }))
 // 静态资源托管：让 /uploads 目录可以直接访问
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-app.post("/upload", uploadMiddleware.single("file"), async (req, res) => {
-    res.send(reqestWrapper(req.file));
+app.post("/upload", authenticateToken, uploadMiddleware.single("file"), async (req, res) => {
+    const userId = req.user.id;
+    const result = await userService.avatarUpload(userId, req.file);
+    res.send(reqestWrapper(...result));
 })
 
 app.post("/register", v.validate(v.registerRules), async (req, res) => {

@@ -11,6 +11,7 @@ import {
     userRechargeGenerate,
     getUserProfileByUserId,
     getRechargeRecord,
+    userItemAvatarUpload,
 } from "./MyMysql/Index.js"
 import MyService from "./MyService.js"
 
@@ -82,6 +83,13 @@ class UserService extends MyService {
 
     async getWithdrawRecord(userId, limit, skip) {
         return await getWithdrawRecord(userId, limit, skip);
+    }
+
+    async avatarUpload(userId, file) {
+        const { filename } = file;
+        const avatar = `/uploads/${filename}`
+        await userItemAvatarUpload(userId, avatar);
+        return [avatar];
     }
 }
 

@@ -134,6 +134,18 @@ export const userRechargeGenerate = async (userId, sendAddress, receiverAddress,
     }
 }
 
+export const userItemAvatarUpload = async (userId, avatar) => {
+    try {
+        const [result] = await promisePool.query(
+            `update nodejs_users set avatar = ? where id = ?`,
+            [avatar, userId]
+        );
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 export const getRechargeRecord = async (userId, limit, skip) => {
     try {
         const [totalRows] = await promisePool.query(
