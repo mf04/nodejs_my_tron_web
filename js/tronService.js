@@ -1,17 +1,6 @@
-import TronResourceManager from "./TronResourceManager.js"
-import { readPrivateKeyFile } from "./fsService.js"
 import MyService from "./MyService.js"
 
 class TronService extends MyService {
-    // constructor() {
-    //     this.tronManager = null;
-    //     this.init();
-    // }
-
-    // async init() {
-    //     const privateKey = await readPrivateKeyFile();
-    //     this.tronManager = new TronResourceManager(privateKey);
-    // }
 
     constructor() {
         super();

@@ -12,8 +12,9 @@ import { readPrivateKeyFile } from "./fsService.js"
 import { authenticateToken } from "./middleware/token.js"
 import * as v from "./validation.js"
 import pagination from "./middleware/pagination.js"
-import multer from "multer"
-import path from "path"
+import { uploadMiddleware } from "./uploadService.js";
+import path from "path";
+import { __dirname } from "./util.js"
 
 const app = express()
 
@@ -23,35 +24,11 @@ app.use(express.json())
 
 app.use(express.urlencoded({ extended: true }))
 
-// app.use(session({
-//     secret: 'my-secret',
-//     resave: false,
-//     saveUninitialized: false,
-//     cookie: { secure: false }
-// }));
+// 静态资源托管：让 /uploads 目录可以直接访问
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-
-// 配置存储方式
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, "uploads/"); // 存储路径
-    },
-    filename: function (req, file, cb) {
-        // 防止文件名冲突：时间戳 + 原始后缀
-        cb(null, Date.now() + path.extname(file.originalname));
-    },
-});
-
-// 初始化上传中间件
-const upload = multer({ storage: storage });
-
-app.post("/upload", upload.single("file"), async (req, res) => {
-    // const { file, folder } = req.body;
-    // console.log(file);
-    // console.log(folder);
-    console.log("上传的文件信息：", req.file);
-    console.log(req);
-    res.send(3314);
+app.post("/upload", uploadMiddleware.single("file"), async (req, res) => {
+    res.send(reqestWrapper(req.file));
 })
 
 app.post("/register", v.validate(v.registerRules), async (req, res) => {
@@ -242,9 +219,6 @@ app.get("/get-withdraw-record",
         res.send(reqestWrapper(list));
     })
 
-app.listen(myServicePort)
-
-
 /**
  * 
  * 添加商品
@@ -274,3 +248,6 @@ app.get("/get-resource-goods", v.validate(v.getResourceGoodsRules),
         const result = await resourceService.resourceGoodsGet(lang);
         res.send(reqestWrapper(result));
     })
+
+
+app.listen(myServicePort)

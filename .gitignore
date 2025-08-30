@@ -1,3 +1,4 @@
 node_modules/
 js/config.js
 js/my01.*.txt
+js/uploads/*
