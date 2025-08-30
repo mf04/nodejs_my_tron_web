@@ -12,6 +12,8 @@ import { readPrivateKeyFile } from "./fsService.js"
 import { authenticateToken } from "./middleware/token.js"
 import * as v from "./validation.js"
 import pagination from "./middleware/pagination.js"
+import multer from "multer"
+import path from "path"
 
 const app = express()
 
@@ -28,10 +30,27 @@ app.use(express.urlencoded({ extended: true }))
 //     cookie: { secure: false }
 // }));
 
-app.post("/upload", async (req, res) => {
-    const { file, folder } = req.body;
-    console.log(file);
-    console.log(folder);
+
+// 配置存储方式
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "uploads/"); // 存储路径
+    },
+    filename: function (req, file, cb) {
+        // 防止文件名冲突：时间戳 + 原始后缀
+        cb(null, Date.now() + path.extname(file.originalname));
+    },
+});
+
+// 初始化上传中间件
+const upload = multer({ storage: storage });
+
+app.post("/upload", upload.single("file"), async (req, res) => {
+    // const { file, folder } = req.body;
+    // console.log(file);
+    // console.log(folder);
+    console.log("上传的文件信息：", req.file);
+    console.log(req);
     res.send(3314);
 })
 
