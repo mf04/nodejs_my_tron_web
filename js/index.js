@@ -251,5 +251,15 @@ app.get("/get-resource-goods", v.validate(v.getResourceGoodsRules),
         res.send(reqestWrapper(result));
     })
 
+/**
+ * 
+ * 返回主账号地址
+ * 
+ */
+app.get("/get-main-account", (req, res) => {
+    const address = tronService.getMainAccount();
+    res.send(reqestWrapper(address));
+})
+
 
 app.listen(myServicePort)

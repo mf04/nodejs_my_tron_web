@@ -6,6 +6,10 @@ class TronService extends MyService {
         super();
     }
 
+    getMainAccount() {
+        return this.tronManager.ownerAddress;
+    }
+
     async stakeForSelf(amountTrx, resourceType) {
         return await this.tronManager.stakeForSelf(amountTrx, resourceType)
     }
