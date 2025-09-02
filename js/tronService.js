@@ -1,4 +1,5 @@
 import MyService from "./MyService.js"
+import userService from "./userService.js"
 
 class TronService extends MyService {
 
@@ -34,18 +35,25 @@ class TronService extends MyService {
         return await this.tronManager.getEnergyExchangeRate();
     }
 
-    async energyRent(resourceAmount, rentTime, receiverAddress) {
+    async energyRent(userId, resourceAmount, rentTime, receiverAddress, maxWaitTime, price) {
         const amountTrx = await this.tronManager.swapEnergyToTrx(resourceAmount);
-        return await this.tronManager.delegateToOther(
-            amountTrx, receiverAddress, rentTime, "ENERGY"
-        );
+        const isBalanceSuff = await userService.userBalanceVerify(userId, price);
+        if (!isBalanceSuff) {
+            return ["Insufficient balance.", "fail"];
+        }
+        const hash = await this.tronManager.delegateToOtherV2(amountTrx, receiverAddress, "ENERGY");
+        console.log(hash);
+        return [hash];
     }
 
-    async bandwidthRent(resourceAmount, rentTime, receiverAddress) {
+    async bandwidthRent(userId, resourceAmount, rentTime, receiverAddress, maxWaitTime, price) {
         const amountTrx = await this.tronManager.swapBandwidthToTrx(resourceAmount);
-        return await this.tronManager.delegateToOther(
-            amountTrx, receiverAddress, rentTime, "BANDWIDTH"
-        );
+        const _amountTrx = this.tronManager.tronWeb.toSun(amountTrx);
+        console.log(amountTrx, _amountTrx);
+        return [amountTrx];
+        // return await this.tronManager.delegateToOther(
+        //     amountTrx, receiverAddress, rentTime, "BANDWIDTH"
+        // );
     }
 
     async resourceRecover() {

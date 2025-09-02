@@ -4,6 +4,7 @@ import {
     isUserItemExist,
     userItemGet,
     getWithdrawRecord,
+    getUserAvailableTrx,
 } from "./MyMysql/Index.js"
 import jwt from "jsonwebtoken"
 import { JWT_SECRET } from "./config.js"
@@ -91,6 +92,12 @@ class UserService extends MyService {
         await userItemAvatarUpload(userId, avatar);
         return [avatar];
     }
+
+    async userBalanceVerify(userId, price) {
+        const balanceUsable = await getUserAvailableTrx(userId);
+        return balanceUsable > price;
+    }
+
 }
 
 const userService = new UserService;

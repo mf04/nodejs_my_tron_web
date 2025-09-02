@@ -99,15 +99,19 @@ app.get("/get-energy-exchange-rate", async (req, res) => {
  * rentTime: 10
  * 
  */
-app.post("/resource/rent", v.validate(v.resourceRentRules), async (req, res) => {
-    const { resourceAmount, resourceType, rentTime, receiverAddress } = req.body
+app.post("/resource/rent", v.validate(v.resourceRentRules), authenticateToken, async (req, res) => {
+    const userId = req.user.id;
+    const { resourceAmount, resourceType, rentTime, receiverAddress, maxWaitTime, price } = req.body
+    // res.send(reqestWrapper([userId, resourceAmount, resourceType, rentTime, receiverAddress, maxWaitTime]))
     let result;
     switch (resourceType) {
         case "ENERGY":
-            result = await tronService.energyRent(resourceAmount, rentTime, receiverAddress);
+            result = await tronService.energyRent(
+                userId, resourceAmount, rentTime, receiverAddress, maxWaitTime, price);
             break;
         case "BANDWIDTH":
-            result = await tronService.bandwidthRent(resourceAmount, rentTime, receiverAddress);
+            result = await tronService.bandwidthRent(
+                userId, resourceAmount, rentTime, receiverAddress, maxWaitTime, price);
             break;
     }
     res.send(reqestWrapper(...result))

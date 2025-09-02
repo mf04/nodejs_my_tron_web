@@ -7,6 +7,7 @@ import {
 } from "./MyMysql/Index.js"
 import axios from "axios";
 import { TRONGRID_API_URL, USDT_CONTRACT } from "./config.js"
+import { formattedValue } from "./bigNumber.util.js"
 
 
 class TronResourceManager {
@@ -60,7 +61,10 @@ class TronResourceManager {
      */
     async swapEnergyToTrx(amountEnergy) {
         const { trxPerEnergy } = await this.getEnergyExchangeRate();
-        return trxPerEnergy * amountEnergy;
+        const _trx = trxPerEnergy * amountEnergy;
+        const _trxDecimal = formattedValue(_trx);
+        // console.log(trxPerEnergy, amountEnergy, _trx, _trxDecimal);
+        return _trxDecimal;
     }
 
     /**
@@ -102,7 +106,10 @@ class TronResourceManager {
      */
     async swapBandwidthToTrx(amountBandwidth) {
         const rate = await this.getBandwidthExchangeRate();
-        return amountBandwidth / rate;
+        const _trx = amountBandwidth / rate;
+        const _trxDecimal = formattedValue(_trx);
+        // console.log(amountBandwidth, rate, _trx, _trxDecimal);
+        return _trxDecimal;
     }
 
     /**
@@ -123,7 +130,6 @@ class TronResourceManager {
     async swapTrxToBandwidth(amountTrx) {
 
     }
-
 
     contractExcuteValidate(receipt) {
         if (receipt && receipt.code == "CONTRACT_VALIDATE_ERROR") {
@@ -218,6 +224,25 @@ class TronResourceManager {
                 delegateDeadlineDate,
             );
             return [receipt.txid];
+        } catch (error) {
+            return [`委托失败: ${error.message}`, "fail"];
+        }
+    }
+
+    async delegateToOtherV2(amountInTrx, receiverAddress, resourceType) {
+        if (!this.tronWeb.isAddress(receiverAddress)) {
+            throw new Error("失败: 无效的接收者地址。");
+        }
+        try {
+            const amountInSun = this.tronWeb.toSun(amountInTrx);
+            const amountSunInteger = Math.ceil(amountInSun);
+            const tx = await this.tronWeb.transactionBuilder.delegateResource(
+                amountSunInteger, receiverAddress, resourceType, this.ownerAddress
+            );
+            const signedTx = await this.tronWeb.trx.sign(tx);
+            const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
+            this.contractExcuteValidate(receipt);
+            return receipt.txid;
         } catch (error) {
             return [`委托失败: ${error.message}`, "fail"];
         }

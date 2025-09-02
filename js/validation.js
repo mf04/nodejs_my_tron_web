@@ -56,6 +56,7 @@ const resourceRentRules = [
     body("resourceType").notEmpty().withMessage("Resource type is required"),
     body("rentTime").isNumeric().withMessage("Rent time is numeric"),
     body("receiverAddress").notEmpty().withMessage("Receiver address is required"),
+    body("price").isNumeric().withMessage("Rent time is numeric"),
 ];
 
 const trxTransferRules = [

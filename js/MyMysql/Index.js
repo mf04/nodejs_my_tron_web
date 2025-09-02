@@ -227,3 +227,17 @@ export const resourceGoodsGet = async (field) => {
         console.log(err);
     }
 }
+
+export const getUserAvailableTrx = async (userId) => {
+    try {
+        const [result] = await promisePool.query(
+            `SELECT (balance_trx - balance_trx_lock) as balance_usable
+            from nodejs_users
+            where id = ?`,
+            [userId]
+        );
+        return result && result[0] && result[0]["balance_usable"] || 0;
+    } catch (err) {
+        console.log(err);
+    }
+}
