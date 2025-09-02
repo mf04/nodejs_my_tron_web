@@ -47,15 +47,14 @@ class TronService extends MyService {
                 throw new Error("Insufficient balance.");
             }
             const hash = await this.tronManager.delegateToOtherV2(amountTrx, receiverAddress, resourceType);
-
             const currentTime = +new Date();
             const delegateDeadline = currentTime + rentTime * 1000;
             const delegateDeadlineDate = new Date(delegateDeadline);
-            const delegateParams = [userId, resourceAmount, resourceType, ownerAddress, receiverAddress, hash, delegateStatus,
+            const delegateParams = [userId, resourceAmount, resourceType, ownerAddress,
+                receiverAddress, hash, delegateStatus,
                 rentTime, delegateDeadlineDate, maxWaitTime, price];
             const result = await createDelegateToOtherV2(delegateParams);
-            console.log(result);
-            return [hash];
+            return [result.insertId];
         } catch (error) {
             return [`Delegate failed: ${error.message}`, "fail"];
         }
