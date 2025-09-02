@@ -53,6 +53,23 @@ export const createDelegateToOther = async (
     }
 }
 
+export const createDelegateToOtherV2 = async (params) => {
+    try {
+        const [result] = await promisePool.query(
+            `INSERT INTO 
+            delegate_to_other 
+            (user_id, amount, resource_type, owner_address, receiver_address, txid, status, 
+            delegate_time, delegate_deadline, max_wait_time, price)
+            VALUES
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            params
+        );
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 export const delegateToOtherExpireList = async () => {
     const nowStr = jsDate("Y-m-d H:i:s", new Date().getTime())
     const [result] = await promisePool.query(
