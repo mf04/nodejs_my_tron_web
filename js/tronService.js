@@ -12,6 +12,10 @@ class TronService extends MyService {
         return this.tronManager.ownerAddress;
     }
 
+    async getAddressInfo(addressList) {
+        console.log(addressList);
+    }
+
     async stakeForSelf(amountTrx, resourceType) {
         return await this.tronManager.stakeForSelf(amountTrx, resourceType)
     }
