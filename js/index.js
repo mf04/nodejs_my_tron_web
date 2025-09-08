@@ -274,7 +274,7 @@ app.get("/get-address-info", async (req, res) => {
     const { address = "" } = req.query;
     const addressList = address.split(",").filter(item => item);
     const info = await tronService.getAddressInfo(addressList);
-    res.send(reqestWrapper(addressList));
+    res.send(reqestWrapper(info));
 })
 
 app.listen(myServicePort)

@@ -13,8 +13,40 @@ class TronService extends MyService {
     }
 
     async getAddressInfo(addressList) {
-        console.log(addressList);
+        let info = [];
+        for (let i = 0, item; item = addressList[i++];) {
+            const trx = await this.getTrxBalance(item);
+            const resources = await this.getAccountResources(item);
+            info.push({ trx, ...resources })
+        }
+        return info;
     }
+
+    async getTrxBalance(address) {
+        const balanceInSun = await this.tronManager.tronWeb.trx.getBalance(address);
+        const balanceInTrx = this.tronManager.tronWeb.fromSun(balanceInSun);
+        return balanceInTrx;
+    }
+
+    async getAccountResources(address) {
+        const resources = await this.tronManager.tronWeb.trx.getAccountResources(address);
+
+        const freeBandwidth = resources.freeNetLimit || 0;
+        const stakedBandwidth = resources.NetLimit || 0;
+        const totalBandwidth = freeBandwidth + stakedBandwidth;
+        const totalBandwidthUsed = (resources.freeNetUsed || 0) + (resources.NetUsed || 0);
+        const remainingBandwidth = totalBandwidth - totalBandwidthUsed;
+
+        const energy = resources.EnergyLimit || 0;
+        const energyUsed = resources.EnergyUsed || 0;
+        const remainingEnergy = energy - energyUsed;
+
+        return {
+            bandWidth: remainingBandwidth,
+            energy: remainingEnergy,
+        }
+    }
+
 
     async stakeForSelf(amountTrx, resourceType) {
         return await this.tronManager.stakeForSelf(amountTrx, resourceType)
