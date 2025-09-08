@@ -270,11 +270,12 @@ app.get("/get-main-account", (req, res) => {
  * 根据地址列表获取地址信息
  * 
  */
-app.get("/get-address-info", async (req, res) => {
-    const { address = "" } = req.query;
-    const addressList = address.split(",").filter(item => item);
-    const info = await tronService.getAddressInfo(addressList);
-    res.send(reqestWrapper(info));
-})
+app.get("/get-address-info", v.validate(v.getAddressInfoRules),
+    async (req, res) => {
+        const { address = "" } = req.query;
+        const addressList = address.split(",").filter(item => item);
+        const info = await tronService.getAddressInfo(addressList);
+        res.send(reqestWrapper(info));
+    })
 
 app.listen(myServicePort)

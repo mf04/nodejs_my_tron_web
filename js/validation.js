@@ -100,6 +100,10 @@ const getResourceGoodsRules = [
     query("lang").notEmpty().withMessage("Lang is required"),
 ];
 
+const getAddressInfoRules = [
+    query("address").notEmpty().withMessage("Address is required"),
+];
+
 export {
     validate,
     registerRules,
@@ -116,4 +120,5 @@ export {
     userRechargeRules,
     resourceGoodsRules,
     getResourceGoodsRules,
+    getAddressInfoRules,
 }
