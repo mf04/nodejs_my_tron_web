@@ -30,23 +30,19 @@ class TronService extends MyService {
 
     async getAccountResources(address) {
         const resources = await this.tronManager.tronWeb.trx.getAccountResources(address);
-
         const freeBandwidth = resources.freeNetLimit || 0;
         const stakedBandwidth = resources.NetLimit || 0;
         const totalBandwidth = freeBandwidth + stakedBandwidth;
         const totalBandwidthUsed = (resources.freeNetUsed || 0) + (resources.NetUsed || 0);
         const remainingBandwidth = totalBandwidth - totalBandwidthUsed;
-
         const energy = resources.EnergyLimit || 0;
         const energyUsed = resources.EnergyUsed || 0;
         const remainingEnergy = energy - energyUsed;
-
         return {
             bandWidth: remainingBandwidth,
             energy: remainingEnergy,
         }
     }
-
 
     async stakeForSelf(amountTrx, resourceType) {
         return await this.tronManager.stakeForSelf(amountTrx, resourceType)
@@ -97,7 +93,9 @@ class TronService extends MyService {
 
     async energyRent(userId, resourceAmount, rentTime, receiverAddress, maxWaitTime, price) {
         const resourceType = "ENERGY";
-        return await this.resourceRent(userId, resourceAmount, resourceType, rentTime, receiverAddress, maxWaitTime, price);
+        const result = await this.resourceRent(userId, resourceAmount, resourceType, rentTime, receiverAddress, maxWaitTime, price);
+        await userService.userBalanceTrxInc(userId, price * -1);
+        return result;
     }
 
     async bandwidthRent(userId, resourceAmount, rentTime, receiverAddress, maxWaitTime, price) {

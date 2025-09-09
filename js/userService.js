@@ -5,6 +5,7 @@ import {
     userItemGet,
     getWithdrawRecord,
     getUserAvailableTrx,
+    updateUserTrxBalance,
 } from "./MyMysql/Index.js"
 import jwt from "jsonwebtoken"
 import { JWT_SECRET } from "./config.js"
@@ -98,6 +99,10 @@ class UserService extends MyService {
         return balanceUsable > price;
     }
 
+    async userBalanceTrxInc(userId, amount) {
+        // console.log(userId, amount);
+        return await updateUserTrxBalance(userId, amount);
+    }
 }
 
 const userService = new UserService;

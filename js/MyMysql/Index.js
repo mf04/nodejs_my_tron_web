@@ -258,3 +258,15 @@ export const getUserAvailableTrx = async (userId) => {
         console.log(err);
     }
 }
+
+export const updateUserTrxBalance = async (userId, amount) => {
+    try {
+        const [result] = await promisePool.query(
+            `update nodejs_users set balance_trx = balance_trx + ? where id = ?`,
+            [amount, userId]
+        );
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+} 

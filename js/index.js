@@ -278,4 +278,15 @@ app.get("/get-address-info", v.validate(v.getAddressInfoRules),
         res.send(reqestWrapper(info));
     })
 
+/**
+ * 
+ * 获取会员的最近交易记录
+ * 
+ */
+app.get("/get-resource-rent-list", authenticateToken,
+    async (req, res) => {
+        const userId = req.user.id;
+        res.send(reqestWrapper([userId]));
+    })
+
 app.listen(myServicePort)
