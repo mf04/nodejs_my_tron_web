@@ -283,10 +283,10 @@ app.get("/get-address-info", v.validate(v.getAddressInfoRules),
  * 获取会员的最近交易记录
  * 
  */
-app.get("/get-resource-rent-list", authenticateToken,
+app.get("/get-resource-rent-list",
     async (req, res) => {
-        const userId = req.user.id;
-        res.send(reqestWrapper([userId]));
+        const list = await tronService.getResourceRentList();
+        res.send(reqestWrapper(list));
     })
 
 app.listen(myServicePort)

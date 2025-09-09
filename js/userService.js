@@ -100,7 +100,6 @@ class UserService extends MyService {
     }
 
     async userBalanceTrxInc(userId, amount) {
-        // console.log(userId, amount);
         return await updateUserTrxBalance(userId, amount);
     }
 }

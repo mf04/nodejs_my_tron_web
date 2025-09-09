@@ -1,6 +1,9 @@
 import MyService from "./MyService.js"
 import userService from "./userService.js"
-import { createDelegateToOtherV2 } from "./MyMysql/Index.js";
+import {
+    createDelegateToOtherV2,
+    getUserResourceRentList,
+} from "./MyMysql/Index.js";
 
 class TronService extends MyService {
 
@@ -120,6 +123,10 @@ class TronService extends MyService {
 
     async usdtTransfer(receiverAddress, amountTrx) {
         return await this.tronManager.usdtTransfer(receiverAddress, amountTrx);
+    }
+
+    async getResourceRentList() {
+        return await getUserResourceRentList();
     }
 }
 
