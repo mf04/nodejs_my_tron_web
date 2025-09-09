@@ -321,3 +321,20 @@ export const trxBalanceLog = async (userId, fromType, currencyType, amount) => {
         console.log(err);
     }
 }
+
+export const userBalanceLog = async (userId) => {
+    try {
+        const [result] = await promisePool.query(
+            `select from_type as originType, currency_type as currencyType, 
+            amount, balance_after as balance, time 
+            from balance_log 
+            where user_id = ? 
+            order by id desc 
+            limit 10`,
+            [userId]
+        );
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}

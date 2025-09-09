@@ -7,6 +7,7 @@ import {
     getUserAvailableTrx,
     updateUserTrxBalance,
     trxBalanceLog,
+    userBalanceLog,
 } from "./MyMysql/Index.js"
 import jwt from "jsonwebtoken"
 import { JWT_SECRET } from "./config.js"
@@ -110,6 +111,10 @@ class UserService extends MyService {
 
     async buyBandWidthBalanceLog(userId, amount) {
         return await trxBalanceLog(userId, "buy_bandwidth", "trx", amount);
+    }
+
+    async userBalanceList(userId) {
+        return await userBalanceLog(userId);
     }
 }
 

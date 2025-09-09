@@ -280,7 +280,7 @@ app.get("/get-address-info", v.validate(v.getAddressInfoRules),
 
 /**
  * 
- * 获取会员的最近交易记录
+ * 获取最近交易记录
  * 
  */
 app.get("/get-resource-rent-list",
@@ -288,5 +288,20 @@ app.get("/get-resource-rent-list",
         const list = await tronService.getResourceRentList();
         res.send(reqestWrapper(list));
     })
+
+/**
+ * 
+ * 获取会员最近资金流水
+ * 
+ */
+app.get("/get-user-balance-list",
+    authenticateToken,
+    async (req, res) => {
+        const userId = req.user.id;
+        const list = await userService.userBalanceList(userId);
+        res.send(reqestWrapper(list));
+    })
+
+
 
 app.listen(myServicePort)
