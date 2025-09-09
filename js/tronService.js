@@ -96,21 +96,22 @@ class TronService extends MyService {
 
     async energyRent(userId, resourceAmount, rentTime, receiverAddress, maxWaitTime, price) {
         const resourceType = "ENERGY";
-        const result = await this.resourceRent(userId, resourceAmount, resourceType, rentTime, receiverAddress, maxWaitTime, price);
+        const result = await this.resourceRent(
+            userId, resourceAmount, resourceType, rentTime, receiverAddress, maxWaitTime, price
+        );
+        await userService.buyEnergyBalanceLog(userId, price * -1);
         await userService.userBalanceTrxInc(userId, price * -1);
         return result;
     }
 
     async bandwidthRent(userId, resourceAmount, rentTime, receiverAddress, maxWaitTime, price) {
-        // const amountTrx = await this.tronManager.swapBandwidthToTrx(resourceAmount);
-        // const _amountTrx = this.tronManager.tronWeb.toSun(amountTrx);
-        // console.log(amountTrx, _amountTrx);
-        // return [amountTrx];
-        // return await this.tronManager.delegateToOther(
-        //     amountTrx, receiverAddress, rentTime, "BANDWIDTH"
-        // );
         const resourceType = "BANDWIDTH";
-        return await this.resourceRent(userId, resourceAmount, resourceType, rentTime, receiverAddress, maxWaitTime, price);
+        const result = await this.resourceRent(
+            userId, resourceAmount, resourceType, rentTime, receiverAddress, maxWaitTime, price
+        );
+        await userService.buyBandWidthBalanceLog(userId, price * -1);
+        await userService.userBalanceTrxInc(userId, price * -1);
+        return result;
     }
 
     async resourceRecover() {

@@ -2,9 +2,22 @@ import bcrypt from "bcrypt";
 import md5 from "md5";
 import path from "path";
 import { fileURLToPath } from "url";
+import b from "bignumber.js";
 
 export const __filename = fileURLToPath(import.meta.url);
 export const __dirname = path.dirname(__filename);
+
+export const bigNumDecimal = (number, decimal = 2) => {
+    return b(number * 1).toFixed(decimal);
+}
+
+export const bigNumSub = (n1, n2, decimal = 2) => {
+    return b(n1).minus(n2).toFixed(decimal);
+}
+
+export const bigNumAdd = (n1, n2, decimal = 2) => {
+    return b(n1).plus(n2).toFixed(decimal);
+}
 
 export const getPwdSalt = (password) => {
     const salt = "cdqdafadf!@SWW!";

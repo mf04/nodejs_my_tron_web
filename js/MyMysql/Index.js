@@ -2,7 +2,10 @@ import mysql from "mysql2"
 import {
     mysqlHost, mysqlUser, mysqlPwd, mysqlDb
 } from "../config.js"
-import { jsDate } from "../util.js"
+import {
+    jsDate,
+    bigNumAdd,
+} from "../util.js"
 
 const pool = mysql.createPool({
     host: mysqlHost,
@@ -259,6 +262,19 @@ export const getUserAvailableTrx = async (userId) => {
     }
 }
 
+
+export const getUserBalanceTrx = async (userId) => {
+    try {
+        const [result] = await promisePool.query(
+            `select balance_trx from nodejs_users where id = ?`,
+            [userId]
+        );
+        return result && result[0] && result[0]["balance_trx"] || 0;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 export const updateUserTrxBalance = async (userId, amount) => {
     try {
         const [result] = await promisePool.query(
@@ -280,6 +296,25 @@ export const getUserResourceRentList = async () => {
             ORDER BY id desc
             limit 10
             `
+        );
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export const trxBalanceLog = async (userId, fromType, currencyType, amount) => {
+    try {
+        const balanceBefore = await getUserBalanceTrx(userId);
+        const balanceAfter = bigNumAdd(balanceBefore, amount, 6);
+        // console.log(userId, fromType, currencyType, amount, balanceBefore, balanceAfter);
+        const [result] = await promisePool.query(
+            `insert into balance_log 
+            (user_id, from_type, currency_type, amount, balance_before, balance_after) 
+            values 
+            (?, ?, ?, ?, ?, ?)
+            `,
+            [userId, fromType, currencyType, amount, balanceBefore, balanceAfter]
         );
         return result;
     } catch (err) {
