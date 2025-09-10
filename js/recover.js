@@ -1,9 +1,10 @@
 import tronService from "./tronService.js";
+import { newAsync } from "./util.js";
 
 class Recover {
 
-    init() {
-        this.resourceRecover();
+    async init() {
+        await this.resourceRecover();
     }
 
     async resourceRecover() {
@@ -12,10 +13,13 @@ class Recover {
     }
 }
 
-
 try {
-    const r = new Recover;
-    r.init();
+    // const r = new Recover();
+    // await r.init();
+
+    const r = await newAsync(Recover);
+    console.log(r);
+
 } catch (error) {
     console.log(error.message);
 }

@@ -117,6 +117,7 @@ class TronService extends MyService {
     }
 
     async resourceRecover() {
+        console.log("------resourceRecover------");
         return await this.tronManager.resourceRecover();
     }
 

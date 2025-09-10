@@ -331,8 +331,13 @@ class TronResourceManager {
      * 
      */
     async resourceRecover() {
+        console.log("-------resourceRecover manager------");
         try {
             const result = await delegateToOtherExpireList();
+
+            console.log(result);
+
+
             if (!result || !result.length) {
                 throw new Error("没有到期的租赁记录");
             }

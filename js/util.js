@@ -94,3 +94,13 @@ export const readContentFromUrl = async url => {
 export const isLocalPathFnc = (path) => {
     return !/^(https?:)?\/\//.test(path);
 }
+
+export const newAsync = (ClassType, ...args) => {
+    return (async () => {
+        const instance = new ClassType(...args);
+        if (typeof instance.init === "function") {
+            await instance.init();
+        }
+        return instance;
+    })();
+}
