@@ -80,7 +80,9 @@ class TronService extends MyService {
             if (!isBalanceSuff) {
                 throw new Error("Insufficient balance.");
             }
-            const hash = await this.tronManager.delegateToOtherV2(amountTrx, receiverAddress, resourceType);
+            const hash = await this.tronManager.delegateToOtherV2(
+                amountTrx, receiverAddress, resourceType
+            );
             const currentTime = +new Date();
             const delegateDeadline = currentTime + rentTime * 1000;
             const delegateDeadlineDate = new Date(delegateDeadline);

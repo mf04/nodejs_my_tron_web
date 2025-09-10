@@ -62,9 +62,9 @@ export const createDelegateToOtherV2 = async (params) => {
             `INSERT INTO 
             delegate_to_other 
             (user_id, amount, resource_type, owner_address, receiver_address, txid, status, 
-            delegate_time, delegate_deadline, max_wait_time, price)
+            delegate_time, delegate_deadline, max_wait_time, price, process_status)
             VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)`,
             params
         );
         return result;

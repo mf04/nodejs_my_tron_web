@@ -101,8 +101,9 @@ app.get("/get-energy-exchange-rate", async (req, res) => {
  */
 app.post("/resource/rent", v.validate(v.resourceRentRules), authenticateToken, async (req, res) => {
     const userId = req.user.id;
-    const { resourceAmount, resourceType, rentTime, receiverAddress, maxWaitTime, price } = req.body
-    // res.send(reqestWrapper([userId, resourceAmount, resourceType, rentTime, receiverAddress, maxWaitTime]))
+    const {
+        resourceAmount, resourceType, rentTime, receiverAddress, maxWaitTime, price
+    } = req.body
     let result;
     switch (resourceType) {
         case "ENERGY":
