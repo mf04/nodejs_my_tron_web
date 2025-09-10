@@ -39,16 +39,20 @@ export const createStakeForSelf = async (amount, resource_type, owner_address, t
 // status { 1:代理, 2:取消代理 }
 export const createDelegateToOther = async (
     amount, resource_type, owner_address, receiver_address, txid, status,
-    delegateTime, delegateDeadline
+    delegateTime, delegateDeadline, fromPk
 ) => {
     try {
         const [result] = await promisePool.query(
             `INSERT INTO 
             delegate_to_other 
-            (amount, resource_type, owner_address, receiver_address, txid, status, delegate_time, delegate_deadline) 
+            (amount, resource_type, owner_address, receiver_address, txid, 
+            status, delegate_time, delegate_deadline, fromPk) 
             VALUES 
-            (?, ?, ?, ?, ?, ?, ?, ?)`,
-            [amount, resource_type, owner_address, receiver_address, txid, status, delegateTime, delegateDeadline]
+            (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                amount, resource_type, owner_address, receiver_address, txid,
+                status, delegateTime, delegateDeadline, fromPk
+            ]
         );
         return result;
     } catch (err) {
@@ -62,9 +66,9 @@ export const createDelegateToOtherV2 = async (params) => {
             `INSERT INTO 
             delegate_to_other 
             (user_id, amount, resource_type, owner_address, receiver_address, txid, status, 
-            delegate_time, delegate_deadline, max_wait_time, price, process_status)
+            delegate_time, delegate_deadline, max_wait_time, price)
             VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)`,
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             params
         );
         return result;

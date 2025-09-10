@@ -1,20 +1,19 @@
-import express from "express"
-import cors from "cors"
-// import session from "express-session"
-import { reqestWrapper } from "./util.js"
-import { TronWeb } from "tronweb"
-import tronService from "./tronService.js"
-import userService from "./userService.js"
-import resourceService from "./resourceService.js"
-import { myServicePort } from "./config.js"
+import express from "express";
+import cors from "cors";
+import { reqestWrapper } from "./util.js";
+import { TronWeb } from "tronweb";
+import tronService from "./tronService.js";
+import userService from "./userService.js";
+import resourceService from "./resourceService.js";
+import { myServicePort } from "./config.js";
 import cryptoService from "./cryptoService.js";
-import { readPrivateKeyFile } from "./fsService.js"
-import { authenticateToken } from "./middleware/token.js"
-import * as v from "./validation.js"
-import pagination from "./middleware/pagination.js"
+import { readPrivateKeyFile } from "./fsService.js";
+import { authenticateToken } from "./middleware/token.js";
+import * as v from "./validation.js";
+import pagination from "./middleware/pagination.js";
 import { uploadMiddleware } from "./uploadService.js";
 import path from "path";
-import { __dirname } from "./util.js"
+import { __dirname } from "./util.js";
 
 const app = express()
 

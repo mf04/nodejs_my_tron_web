@@ -248,7 +248,7 @@ class TronResourceManager {
      * 取消对其他账户的能量/带宽委托。
      * 
      */
-    async undelegateFromOther(amount, receiverAddress, resourceType = 'ENERGY', isSunTrx = false) {
+    async undelegateFromOther(amount, receiverAddress, resourceType = 'ENERGY', isSunTrx = false, fromPk = null) {
         if (!this.tronWeb.isAddress(receiverAddress)) {
             throw new Error("失败: 无效的接收者地址。");
         }
@@ -270,6 +270,9 @@ class TronResourceManager {
                 receiverAddress,
                 receipt.txid,
                 2,
+                null,
+                null,
+                fromPk,
             );
             return [receipt.txid];
         } catch (error) {
@@ -334,13 +337,13 @@ class TronResourceManager {
                 throw new Error("没有到期的租赁记录");
             }
             for (let i = 0, item; item = result[i++];) {
-                // console.log(item);
-                const { amount, receiver_address, resource_type } = item;
+                const { id, amount, receiver_address, resource_type } = item;
                 const ret = await this.undelegateFromOther(
                     amount,
                     receiver_address,
                     resource_type,
-                    true
+                    true,
+                    id,
                 );
                 // console.log(ret);
             }
