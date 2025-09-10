@@ -295,6 +295,7 @@ class TronResourceManager {
     async resourceRecover() {
         try {
             const result = await delegateToOtherExpireList();
+            // console.log(result);
             if (!result || !result.length) {
                 throw new Error("没有到期的租赁记录");
             }
@@ -323,17 +324,27 @@ class TronResourceManager {
         }
         try {
             const amountInSun = this.tronWeb.toSun(amount);
+            console.log("-----amountInSun----");
+            console.log(amountInSun);
             const tx = await this.tronWeb.transactionBuilder.undelegateResource(
                 amountInSun, receiver_address, resource_type, owner_address
             );
+            console.log("-----tx----");
+            console.log(tx);
             const signedTx = await this.tronWeb.trx.sign(tx);
+            console.log("-----signedTx----");
+            console.log(signedTx);
             const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
+            console.log("-----receipt----");
+            console.log(receipt);
             this.contractExcuteValidate(receipt);
             const params = [
                 user_id, amount, resource_type, owner_address, receiver_address,
                 receipt.txid, 2, delegate_time, delegate_deadline, max_wait_time,
                 price, order_num, id
             ];
+            console.log("-----params----");
+            console.log(params);
             await createDelegateToOtherV2(params);
             return [receipt.txid];
         } catch (error) {

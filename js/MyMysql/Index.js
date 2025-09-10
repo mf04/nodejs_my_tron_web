@@ -70,12 +70,10 @@ export const createDelegateToOtherV2 = async (params) => {
             "price", "order_num", "from_pk",
         ];
         const fieldSlice = fieldArr.slice(0, params.length);
+        const placeHolder = fieldSlice.slice(0).fill("?");
         const [result] = await promisePool.query(
-            `INSERT INTO 
-            delegate_to_other 
-            (${fieldSlice.join(",")})
-            VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            `INSERT INTO delegate_to_other 
+            (${fieldSlice.join(",")}) VALUES (${placeHolder.join(",")})`,
             params
         );
         return result;
