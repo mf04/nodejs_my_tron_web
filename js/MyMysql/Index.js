@@ -42,16 +42,18 @@ export const createDelegateToOther = async (
     delegateTime, delegateDeadline, fromPk
 ) => {
     try {
+        const orderNum = generateOrderNumber();
+        console.log(orderNum);
         const [result] = await promisePool.query(
             `INSERT INTO 
             delegate_to_other 
             (amount, resource_type, owner_address, receiver_address, txid, 
-            status, delegate_time, delegate_deadline, fromPk) 
+            status, delegate_time, delegate_deadline, from_pk, order_num)
             VALUES 
-            (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 amount, resource_type, owner_address, receiver_address, txid,
-                status, delegateTime, delegateDeadline, fromPk
+                status, delegateTime, delegateDeadline, fromPk, orderNum
             ]
         );
         return result;
@@ -62,13 +64,18 @@ export const createDelegateToOther = async (
 
 export const createDelegateToOtherV2 = async (params) => {
     try {
+        const fieldArr = [
+            "user_id", "amount", "resource_type", "owner_address", "receiver_address",
+            "txid", "status", "delegate_time", "delegate_deadline", "max_wait_time",
+            "price", "order_num", "from_pk",
+        ];
+        const fieldSlice = fieldArr.slice(0, params.length);
         const [result] = await promisePool.query(
             `INSERT INTO 
             delegate_to_other 
-            (user_id, amount, resource_type, owner_address, receiver_address, txid, status, 
-            delegate_time, delegate_deadline, max_wait_time, price)
+            (${fieldSlice.join(",")})
             VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             params
         );
         return result;

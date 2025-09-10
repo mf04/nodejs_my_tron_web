@@ -2,13 +2,12 @@ import { TronWeb } from "tronweb"
 // import RedisManager from "./MyRedis/RedisManager.js"
 import {
     createStakeForSelf,
-    createDelegateToOther,
+    createDelegateToOtherV2,
     delegateToOtherExpireList,
 } from "./MyMysql/Index.js"
 import axios from "axios";
 import { TRONGRID_API_URL, USDT_CONTRACT } from "./config.js"
 import { formattedValue } from "./bigNumber.util.js"
-
 
 class TronResourceManager {
 
@@ -245,43 +244,6 @@ class TronResourceManager {
 
     /**
      * 
-     * 取消对其他账户的能量/带宽委托。
-     * 
-     */
-    async undelegateFromOther(amount, receiverAddress, resourceType = 'ENERGY', isSunTrx = false, fromPk = null) {
-        if (!this.tronWeb.isAddress(receiverAddress)) {
-            throw new Error("失败: 无效的接收者地址。");
-        }
-        try {
-            let amountInSun = amount;
-            if (!isSunTrx) {
-                amountInSun = this.tronWeb.toSun(amount);
-            }
-            const tx = await this.tronWeb.transactionBuilder.undelegateResource(
-                amountInSun, receiverAddress, resourceType, this.ownerAddress
-            );
-            const signedTx = await this.tronWeb.trx.sign(tx);
-            const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
-            this.contractExcuteValidate(receipt);
-            await createDelegateToOther(
-                amountInSun,
-                resourceType,
-                this.ownerAddress,
-                receiverAddress,
-                receipt.txid,
-                2,
-                null,
-                null,
-                fromPk,
-            );
-            return [receipt.txid];
-        } catch (error) {
-            return [`取消委托失败: ${error.message}`, "fail"];
-        }
-    }
-
-    /**
-     * 
      * 自动检查并取回所有已到期、处于解冻状态的TRX。
      * 
      */
@@ -331,32 +293,86 @@ class TronResourceManager {
      * 
      */
     async resourceRecover() {
-        console.log("-------resourceRecover manager------");
         try {
             const result = await delegateToOtherExpireList();
-
-            console.log(result);
-
-
             if (!result || !result.length) {
                 throw new Error("没有到期的租赁记录");
             }
             for (let i = 0, item; item = result[i++];) {
-                const { id, amount, receiver_address, resource_type } = item;
-                const ret = await this.undelegateFromOther(
-                    amount,
-                    receiver_address,
-                    resource_type,
-                    true,
-                    id,
-                );
-                // console.log(ret);
+                await this.undelegateFromOther(item);
             }
             return [true];
         } catch (error) {
             return [error.message, "fail"];
         }
     }
+
+    /**
+     * 
+     * 取消对其他账户的能量/带宽委托。
+     * 
+     */
+    async undelegateFromOther(delegateItem) {
+        const {
+            id, user_id, amount, resource_type, owner_address,
+            receiver_address, delegate_time, delegate_deadline, max_wait_time, price,
+            order_num
+        } = delegateItem;
+        if (!this.tronWeb.isAddress(receiver_address)) {
+            throw new Error("失败: 无效的接收者地址。");
+        }
+        try {
+            const amountInSun = this.tronWeb.toSun(amount);
+            const tx = await this.tronWeb.transactionBuilder.undelegateResource(
+                amountInSun, receiver_address, resource_type, owner_address
+            );
+            const signedTx = await this.tronWeb.trx.sign(tx);
+            const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
+            this.contractExcuteValidate(receipt);
+            const params = [
+                user_id, amount, resource_type, owner_address, receiver_address,
+                receipt.txid, 2, delegate_time, delegate_deadline, max_wait_time,
+                price, order_num, id
+            ];
+            await createDelegateToOtherV2(params);
+            return [receipt.txid];
+        } catch (error) {
+            return [`取消委托失败: ${error.message}`, "fail"];
+        }
+    }
+
+
+    // async undelegateFromOther(amount, receiverAddress, resourceType = 'ENERGY', isSunTrx = false, fromPk = null) {
+    //     if (!this.tronWeb.isAddress(receiverAddress)) {
+    //         throw new Error("失败: 无效的接收者地址。");
+    //     }
+    //     try {
+    //         let amountInSun = amount;
+    //         if (!isSunTrx) {
+    //             amountInSun = this.tronWeb.toSun(amount);
+    //         }
+    //         const tx = await this.tronWeb.transactionBuilder.undelegateResource(
+    //             amountInSun, receiverAddress, resourceType, this.ownerAddress
+    //         );
+    //         const signedTx = await this.tronWeb.trx.sign(tx);
+    //         const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
+    //         this.contractExcuteValidate(receipt);
+    //         await createDelegateToOther(
+    //             amountInSun,
+    //             resourceType,
+    //             this.ownerAddress,
+    //             receiverAddress,
+    //             receipt.txid,
+    //             2,
+    //             null,
+    //             null,
+    //             fromPk,
+    //         );
+    //         return [receipt.txid];
+    //     } catch (error) {
+    //         return [`取消委托失败: ${error.message}`, "fail"];
+    //     }
+    // }
 
     /**
      * 

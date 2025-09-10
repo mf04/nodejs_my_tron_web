@@ -1,24 +1,25 @@
-import tronService from "./tronService.js";
-import { newAsync } from "./util.js";
+import { readPrivateKeyFile } from "./fsService.js"
+import TronResourceManager from "./TronResourceManager.js"
 
 class Recover {
 
-    async init() {
-        await this.resourceRecover();
+    constructor(tronManager) {
+        this.tronManager = tronManager;
     }
 
-    async resourceRecover() {
-        const result = await tronService.resourceRecover();
-        console.log(result);
+    static async create() {
+        const privateKey = await readPrivateKeyFile();
+        const tronManager = new TronResourceManager(privateKey);
+        return new Recover(tronManager);
     }
 }
 
 try {
-    // const r = new Recover();
-    // await r.init();
+    (async () => {
+        const r = await Recover.create();
+        r.tronManager.resourceRecover();
+    })();
 
-    const r = await newAsync(Recover);
-    console.log(r);
 
 } catch (error) {
     console.log(error.message);

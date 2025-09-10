@@ -34,6 +34,26 @@ export const pwdCompare = async (password, hashPwd) => {
     return await bcrypt.compare(pwdSalt, hashPwd);
 }
 
+export const isArray = (obj) => {
+    return Object.prototype.toString.call(obj) == "[object Array]";
+};
+
+export const toTwo = (number) => {
+    return number * 1 > 9 ? "" + number : "0" + number;
+};
+
+export const formatNumber = (number) => {
+    if (isNaN(number)) {
+        return number;
+    }
+    const symbol = number >= 0 ? "" : "-";
+    let numStr = number.toString();
+    const numArr = numStr.match(/(\d+(?:\.\d{1,2})?)\d*/) || [];
+    return (
+        symbol + numArr[1].replace(/(\d)(?=(?:\d{3})+(?:\.\d{1,2})?$)/g, "$1,")
+    );
+};
+
 export const reqestWrapper = (data, msg = "success", code = 200) => {
     return {
         code,
@@ -103,4 +123,18 @@ export const newAsync = (ClassType, ...args) => {
         }
         return instance;
     })();
+}
+
+export const sleep = (time = 1) => {
+    return new Promise(resolve => setTimeout(() => resolve(), time * 1000))
+}
+
+export const generateOrderNumber = () => {
+    // 获取当前时间戳（毫秒）
+    const timestamp = Date.now().toString(); // 13位
+    // 生成5位随机数
+    const randomNum = Math.floor(Math.random() * 90000) + 10000;
+    // 拼接时间戳和随机数
+    const orderNumber = timestamp + randomNum.toString();
+    return orderNumber;
 }

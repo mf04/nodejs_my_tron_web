@@ -4,6 +4,7 @@ import {
     createDelegateToOtherV2,
     getUserResourceRentList,
 } from "./MyMysql/Index.js";
+import { generateOrderNumber } from "./util.js"
 
 class TronService extends MyService {
 
@@ -86,9 +87,12 @@ class TronService extends MyService {
             const currentTime = +new Date();
             const delegateDeadline = currentTime + rentTime * 1000;
             const delegateDeadlineDate = new Date(delegateDeadline);
-            const delegateParams = [userId, resourceAmount, resourceType, ownerAddress,
-                receiverAddress, hash, delegateStatus,
-                rentTime, delegateDeadlineDate, maxWaitTime, price];
+            const orderNum = generateOrderNumber();
+            const delegateParams = [
+                userId, resourceAmount, resourceType, ownerAddress,
+                receiverAddress, hash, delegateStatus, rentTime,
+                delegateDeadlineDate, maxWaitTime, price, orderNum
+            ];
             const result = await createDelegateToOtherV2(delegateParams);
             return [result.insertId];
         } catch (error) {
@@ -117,7 +121,6 @@ class TronService extends MyService {
     }
 
     async resourceRecover() {
-        console.log("------resourceRecover------");
         return await this.tronManager.resourceRecover();
     }
 
