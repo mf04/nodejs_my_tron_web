@@ -184,9 +184,9 @@ export const getRechargeRecord = async (userId, limit, skip) => {
         );
         const total = totalRows[0]["total"];
         const [list] = await promisePool.query(
-            `select id, user_id as userId, send_address as sendAddress, 
+            `select id, send_address as sendAddress, 
             receiver_address as receiverAddress,
-            amount, type, created_at as generateTime
+            amount, type, created_at as generateTime, hash
             from user_recharge
             where user_id = ? and status = 1
             order by id desc
@@ -211,9 +211,9 @@ export const getWithdrawRecord = async (userId, limit, skip) => {
         );
         const total = totalRows[0]["total"];
         const [list] = await promisePool.query(
-            `select id, user_id as userId, send_address as sendAddress,
+            `select id, user_id as userId, send_address as sendAddress, type,
             receiver_address as receiverAddress, fee, amount, tron_web as tronWeb,
-            transation_hash as TransationHash
+            created_at as generateTime, transation_hash as transationHash, status
             from user_withdraw
             where user_id = ? and status = 1
             order by id desc
@@ -340,6 +340,19 @@ export const userBalanceLog = async (userId) => {
             where user_id = ? 
             order by id desc 
             limit 10`,
+            [userId]
+        );
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export const getUserOrderList = async (userId) => {
+    try {
+        const [result] = await promisePool.query(
+            `select * from delegate_to_other where user_id = ?
+            order by id desc limit 10`,
             [userId]
         );
         return result;

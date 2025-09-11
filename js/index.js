@@ -302,6 +302,18 @@ app.get("/get-user-balance-list",
         res.send(reqestWrapper(list));
     })
 
+/**
+ * 
+ * 获取会员最近租赁记录
+ * 
+ */
+app.get("/get-user-order-list",
+    authenticateToken,
+    async (req, res) => {
+        const userId = req.user.id;
+        const list = await userService.userOrderList(userId);
+        res.send(reqestWrapper(list));
+    })
 
 
 app.listen(myServicePort)

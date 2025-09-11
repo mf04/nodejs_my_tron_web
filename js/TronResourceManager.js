@@ -324,8 +324,8 @@ class TronResourceManager {
         }
         try {
             const amountInSun = this.tronWeb.toSun(amount);
-            console.log("-----amountInSun----");
-            console.log(amountInSun);
+            // console.log("-----amountInSun----");
+            // console.log(amountInSun);
             const tx = await this.tronWeb.transactionBuilder.undelegateResource(
                 amountInSun, receiver_address, resource_type, owner_address
             );
@@ -343,15 +343,14 @@ class TronResourceManager {
                 receipt.txid, 2, delegate_time, delegate_deadline, max_wait_time,
                 price, order_num, id
             ];
-            console.log("-----params----");
-            console.log(params);
+            // console.log("-----params----");
+            // console.log(params);
             await createDelegateToOtherV2(params);
             return [receipt.txid];
         } catch (error) {
             return [`取消委托失败: ${error.message}`, "fail"];
         }
     }
-
 
     // async undelegateFromOther(amount, receiverAddress, resourceType = 'ENERGY', isSunTrx = false, fromPk = null) {
     //     if (!this.tronWeb.isAddress(receiverAddress)) {

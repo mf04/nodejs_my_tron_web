@@ -105,6 +105,11 @@ const getAddressInfoRules = [
     query("address").notEmpty().withMessage("Address is required"),
 ];
 
+const getRechargeRecordRules = [
+    query("page").isInt().withMessage("Page is required"),
+    query("pageSize").isInt().withMessage("Page size is required"),
+];
+
 export {
     validate,
     registerRules,
@@ -122,4 +127,5 @@ export {
     resourceGoodsRules,
     getResourceGoodsRules,
     getAddressInfoRules,
+    getRechargeRecordRules,
 }
