@@ -101,17 +101,17 @@ app.get("/get-energy-exchange-rate", async (req, res) => {
 app.post("/resource/rent", v.validate(v.resourceRentRules), authenticateToken, async (req, res) => {
     const userId = req.user.id;
     const {
-        resourceAmount, resourceType, rentTime, receiverAddress, maxWaitTime, price
+        resourceAmount, resourceType, rentTime, receiverAddress, maxWaitTime
     } = req.body
     let result;
     switch (resourceType) {
         case "ENERGY":
             result = await tronService.energyRent(
-                userId, resourceAmount, rentTime, receiverAddress, maxWaitTime, price);
+                userId, resourceAmount, rentTime, receiverAddress, maxWaitTime);
             break;
         case "BANDWIDTH":
             result = await tronService.bandwidthRent(
-                userId, resourceAmount, rentTime, receiverAddress, maxWaitTime, price);
+                userId, resourceAmount, rentTime, receiverAddress, maxWaitTime);
             break;
     }
     res.send(reqestWrapper(...result))
@@ -189,8 +189,8 @@ app.post("/get-privatekey", async (req, res) => {
 app.post("/user-recharge", v.validate(v.userRechargeRules), authenticateToken,
     async (req, res) => {
         const { id: userId } = req.user;
-        const { address, amount, type, web } = req.body;
-        const result = await userService.userRecharge(userId, address, amount, type, web);
+        const { address, type, web } = req.body;
+        const result = await userService.userRecharge(userId, address, type, web);
         res.send(reqestWrapper(...result));
     })
 

@@ -72,9 +72,9 @@ class UserService extends MyService {
         return [res.insertId || -1];
     }
 
-    async userRecharge(userId, address, amount, type, web) {
+    async userRecharge(userId, address, type, web) {
         const myAddress = this.tronManager.ownerAddress;
-        const res = await userRechargeGenerate(userId, address, myAddress, amount, type, web);
+        const res = await userRechargeGenerate(userId, address, myAddress, type, web);
         return [res.insertId || -1];
     }
 

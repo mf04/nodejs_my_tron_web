@@ -150,12 +150,14 @@ export const getUserProfileByUserId = async (userId) => {
     }
 }
 
-export const userRechargeGenerate = async (userId, sendAddress, receiverAddress, amount, type, web) => {
+export const userRechargeGenerate = async (userId, sendAddress, receiverAddress, type, web) => {
     try {
+        // console.log("------userRechargeGenerate------");
+        // console.log(userId, sendAddress, receiverAddress, type, web);
         const [result] = await promisePool.query(
-            `INSERT INTO user_recharge (user_id, send_address, receiver_address, amount, type, tron_web, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [userId, sendAddress, receiverAddress, amount, type, web, 0]
+            `INSERT INTO user_recharge (user_id, send_address, receiver_address, type, tron_web, status)
+            VALUES (?, ?, ?, ?, ?, ?)`,
+            [userId, sendAddress, receiverAddress, type, web, 0]
         );
         return result;
     } catch (err) {
@@ -356,6 +358,20 @@ export const getUserOrderList = async (userId) => {
             [userId]
         );
         return result;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export const getResourceGoodsItemPrice = async (type, amount, rentTime) => {
+    try {
+        const [result] = await promisePool.query(
+            `select price from resource_goods 
+            where resource_type = ? and resource_amount = ? and rent_time = ? and stock > 0
+            limit 1`,
+            [type, amount, rentTime]
+        );
+        return result && result[0] && result[0]["price"] || 0;
     } catch (err) {
         console.log(err);
     }

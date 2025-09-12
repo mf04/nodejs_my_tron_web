@@ -5,6 +5,7 @@ import {
     getUserResourceRentList,
 } from "./MyMysql/Index.js";
 import { generateOrderNumber } from "./util.js"
+import priceService from "./priceService.js";
 
 class TronService extends MyService {
 
@@ -100,8 +101,9 @@ class TronService extends MyService {
         }
     }
 
-    async energyRent(userId, resourceAmount, rentTime, receiverAddress, maxWaitTime, price) {
+    async energyRent(userId, resourceAmount, rentTime, receiverAddress, maxWaitTime) {
         const resourceType = "ENERGY";
+        const price = await priceService.getBuyEnergyPrice(resourceType, resourceAmount, rentTime);
         const result = await this.resourceRent(
             userId, resourceAmount, resourceType, rentTime, receiverAddress, maxWaitTime, price
         );
@@ -110,8 +112,9 @@ class TronService extends MyService {
         return result;
     }
 
-    async bandwidthRent(userId, resourceAmount, rentTime, receiverAddress, maxWaitTime, price) {
+    async bandwidthRent(userId, resourceAmount, rentTime, receiverAddress, maxWaitTime) {
         const resourceType = "BANDWIDTH";
+        const price = await priceService.getBuyBandwidthPrice(resourceType, resourceAmount, rentTime);
         const result = await this.resourceRent(
             userId, resourceAmount, resourceType, rentTime, receiverAddress, maxWaitTime, price
         );
