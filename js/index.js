@@ -5,6 +5,7 @@ import { TronWeb } from "tronweb";
 import tronService from "./tronService.js";
 import userService from "./userService.js";
 import resourceService from "./resourceService.js";
+import resourceRentService from "./resourceRentService.js";
 import { myServicePort } from "./config.js";
 import cryptoService from "./cryptoService.js";
 import { readPrivateKeyFile } from "./fsService.js";
@@ -98,24 +99,43 @@ app.get("/get-energy-exchange-rate", async (req, res) => {
  * rentTime: 10
  * 
  */
-app.post("/resource/rent", v.validate(v.resourceRentRules), authenticateToken, async (req, res) => {
-    const userId = req.user.id;
-    const {
-        resourceAmount, resourceType, rentTime, receiverAddress, maxWaitTime
-    } = req.body
-    let result;
-    switch (resourceType) {
-        case "ENERGY":
-            result = await tronService.energyRent(
-                userId, resourceAmount, rentTime, receiverAddress, maxWaitTime);
-            break;
-        case "BANDWIDTH":
-            result = await tronService.bandwidthRent(
-                userId, resourceAmount, rentTime, receiverAddress, maxWaitTime);
-            break;
-    }
-    res.send(reqestWrapper(...result))
-})
+// app.post("/resource/rent", v.validate(v.resourceRentRules), authenticateToken, async (req, res) => {
+//     const userId = req.user.id;
+//     const {
+//         resourceAmount, resourceType, rentTime, receiverAddress, maxWaitTime
+//     } = req.body
+//     let result;
+//     switch (resourceType) {
+//         case "ENERGY":
+//             result = await tronService.energyRent(
+//                 userId, resourceAmount, rentTime, receiverAddress, maxWaitTime);
+//             break;
+//         case "BANDWIDTH":
+//             result = await tronService.bandwidthRent(
+//                 userId, resourceAmount, rentTime, receiverAddress, maxWaitTime);
+//             break;
+//     }
+//     res.send(reqestWrapper(...result))
+// })
+
+app.post("/resource/rent",
+    v.validate(v.resourceRentRules),
+    authenticateToken,
+    async (req, res) => {
+        const userId = req.user.id;
+        const {
+            resourceAmount, resourceType, rentTime, receiverAddress, maxWaitTime
+        } = req.body;
+        const result = await resourceRentService.resourceRentEvent({
+            userId,
+            resourceAmount,
+            resourceType,
+            rentTime,
+            receiverAddress,
+            maxWaitTime,
+        });
+        res.send(reqestWrapper(...result));
+    })
 
 /**
  * 
@@ -130,9 +150,9 @@ app.post("/resource/rent/multi",
         const userId = req.user.id;
         const { paramsStr } = req.body;
         const paramsArr = JSON.parse(paramsStr);
+        console.log(paramsArr);
         res.send(reqestWrapper(paramsArr, userId));
     })
-
 
 /**
  * 

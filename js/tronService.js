@@ -13,9 +13,9 @@ class TronService extends MyService {
         super();
     }
 
-    getMainAccount() {
-        return this.tronManager.ownerAddress;
-    }
+    // getMainAccount() {
+    //     return this.tronManager.ownerAddress;
+    // }
 
     async getAddressInfo(addressList) {
         let info = [];
@@ -123,6 +123,9 @@ class TronService extends MyService {
         await userService.userBalanceTrxInc(userId, price * -1);
         return result;
     }
+
+
+
 
     async resourceRecover() {
         return await this.tronManager.resourceRecover();

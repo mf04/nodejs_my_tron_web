@@ -428,6 +428,16 @@ class TronResourceManager {
             return [error.message, "fail"];
         }
     }
+
+    /**
+     * 
+     * 处理资源（能量，带宽）
+     * 
+     */
+    async resourceRentDoInit() {
+        console.log("-----resourceRentDoInit----");
+    }
+
 }
 
 export default TronResourceManager;

@@ -14,6 +14,11 @@ const priceService = {
         const price = await getResourceGoodsItemPrice(type, amount, rentTime);
         // console.log(type, amount, rentTime, price);
         return price * 1;
+    },
+
+    getBuyResourcePrice: async (type, amount, rentTime) => {
+        const price = await getResourceGoodsItemPrice(type, amount, rentTime);
+        return price * 1;
     }
 
 }

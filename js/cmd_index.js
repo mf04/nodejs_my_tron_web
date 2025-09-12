@@ -1,7 +1,7 @@
 import { readPrivateKeyFile } from "./fsService.js"
 import TronResourceManager from "./TronResourceManager.js"
 
-class Recover {
+class IndexMethod {
 
     constructor(tronManager) {
         this.tronManager = tronManager;
@@ -10,17 +10,8 @@ class Recover {
     static async create() {
         const privateKey = await readPrivateKeyFile();
         const tronManager = new TronResourceManager(privateKey);
-        return new Recover(tronManager);
+        return new IndexMethod(tronManager);
     }
 }
 
-try {
-    (async () => {
-        const r = await Recover.create();
-        r.tronManager.resourceRecover();
-    })();
-
-
-} catch (error) {
-    console.log(error.message);
-}
+export default IndexMethod;

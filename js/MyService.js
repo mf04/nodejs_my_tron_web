@@ -12,6 +12,10 @@ class MyService {
         const privateKey = await readPrivateKeyFile();
         this.tronManager = new TronResourceManager(privateKey);
     }
+
+    getMainAccount() {
+        return this.tronManager.ownerAddress;
+    }
 }
 
 export default MyService;

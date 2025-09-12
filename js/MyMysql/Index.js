@@ -376,3 +376,22 @@ export const getResourceGoodsItemPrice = async (type, amount, rentTime) => {
         console.log(err);
     }
 }
+
+export const preRentDelegate = async (params) => {
+    try {
+        const fieldArr = [
+            "user_id", "amount", "resource_type", "owner_address", "receiver_address",
+            "delgate_status", "delegate_time", "max_wait_time", "process_deadline",
+            "price", "order_num",
+        ];
+        const placeHolder = fieldArr.slice(0).fill("?");
+        const [result] = await promisePool.query(
+            `INSERT INTO delegate_to_other 
+            (${fieldArr.join(",")}) VALUES (${placeHolder.join(",")})`,
+            params
+        );
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}

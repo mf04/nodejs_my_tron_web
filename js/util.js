@@ -138,3 +138,19 @@ export const generateOrderNumber = () => {
     const orderNumber = timestamp + randomNum.toString();
     return orderNumber;
 }
+
+export const formatDate = (format, date = new Date()) => {
+    const isDateFormat = Object.prototype.toString.call(date) === "[object Date]";
+    if (!isDateFormat) {
+        date = new Date(date);
+    }
+    const map = {
+        Y: date.getFullYear(),
+        m: ('0' + (date.getMonth() + 1)).slice(-2),
+        d: ('0' + date.getDate()).slice(-2),
+        H: ('0' + date.getHours()).slice(-2),
+        i: ('0' + date.getMinutes()).slice(-2),
+        s: ('0' + date.getSeconds()).slice(-2),
+    };
+    return format.replace(/Y|m|d|H|i|s/g, matched => map[matched]);
+}
