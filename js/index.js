@@ -119,6 +119,23 @@ app.post("/resource/rent", v.validate(v.resourceRentRules), authenticateToken, a
 
 /**
  * 
+ * 资源租赁（多地址）
+ * 
+ * 
+ */
+app.post("/resource/rent/multi",
+    v.validate(v.resourceRentMultiRules),
+    authenticateToken,
+    async (req, res) => {
+        const userId = req.user.id;
+        const { paramsStr } = req.body;
+        const paramsArr = JSON.parse(paramsStr);
+        res.send(reqestWrapper(paramsArr, userId));
+    })
+
+
+/**
+ * 
  * 租赁的资源回收
  * 
  */

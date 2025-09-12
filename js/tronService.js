@@ -44,6 +44,7 @@ class TronService extends MyService {
         const energyUsed = resources.EnergyUsed || 0;
         const remainingEnergy = energy - energyUsed;
         return {
+            address,
             bandWidth: remainingBandwidth,
             energy: remainingEnergy,
         }

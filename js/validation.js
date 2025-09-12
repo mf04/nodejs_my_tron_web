@@ -110,6 +110,10 @@ const getRechargeRecordRules = [
     query("pageSize").isInt().withMessage("Page size is required"),
 ];
 
+const resourceRentMultiRules = [
+    body("paramsStr").notEmpty().withMessage("Params is required"),
+];
+
 export {
     validate,
     registerRules,
@@ -128,4 +132,5 @@ export {
     getResourceGoodsRules,
     getAddressInfoRules,
     getRechargeRecordRules,
+    resourceRentMultiRules,
 }
