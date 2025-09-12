@@ -8,6 +8,7 @@ import {
 import axios from "axios";
 import { TRONGRID_API_URL, USDT_CONTRACT } from "./config.js"
 import { formattedValue } from "./bigNumber.util.js"
+import * as resourceRentFunc from "./resourceRentFunc.js";
 
 class TronResourceManager {
 
@@ -434,8 +435,9 @@ class TronResourceManager {
      * 处理资源（能量，带宽）
      * 
      */
-    async resourceRentDoInit() {
-        console.log("-----resourceRentDoInit----");
+    resourceRentDoInit() {
+        // console.log("-----resourceRentDoInit----");
+        resourceRentFunc.init.call(this);
     }
 
 }
