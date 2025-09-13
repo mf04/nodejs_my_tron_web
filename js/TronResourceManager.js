@@ -310,14 +310,14 @@ class TronResourceManager {
             const tx = await this.tronWeb.transactionBuilder.undelegateResource(
                 amountInSun, receiver_address, resource_type, owner_address
             );
-            console.log("-----tx----");
-            console.log(tx);
+            // console.log("-----tx----");
+            // console.log(tx);
             const signedTx = await this.tronWeb.trx.sign(tx);
-            console.log("-----signedTx----");
-            console.log(signedTx);
+            // console.log("-----signedTx----");
+            // console.log(signedTx);
             const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
-            console.log("-----receipt----");
-            console.log(receipt);
+            // console.log("-----receipt----");
+            // console.log(receipt);
             this.contractExcuteValidate(receipt);
             const params = [
                 user_id, amount, resource_type, owner_address, receiver_address,

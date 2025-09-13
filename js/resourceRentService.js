@@ -35,6 +35,17 @@ class ResourceRentService extends MyService {
         }
     }
 
+    async resourceRentMultiEvent(paramsArr, userId) {
+        paramsArr = paramsArr.map(item => {
+            item.userId = userId;
+            return item;
+        })
+        for (let i = 0, item; item = paramsArr[i++];) {
+            await resourceRentEvent(item);
+        }
+        return paramsArr;
+    }
+
 }
 
 const resourceRentService = new ResourceRentService;

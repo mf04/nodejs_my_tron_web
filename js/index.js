@@ -150,8 +150,9 @@ app.post("/resource/rent/multi",
         const userId = req.user.id;
         const { paramsStr } = req.body;
         const paramsArr = JSON.parse(paramsStr);
-        console.log(paramsArr);
-        res.send(reqestWrapper(paramsArr, userId));
+        // console.log(paramsArr);
+        const result = await resourceRentService.resourceRentMultiEvent(paramsArr, userId);
+        res.send(reqestWrapper(...result));
     })
 
 /**
