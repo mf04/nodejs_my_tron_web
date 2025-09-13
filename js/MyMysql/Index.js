@@ -398,6 +398,27 @@ export const preRentDelegate = async (params) => {
     }
 }
 
+export const undelegateItemGenerate = async (params) => {
+    try {
+        const fieldArr = [
+            "user_id", "amount", "amount_trx", "resource_type",
+            "owner_address", "receiver_address", "txid", "delegate_status",
+            "delegate_time", "delegate_deadline", "max_wait_time",
+            "process_deadline", "process_status", "price", "order_num",
+            "from_pk",
+        ];
+        const placeHolder = fieldArr.slice(0).fill("?");
+        const [result] = await promisePool.query(
+            `INSERT INTO delegate_to_other 
+            (${fieldArr.join(",")}) VALUES (${placeHolder.join(",")})`,
+            params
+        );
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 export const getResourceRentList = async () => {
     try {
         const [result] = await promisePool.query(

@@ -23,25 +23,27 @@ async function resourceRentItemDo(item) {
     // console.log(item);
     // const amountTrx = await this.swapEnergyToTrx(item.amount);
     const amountTrx = await this.getResourceRentTrx.call(this, item);
-    console.log(item.amount, amountTrx);
+    // console.log(item.amount, amountTrx);
     const hash = await delegateEvent.call(
         this, amountTrx, item.receiver_address, item.resource_type
     );
-    // console.log(hash);
+    console.log(hash);
     if (!hash) return;
     const processStatus = 1;
     const delegateLine = getResourceRentDeadLine(item.delegate_time);
     // console.log(item.delegate_time);
     // console.log(delegateLine);
-    const result = await resourceRentItemUpdateToDb([amountTrx, hash, processStatus, delegateLine]);
-    // console.log(result.insertId);
+    const result = await resourceRentItemUpdateToDb(
+        [amountTrx, hash, processStatus, delegateLine]
+    );
+    console.log(result.insertId);
     return result.insertId;
 }
 
 export const init = async function () {
     const list = await getResourceRentList();
     for (let i = 0, item; item = list[i++];) {
-        await resourceRentItemDo.call(this, item);
+        resourceRentItemDo.call(this, item);
     }
 };
 

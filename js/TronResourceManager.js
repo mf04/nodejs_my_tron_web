@@ -425,8 +425,8 @@ class TronResourceManager {
      * 处理资源（能量，带宽）
      * 
      */
-    resourceRentDoInit() {
-        resourceRentFunc.init.call(this);
+    async resourceRentDoInit() {
+        await resourceRentFunc.init.call(this);
     }
 
     /**
