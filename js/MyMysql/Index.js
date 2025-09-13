@@ -85,8 +85,10 @@ export const createDelegateToOtherV2 = async (params) => {
 export const delegateToOtherExpireList = async () => {
     const nowStr = jsDate("Y-m-d H:i:s", new Date().getTime())
     const [result] = await promisePool.query(
-        `SELECT * from delegate_to_other
-        where delegate_deadline <= '${nowStr}'`
+        `SELECT * 
+        from delegate_to_other
+        where delegate_deadline <= '${nowStr}'
+        order by delegate_deadline desc`
     );
     return result;
 }
@@ -399,10 +401,11 @@ export const preRentDelegate = async (params) => {
 export const getResourceRentList = async () => {
     try {
         const [result] = await promisePool.query(
-            `SELECT user_id, amount, resource_type, delegate_time, receiver_address, price, 
+            `SELECT user_id, amount, resource_type, delegate_time, receiver_address, price
             FROM delegate_to_other D
             INNER JOIN (
-                select id, balance_trx, balance_trx_lock, balance_trx - balance_trx_lock as balance_usable
+                select id, balance_trx, balance_trx_lock, 
+                balance_trx - balance_trx_lock as balance_usable
                 from nodejs_users
             ) U
             ON D.user_id = U.id
@@ -419,7 +422,7 @@ export const resourceRentItemUpdate = async (params) => {
     try {
         const [result] = await promisePool.query(
             `update delegate_to_other
-            set txid = ?, process_status = ?, delegate_deadline = ?
+            set amount_trx = ?, txid = ?, process_status = ?, delegate_deadline = ?
             where user_id = 6`,
             params
         );

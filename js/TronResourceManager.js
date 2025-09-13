@@ -3,12 +3,13 @@ import { TronWeb } from "tronweb"
 import {
     createStakeForSelf,
     createDelegateToOtherV2,
-    delegateToOtherExpireList,
+    // delegateToOtherExpireList,
 } from "./MyMysql/Index.js"
 import axios from "axios";
 import { TRONGRID_API_URL, USDT_CONTRACT } from "./config.js"
 import { formattedValue } from "./bigNumber.util.js"
 import * as resourceRentFunc from "./resourceRentFunc.js";
+import * as resourceRentRecoverFunc from "./resourceRentRecoverFunc.js";
 
 class TronResourceManager {
 
@@ -290,27 +291,6 @@ class TronResourceManager {
 
     /**
      * 
-     * 查看租赁的资源，过期回收
-     * 
-     */
-    async resourceRecover() {
-        try {
-            const result = await delegateToOtherExpireList();
-            // console.log(result);
-            if (!result || !result.length) {
-                throw new Error("没有到期的租赁记录");
-            }
-            for (let i = 0, item; item = result[i++];) {
-                await this.undelegateFromOther(item);
-            }
-            return [true];
-        } catch (error) {
-            return [error.message, "fail"];
-        }
-    }
-
-    /**
-     * 
      * 取消对其他账户的能量/带宽委托。
      * 
      */
@@ -414,20 +394,30 @@ class TronResourceManager {
      */
     async usdtTransfer(receiverAddress, amountTrx) {
         try {
-
             const contract = await this.tronWeb.contract().at(USDT_CONTRACT);
-
             const tx = await contract.transfer(
                 receiverAddress,
                 this.tronWeb.toSun(amountTrx)
             ).send({
                 feeLimit: 100_000_000
             });
-
             return [tx];
         } catch (error) {
             return [error.message, "fail"];
         }
+    }
+
+    async getResourceRentTrx(item) {
+        let amountTrx;
+        switch (item.resource_type) {
+            case "ENERGY":
+                amountTrx = await this.swapEnergyToTrx(item.amount);
+                break;
+            case "BANDWIDTH":
+                amountTrx = await this.swapBandwidthToTrx(item.amount);
+                break;
+        }
+        return amountTrx;
     }
 
     /**
@@ -436,8 +426,32 @@ class TronResourceManager {
      * 
      */
     resourceRentDoInit() {
-        // console.log("-----resourceRentDoInit----");
         resourceRentFunc.init.call(this);
+    }
+
+    /**
+     * 
+     * 查看租赁的资源，过期回收
+     * 
+     */
+    // async resourceRecover() {
+    //     try {
+    //         const result = await delegateToOtherExpireList();
+    //         // console.log(result);
+    //         if (!result || !result.length) {
+    //             throw new Error("没有到期的租赁记录");
+    //         }
+    //         for (let i = 0, item; item = result[i++];) {
+    //             await this.undelegateFromOther(item);
+    //         }
+    //         return [true];
+    //     } catch (error) {
+    //         return [error.message, "fail"];
+    //     }
+    // }
+
+    resourceRentRecoverInit() {
+        resourceRentRecoverFunc.init.call(this);
     }
 
 }
