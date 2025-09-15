@@ -40,7 +40,7 @@ class UserService extends MyService {
                 id: myUserItem.id,
                 username: myUserItem.user_name,
             }
-            const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+            const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '24h' });
             return {
                 token,
                 userName: myUserItem.user_name,

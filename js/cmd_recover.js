@@ -5,6 +5,7 @@ try {
         const im = await IndexMethod.create();
         im.tronManager.resourceRentRecoverInit();
     }
+
     init();
 } catch (error) {
     console.log(error.message);

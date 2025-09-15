@@ -48,14 +48,13 @@ async function resourceRentItemDo(item) {
     }
     const params = getResourceRentItemRecover(item, receipt.txid);
     const result = await resourceRentItemRecoverSaveToDb(params);
-    console.log(result.insertId);
+    console.log(result.insertId, receipt.txid);
 }
 
 export const init = async function () {
     try {
-        // console.log("------resourceRentRecoverFunc------");
         const list = await getResourceRentExpireList();
-        // console.log(list);
+        console.log(`------resourceRentRecoverFunc-------${list.length}-----`);
         if (!list || !list.length) {
             throw new Error("没有到期的租赁记录");
         }

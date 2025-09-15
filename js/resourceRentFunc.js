@@ -41,7 +41,6 @@ async function resourceRentItemDo(item) {
     const result = await resourceRentItemUpdateToDb(
         [amountTrx, hash, processStatus, delegateLine]
     );
-    console.log(result.insertId);
     return result.insertId;
 }
 
@@ -53,6 +52,4 @@ export const init = async function () {
         resourceRentItemDo.call(this, item);
     }
 };
-
-
 

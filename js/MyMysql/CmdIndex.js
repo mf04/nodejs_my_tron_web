@@ -29,7 +29,9 @@ export const getResourceRentList = async () => {
                 from nodejs_users
             ) U
             ON D.user_id = U.id
-            WHERE process_status is null AND U.balance_usable > price
+            WHERE process_status is null 
+            AND process_deadline > NOW()
+            AND U.balance_usable > price
             ORDER BY process_deadline asc`
         );
         promisePool.end();

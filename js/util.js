@@ -126,7 +126,8 @@ export const newAsync = (ClassType, ...args) => {
 }
 
 export const sleep = (time = 1) => {
-    return new Promise(resolve => setTimeout(() => resolve(), time * 1000))
+    // return new Promise(resolve => setTimeout(() => resolve(), time * 1000))
+    return new Promise(resolve => setTimeout(resolve, time * 1000));
 }
 
 export const generateOrderNumber = () => {
