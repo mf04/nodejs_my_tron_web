@@ -95,3 +95,19 @@ export const undelegateItemGenerate = async (params) => {
         console.log(err);
     }
 }
+
+export const getUserWithdrawList = async () => {
+    try {
+        const pool = getConnectionPool();
+        const promisePool = pool.promise();
+        const [result] = await promisePool.query(
+            `SELECT id, send_address, receiver_address, amount
+            from user_withdraw
+            where status = 0`
+        );
+        promisePool.end();
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}

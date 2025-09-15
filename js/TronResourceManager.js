@@ -10,6 +10,7 @@ import { TRONGRID_API_URL, USDT_CONTRACT } from "./config.js"
 import { formattedValue } from "./bigNumber.util.js"
 import * as resourceRentFunc from "./resourceRentFunc.js";
 import * as resourceRentRecoverFunc from "./resourceRentRecoverFunc.js";
+import * as userWithdrawFunc from "./userWithdrawFunc.js";
 
 class TronResourceManager {
 
@@ -453,6 +454,10 @@ class TronResourceManager {
 
     resourceRentRecoverInit() {
         resourceRentRecoverFunc.init.call(this);
+    }
+
+    userWithdrawInit() {
+        userWithdrawFunc.init.call(this);
     }
 
 }
