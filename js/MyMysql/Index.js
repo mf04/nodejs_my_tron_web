@@ -167,6 +167,20 @@ export const userRechargeGenerate = async (userId, sendAddress, receiverAddress,
     }
 }
 
+export const userWithdrawGenerate = async (params) => {
+    try {
+        const [result] = await promisePool.query(
+            `INSERT INTO user_withdraw 
+            (user_id, send_address, receiver_address, amount, type, tron_web, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            params
+        );
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 export const userItemAvatarUpload = async (userId, avatar) => {
     try {
         const [result] = await promisePool.query(

@@ -9,6 +9,7 @@ import {
     trxBalanceLog,
     userBalanceLog,
     getUserOrderList,
+    userWithdrawGenerate,
 } from "./MyMysql/Index.js"
 import jwt from "jsonwebtoken"
 import { JWT_SECRET } from "./config.js"
@@ -75,6 +76,14 @@ class UserService extends MyService {
     async userRecharge(userId, address, type, web) {
         const myAddress = this.tronManager.ownerAddress;
         const res = await userRechargeGenerate(userId, address, myAddress, type, web);
+        return [res.insertId || -1];
+    }
+
+    async userWithdraw(userId, address, coin, network, amount) {
+        const ownerAddress = this.tronManager.ownerAddress;
+        const status = 0;
+        const res = await userWithdrawGenerate(
+            [userId, ownerAddress, address, amount, coin, network, status]);
         return [res.insertId || -1];
     }
 

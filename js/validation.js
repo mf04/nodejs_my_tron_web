@@ -114,6 +114,11 @@ const resourceRentMultiRules = [
     body("paramsStr").notEmpty().withMessage("Params is required"),
 ];
 
+const userWithdrawRules = [
+    body("address").notEmpty().withMessage("Address is required"),
+    body("amount").isNumeric().withMessage("Amount is numeric"),
+];
+
 export {
     validate,
     registerRules,
@@ -128,6 +133,7 @@ export {
     encryptRules,
     decryptRules,
     userRechargeRules,
+    userWithdrawRules,
     resourceGoodsRules,
     getResourceGoodsRules,
     getAddressInfoRules,

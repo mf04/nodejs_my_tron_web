@@ -224,7 +224,9 @@ app.post("/get-privatekey", async (req, res) => {
  * 会员充值
  * 
  */
-app.post("/user-recharge", v.validate(v.userRechargeRules), authenticateToken,
+app.post("/user-recharge",
+    v.validate(v.userRechargeRules),
+    authenticateToken,
     async (req, res) => {
         const { id: userId } = req.user;
         const { address, type, web } = req.body;
@@ -245,6 +247,21 @@ app.get("/get-recharge-record",
         const { limit, skip } = req.pagination;
         const list = await userService.getRechargeRecord(userId, limit, skip);
         res.send(reqestWrapper(list));
+    })
+
+/**
+ * 
+ * 会员提现
+ * 
+ */
+app.post("/user-withdraw",
+    v.validate(v.userWithdrawRules),
+    authenticateToken,
+    async (req, res) => {
+        const { id: userId } = req.user;
+        const { address, coin, network, amount } = req.body;
+        const result = await userService.userWithdraw(userId, address, coin, network, amount);
+        res.send(reqestWrapper(...result));
     })
 
 /**
