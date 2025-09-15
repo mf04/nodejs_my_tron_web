@@ -1,7 +1,12 @@
+// import {
+//     getResourceRentList,
+//     resourceRentItemUpdate,
+// } from "./MyMysql/Index.js";
+
 import {
     getResourceRentList,
     resourceRentItemUpdate,
-} from "./MyMysql/Index.js";
+} from "./MyMysql/CmdIndex.js";
 
 async function delegateEvent(amount, address, type) {
     return await this.delegateToOtherV2(
@@ -23,7 +28,7 @@ async function resourceRentItemDo(item) {
     // console.log(item);
     // const amountTrx = await this.swapEnergyToTrx(item.amount);
     const amountTrx = await this.getResourceRentTrx.call(this, item);
-    // console.log(item.amount, amountTrx);
+    console.log(item.amount, amountTrx);
     const hash = await delegateEvent.call(
         this, amountTrx, item.receiver_address, item.resource_type
     );
@@ -42,7 +47,9 @@ async function resourceRentItemDo(item) {
 
 export const init = async function () {
     const list = await getResourceRentList();
+    // console.log(list);
     for (let i = 0, item; item = list[i++];) {
+        // console.log(item);
         resourceRentItemDo.call(this, item);
     }
 };

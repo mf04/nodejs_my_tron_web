@@ -1,0 +1,95 @@
+import mysql from "mysql2";
+import {
+    mysqlHost, mysqlUser, mysqlPwd, mysqlDb
+} from "../config.js";
+import { jsDate } from "../util.js";
+
+const getConnectionPool = () => {
+    return mysql.createPool({
+        host: mysqlHost,
+        user: mysqlUser,
+        password: mysqlPwd,
+        database: mysqlDb,
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0
+    });
+}
+
+export const getResourceRentList = async () => {
+    try {
+        const pool = getConnectionPool();
+        const promisePool = pool.promise();
+        const [result] = await promisePool.query(
+            `SELECT user_id, amount, resource_type, delegate_time, receiver_address, price
+            FROM delegate_to_other D
+            INNER JOIN (
+                select id, balance_trx, balance_trx_lock, 
+                balance_trx - balance_trx_lock as balance_usable
+                from nodejs_users
+            ) U
+            ON D.user_id = U.id
+            WHERE process_status is null AND U.balance_usable > price
+            ORDER BY process_deadline asc`
+        );
+        promisePool.end();
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export const resourceRentItemUpdate = async (params) => {
+    try {
+        const pool = getConnectionPool();
+        const promisePool = pool.promise();
+        const [result] = await promisePool.query(
+            `update delegate_to_other
+            set amount_trx = ?, txid = ?, process_status = ?, delegate_deadline = ?
+            where user_id = 6`,
+            params
+        );
+        promisePool.end();
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export const delegateToOtherExpireList = async () => {
+    const nowStr = jsDate("Y-m-d H:i:s", new Date().getTime())
+    const pool = getConnectionPool();
+    const promisePool = pool.promise();
+    const [result] = await promisePool.query(
+        `SELECT * 
+        from delegate_to_other
+        where delegate_deadline <= '${nowStr}'
+        order by delegate_deadline desc`
+    );
+    promisePool.end();
+    return result;
+}
+
+export const undelegateItemGenerate = async (params) => {
+    try {
+        const pool = getConnectionPool();
+        const promisePool = pool.promise();
+        const fieldArr = [
+            "user_id", "amount", "amount_trx", "resource_type",
+            "owner_address", "receiver_address", "txid", "delegate_status",
+            "delegate_time", "delegate_deadline", "max_wait_time",
+            "process_deadline", "process_status", "price", "order_num",
+            "from_pk",
+        ];
+        const placeHolder = fieldArr.slice(0).fill("?");
+        const [result] = await promisePool.query(
+            `INSERT INTO delegate_to_other 
+            (${fieldArr.join(",")}) VALUES (${placeHolder.join(",")})`,
+            params
+        );
+        promisePool.end();
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}

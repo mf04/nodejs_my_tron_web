@@ -426,6 +426,7 @@ class TronResourceManager {
      * 
      */
     async resourceRentDoInit() {
+        // console.log("-----resourceRentDoInit-----");
         await resourceRentFunc.init.call(this);
     }
 

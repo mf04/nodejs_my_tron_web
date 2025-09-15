@@ -5,7 +5,11 @@ try {
         const im = await IndexMethod.create();
         im.tronManager.resourceRentDoInit();
     }
-    init();
+    // init();
+    while (true) {
+        init();
+        sleep(1);
+    }
 } catch (error) {
     console.log(error.message);
 }

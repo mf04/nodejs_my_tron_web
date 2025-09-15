@@ -1,11 +1,11 @@
-import mysql from "mysql2"
+import mysql from "mysql2";
 import {
     mysqlHost, mysqlUser, mysqlPwd, mysqlDb
-} from "../config.js"
+} from "../config.js";
 import {
     jsDate,
     bigNumAdd,
-} from "../util.js"
+} from "../util.js";
 
 const pool = mysql.createPool({
     host: mysqlHost,
@@ -433,6 +433,7 @@ export const getResourceRentList = async () => {
             WHERE process_status is null AND U.balance_usable > price
             ORDER BY process_deadline asc`
         );
+        promisePool.end();
         return result;
     } catch (err) {
         console.log(err);

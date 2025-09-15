@@ -1,7 +1,12 @@
+// import {
+//     delegateToOtherExpireList,
+//     undelegateItemGenerate,
+// } from "./MyMysql/Index.js";
+
 import {
     delegateToOtherExpireList,
     undelegateItemGenerate,
-} from "./MyMysql/Index.js";
+} from "./MyMysql/CmdIndex.js";
 
 async function getResourceRentExpireList() {
     return await delegateToOtherExpireList();
@@ -29,20 +34,21 @@ async function undelegateEvent(item) {
     const tx = await this.tronWeb.transactionBuilder.undelegateResource(
         amountInSun, item.receiver_address, item.resource_type, item.owner_address
     );
-    console.log(tx);
+    // console.log(tx);
     const signedTx = await this.tronWeb.trx.sign(tx);
-    console.log(signedTx);
+    // console.log(signedTx);
     return await this.tronWeb.trx.sendRawTransaction(signedTx);
 }
 
 async function resourceRentItemDo(item) {
     const receipt = await undelegateEvent.call(this, item);
-    if (!receipt || !receipt.hash) {
+    // console.log(receipt);
+    if (!receipt || !receipt.txid) {
         throw new Error("租用资源回收失败");
     }
     const params = getResourceRentItemRecover(item, receipt.txid);
     const result = await resourceRentItemRecoverSaveToDb(params);
-    console.log(result);
+    console.log(result.insertId);
 }
 
 export const init = async function () {
