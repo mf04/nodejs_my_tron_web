@@ -1,16 +1,7 @@
-// import {
-//     delegateToOtherExpireList,
-//     undelegateItemGenerate,
-// } from "./MyMysql/Index.js";
-
 import {
     delegateToOtherExpireList,
     undelegateItemGenerate,
 } from "./MyMysql/CmdIndex.js";
-
-async function getResourceRentExpireList() {
-    return await delegateToOtherExpireList();
-}
 
 function getResourceRentItemRecover(item, hash) {
     const delegateStatus = 2;
@@ -22,10 +13,6 @@ function getResourceRentItemRecover(item, hash) {
         item.process_deadline, processStatus, item.price, item.order_num,
         item.id
     ];
-}
-
-async function resourceRentItemRecoverSaveToDb(params) {
-    return await undelegateItemGenerate(params);
 }
 
 async function undelegateEvent(item) {
@@ -40,21 +27,26 @@ async function undelegateEvent(item) {
     return await this.tronWeb.trx.sendRawTransaction(signedTx);
 }
 
+async function resourceRentItemRecoverSaveToDb(item, hash) {
+    const params = getResourceRentItemRecover(item, hash);
+    return await undelegateItemGenerate(params);
+}
+
 async function resourceRentItemDo(item) {
     const receipt = await undelegateEvent.call(this, item);
-    console.log(receipt);
+    console.log(receipt.txid);
+
     return;
     if (!receipt || !receipt.txid) {
         throw new Error("租用资源回收失败");
     }
-    const params = getResourceRentItemRecover(item, receipt.txid);
-    const result = await resourceRentItemRecoverSaveToDb(params);
-    console.log(result.insertId, receipt.txid);
+    await resourceRentItemRecoverSaveToDb(item, receipt.txid);
 }
 
 export const init = async function () {
+
     try {
-        const list = await getResourceRentExpireList();
+        const list = await delegateToOtherExpireList();
         console.log(`------resourceRentRecoverFunc-------${list.length}-----`);
         if (!list || !list.length) {
             throw new Error("没有到期的租赁记录");

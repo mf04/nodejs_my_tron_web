@@ -60,13 +60,14 @@ export const resourceRentItemUpdate = async (params) => {
 }
 
 export const delegateToOtherExpireList = async () => {
-    const nowStr = jsDate("Y-m-d H:i:s", new Date().getTime())
+    const nowStr = jsDate("Y-m-d H:i:s", new Date().getTime());
     const pool = getConnectionPool();
     const promisePool = pool.promise();
     const [result] = await promisePool.query(
         `SELECT * 
         from delegate_to_other
-        where delegate_deadline <= '${nowStr}'
+        where delegate_deadline <= '${nowStr}' 
+        and delegate_status = 1
         order by delegate_deadline desc`
     );
     promisePool.end();
