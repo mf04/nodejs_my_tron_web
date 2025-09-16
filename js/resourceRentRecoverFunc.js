@@ -42,7 +42,8 @@ async function undelegateEvent(item) {
 
 async function resourceRentItemDo(item) {
     const receipt = await undelegateEvent.call(this, item);
-    // console.log(receipt);
+    console.log(receipt);
+    return;
     if (!receipt || !receipt.txid) {
         throw new Error("租用资源回收失败");
     }
@@ -59,7 +60,7 @@ export const init = async function () {
             throw new Error("没有到期的租赁记录");
         }
         for (let i = 0, item; item = list[i++];) {
-            resourceRentItemDo.call(this, item);
+            await resourceRentItemDo.call(this, item);
         }
     } catch (error) {
         console.log(error.message);

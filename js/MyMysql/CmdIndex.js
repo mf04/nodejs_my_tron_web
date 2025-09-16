@@ -21,7 +21,8 @@ export const getResourceRentList = async () => {
         const pool = getConnectionPool();
         const promisePool = pool.promise();
         const [result] = await promisePool.query(
-            `SELECT user_id, amount, resource_type, delegate_time, receiver_address, price
+            `SELECT D.id as id, user_id, amount, resource_type, delegate_time, receiver_address, 
+            price, U.balance_usable as balance
             FROM delegate_to_other D
             INNER JOIN (
                 select id, balance_trx, balance_trx_lock, 
@@ -48,7 +49,7 @@ export const resourceRentItemUpdate = async (params) => {
         const [result] = await promisePool.query(
             `update delegate_to_other
             set amount_trx = ?, txid = ?, process_status = ?, delegate_deadline = ?
-            where user_id = 6`,
+            where id = ?`,
             params
         );
         promisePool.end();
@@ -158,10 +159,11 @@ export const updateUserBalance = async (params) => {
         const pool = getConnectionPool();
         const promisePool = pool.promise();
         const [result] = await promisePool.query(
-            `update nodejs_user set balance_trx =  ?
+            `update nodejs_users set balance_trx =  ?
             where id = ?`,
             params
         );
+        promisePool.end();
         return result;
     } catch (err) {
         console.log(err);

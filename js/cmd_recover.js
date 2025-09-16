@@ -1,11 +1,14 @@
 import IndexMethod from "./cmd_index.js";
+import { sleep } from "./util.js";
 
 try {
     async function init() {
         const im = await IndexMethod.create();
-        im.tronManager.resourceRentRecoverInit();
+        while (true) {
+            await im.tronManager.resourceRentRecoverInit();
+            await sleep(1);
+        }
     }
-
     init();
 } catch (error) {
     console.log(error.message);

@@ -1,18 +1,8 @@
-// import {
-//     getResourceRentList,
-//     resourceRentItemUpdate,
-// } from "./MyMysql/Index.js";
-
 import {
     getResourceRentList,
     resourceRentItemUpdate,
 } from "./MyMysql/CmdIndex.js";
-
-async function delegateEvent(amount, address, type) {
-    return await this.delegateToOtherV2(
-        amount, address, type
-    );
-}
+import balanceService from "./balanceService.js";
 
 function getResourceRentDeadLine(delegateTime) {
     const current = +new Date();
@@ -20,36 +10,41 @@ function getResourceRentDeadLine(delegateTime) {
     return new Date(deadLine);
 }
 
-async function resourceRentItemUpdateToDb(params) {
-    return await resourceRentItemUpdate(params);
+async function resourceRentItemUpdateToDb(rentId, delegateTime, hash, amountTrx) {
+    const processStatus = 1;
+    const delegateLine = getResourceRentDeadLine(delegateTime);
+    return await resourceRentItemUpdate([
+        amountTrx, hash, processStatus, delegateLine, rentId
+    ]);
+}
+
+async function resourceRentEvent(amountTrx, item) {
+    return await this.delegateToOtherV2(amountTrx, item.receiver_address, item.resource_type);
 }
 
 async function resourceRentItemDo(item) {
-    // console.log(item);
-    // const amountTrx = await this.swapEnergyToTrx(item.amount);
     const amountTrx = await this.getResourceRentTrx.call(this, item);
     console.log(item.amount, amountTrx);
-    const hash = await delegateEvent.call(
-        this, amountTrx, item.receiver_address, item.resource_type
-    );
+    const hash = await resourceRentEvent.call(this, amountTrx, item);
     console.log(hash);
     if (!hash) return;
-    const processStatus = 1;
-    const delegateLine = getResourceRentDeadLine(item.delegate_time);
-    // console.log(item.delegate_time);
-    // console.log(delegateLine);
-    const result = await resourceRentItemUpdateToDb(
-        [amountTrx, hash, processStatus, delegateLine]
+    await resourceRentItemUpdateToDb(
+        item.id, item.delegate_time, hash, amountTrx
     );
-    return result.insertId;
+    const balanceItem = {
+        user_id: item.user_id,
+        amount: item.price,
+        balance: item.balance,
+    };
+    const fromType = "buy_" + item.resource_type.toLowerCase();
+    await balanceService.init(balanceItem, "trx", fromType);
 }
 
 export const init = async function () {
     const list = await getResourceRentList();
-    // console.log(list);
     for (let i = 0, item; item = list[i++];) {
         // console.log(item);
-        resourceRentItemDo.call(this, item);
+        await resourceRentItemDo.call(this, item);
     }
 };
 

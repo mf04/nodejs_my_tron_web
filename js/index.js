@@ -370,5 +370,18 @@ app.get("/get-user-order-list",
         res.send(reqestWrapper(list));
     })
 
+/**
+ * 
+ * 获取会员可用余额
+ * 
+ */
+app.get("/get-user-avalible-balance",
+    authenticateToken,
+    async (req, res) => {
+        const userId = req.user.id;
+        const result = await userService.getUserAvalibleBalance(userId);
+        res.send(reqestWrapper(result));
+    })
+
 
 app.listen(myServicePort)

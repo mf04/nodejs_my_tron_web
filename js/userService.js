@@ -111,6 +111,10 @@ class UserService extends MyService {
         return balanceUsable > price;
     }
 
+    async getUserAvalibleBalance(userId) {
+        return await getUserAvailableTrx(userId);
+    }
+
     async userBalanceTrxInc(userId, amount) {
         return await updateUserTrxBalance(userId, amount);
     }
