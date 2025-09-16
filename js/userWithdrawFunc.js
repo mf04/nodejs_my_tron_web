@@ -4,6 +4,7 @@ import {
 } from "./MyMysql/CmdIndex.js";
 import { withdrawFeeRate } from "./config.js";
 import { bigNumTimes, bigNumSub } from "./util.js";
+import balanceService from "./balanceService.js";
 
 function getWithdrawFee(amount) {
     const fee = bigNumTimes(amount, withdrawFeeRate);
@@ -11,8 +12,9 @@ function getWithdrawFee(amount) {
     return { fee, transAmount };
 }
 
-async function updateUserWithdrawToDb(params) {
-    await updateUserWithdraw(params);
+async function updateUserWithdrawToDb(fee, transAmount, hash, item) {
+    await updateUserWithdraw([fee, transAmount, hash, item.id]);
+    await balanceService.init(item, "trx", "withdraw");
 }
 
 async function userWithdrawItemDo(item) {
@@ -21,8 +23,7 @@ async function userWithdrawItemDo(item) {
     const hash = await this.trxTransfer(item.receiver_address, transAmount);
     // console.log(hash);
     if (!hash) return;
-    const params = [fee, transAmount, hash, item.id];
-    await updateUserWithdrawToDb(params);
+    await updateUserWithdrawToDb(fee, transAmount, hash, item);
 }
 
 export const init = async function () {

@@ -101,7 +101,7 @@ export const getUserWithdrawList = async () => {
         const pool = getConnectionPool();
         const promisePool = pool.promise();
         const [result] = await promisePool.query(
-            `SELECT UW.id as id, send_address, receiver_address, 
+            `SELECT UW.id as id, U.id as user_id, send_address, receiver_address, 
             (U.balance_trx - U.balance_trx_lock) as balance, amount
             from user_withdraw UW
             INNER JOIN
@@ -129,6 +129,39 @@ export const updateUserWithdraw = async (params) => {
             params
         );
         promisePool.end();
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export const balanceLogGenerate = async (params) => {
+    try {
+        const pool = getConnectionPool();
+        const promisePool = pool.promise();
+        const [result] = await promisePool.query(
+            `insert into balance_log 
+            (user_id, from_type, currency_type, amount, balance_before, balance_after) 
+            values 
+            (?, ?, ?, ?, ?, ?)`,
+            params
+        );
+        promisePool.end();
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export const updateUserBalance = async (params) => {
+    try {
+        const pool = getConnectionPool();
+        const promisePool = pool.promise();
+        const [result] = await promisePool.query(
+            `update nodejs_user set balance_trx =  ?
+            where id = ?`,
+            params
+        );
         return result;
     } catch (err) {
         console.log(err);
