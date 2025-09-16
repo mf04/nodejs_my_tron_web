@@ -19,6 +19,10 @@ export const bigNumAdd = (n1, n2, decimal = 2) => {
     return b(n1).plus(n2).toFixed(decimal);
 }
 
+export const bigNumTimes = (n1, n2, decimal = 2) => {
+    return b(n1).times(n2).toFixed(decimal);
+}
+
 export const getPwdSalt = (password) => {
     const salt = "cdqdafadf!@SWW!";
     return md5(salt + password);

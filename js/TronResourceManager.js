@@ -381,6 +381,7 @@ class TronResourceManager {
             if (!receipt || !receipt.txid || !receipt.result) {
                 throw new Error("转账失败");
             }
+            // console.log(receipt);
             return [receipt.txid];
         } catch (error) {
             return [error.message, "fail"];
