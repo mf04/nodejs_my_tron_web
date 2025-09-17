@@ -11,6 +11,7 @@ import { formattedValue } from "./bigNumber.util.js"
 import * as resourceRentFunc from "./resourceRentFunc.js";
 import * as resourceRentRecoverFunc from "./resourceRentRecoverFunc.js";
 import * as userWithdrawFunc from "./userWithdrawFunc.js";
+import * as userRechargeFunc from "./userRechargeFunc.js";
 
 class TronResourceManager {
 
@@ -26,6 +27,10 @@ class TronResourceManager {
         });
         this.ownerAddress = this.tronWeb.defaultAddress.base58;
         // this.redis = new RedisManager;
+    }
+
+    getBase58Address(hexAddress) {
+        return this.tronWeb.address.fromHex(hexAddress);
     }
 
     /**
@@ -453,12 +458,16 @@ class TronResourceManager {
     //     }
     // }
 
-    resourceRentRecoverInit() {
-        resourceRentRecoverFunc.init.call(this);
+    async resourceRentRecoverInit() {
+        await resourceRentRecoverFunc.init.call(this);
     }
 
-    userWithdrawInit() {
-        userWithdrawFunc.init.call(this);
+    async userWithdrawInit() {
+        await userWithdrawFunc.init.call(this);
+    }
+
+    async userRechargeInit() {
+        await userRechargeFunc.init.call(this);
     }
 
 }

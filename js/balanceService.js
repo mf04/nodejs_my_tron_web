@@ -1,13 +1,13 @@
 import { balanceLogGenerate, updateUserBalance } from "./MyMysql/CmdIndex.js"
-import { bigNumSub } from "./util.js";
+import { bigNumAdd } from "./util.js";
 
 const balanceService = {
 
-    init: async function (item, currency, fromType) {
-        const balanceAfter = bigNumSub(item.balance, item.amount);
+    init: async function (item, currency, fromType, factor = -1) {
+        const balanceAfter = bigNumAdd(item.balance, item.amount * factor);
         await this.userBalanceUpdate(balanceAfter, item.user_id);
         await this.balanceLogInsert([
-            item.user_id, fromType, currency, item.amount * -1, item.balance, balanceAfter
+            item.user_id, fromType, currency, item.amount * factor, item.balance, balanceAfter
         ]);
     },
 

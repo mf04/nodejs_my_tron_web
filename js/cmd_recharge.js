@@ -5,7 +5,7 @@ try {
     async function init() {
         const im = await IndexMethod.create();
         while (true) {
-            await im.tronManager.userWithdrawInit();
+            await im.tronManager.userRechargeInit();
             await sleep(1);
         }
     }

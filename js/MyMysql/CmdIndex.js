@@ -186,3 +186,41 @@ export const updateDelegateProcessStatus = async (id) => {
         console.log(err);
     }
 }
+
+export const getRechargeList = async () => {
+    try {
+        const pool = getConnectionPool();
+        const promisePool = pool.promise();
+        const [result] = await promisePool.query(
+            `select R.id as id, user_id, send_address, R.created_at as time, 
+            balance_trx - balance_trx_lock as balance
+            from user_recharge R
+            INNER JOIN
+            nodejs_users U
+            on U.id = R.user_id
+            where status = 0
+            order by id desc`
+        );
+        promisePool.end();
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export const updateRechargeSuccess = async (params) => {
+    try {
+        const pool = getConnectionPool();
+        const promisePool = pool.promise();
+        const [result] = await promisePool.query(
+            `update user_recharge 
+            set amount = ?, hash = ?, status = 1
+            where id = ?`,
+            params
+        );
+        promisePool.end();
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}
