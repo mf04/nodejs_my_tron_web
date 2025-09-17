@@ -32,7 +32,7 @@ export const getResourceRentList = async () => {
             ON D.user_id = U.id
             WHERE process_status is null 
             AND process_deadline > NOW()
-            AND U.balance_usable > price
+            AND U.balance_usable >= price
             ORDER BY process_deadline asc`
         );
         promisePool.end();

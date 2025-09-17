@@ -6,8 +6,7 @@ try {
         const im = await IndexMethod.create();
         while (true) {
             await im.tronManager.resourceRentRecoverInit();
-            // await sleep(1);
-            await sleep(5);
+            await sleep(1);
         }
     }
     init();

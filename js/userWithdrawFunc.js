@@ -21,7 +21,7 @@ async function userWithdrawItemDo(item) {
     const { fee, transAmount } = getWithdrawFee(item.amount);
     // console.log(item.amount, fee, transAmount);
     const hash = await this.trxTransfer(item.receiver_address, transAmount);
-    // console.log(hash);
+    console.log(hash);
     if (!hash) return;
     await updateUserWithdrawToDb(fee, transAmount, hash, item);
 }

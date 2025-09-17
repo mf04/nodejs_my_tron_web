@@ -47,11 +47,7 @@ export const init = async function () {
 
     try {
         const list = await delegateToOtherExpireList();
-        // console.log(list);
-        console.log(`------resourceRentRecoverFunc-------${list.length}-----`);
-        if (!list || !list.length) {
-            throw new Error("没有到期的租赁记录");
-        }
+        if (!list || !list.length) return;
         for (let i = 0, item; item = list[i++];) {
             await resourceRentItemDo.call(this, item);
         }

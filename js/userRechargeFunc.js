@@ -53,7 +53,6 @@ async function rechargeItemTransation(item) {
         const tronTime = info.time;
         const applyTime = +new Date(item.time);
         const diffTime = tronTime - applyTime;
-        console.log(tronTime, applyTime, diffTime, maxRechargeAckTime);
         if (Math.abs(diffTime) > Math.abs(maxRechargeAckTime)) {
             continue;
         }
