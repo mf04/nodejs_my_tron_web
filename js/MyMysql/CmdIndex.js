@@ -67,7 +67,7 @@ export const delegateToOtherExpireList = async () => {
         `SELECT * 
         from delegate_to_other
         where delegate_deadline <= '${nowStr}' 
-        and delegate_status = 1
+        and delegate_status = 1 and process_status = 1
         order by delegate_deadline desc`
     );
     promisePool.end();
@@ -163,6 +163,22 @@ export const updateUserBalance = async (params) => {
             `update nodejs_users set balance_trx =  ?
             where id = ?`,
             params
+        );
+        promisePool.end();
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export const updateDelegateProcessStatus = async (id) => {
+    try {
+        const pool = getConnectionPool();
+        const promisePool = pool.promise();
+        const [result] = await promisePool.query(
+            `update delegate_to_other set process_status = 2
+            where id = ?`,
+            [id]
         );
         promisePool.end();
         return result;
