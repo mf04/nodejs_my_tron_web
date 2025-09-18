@@ -472,7 +472,8 @@ export const getMyResourceRentList = async (userId) => {
     try {
         const [result] = await promisePool.query(
             `select id, amount, amount_trx as amountTrx, resource_type as resourceType, 
-            time, delegate_deadline as delegateDeadline, delegate_time as delegateTime,
+            time as startTime, delegate_deadline as endTime, 
+            delegate_time as delegateTime,
             process_status as processStatus, order_num as orderNum, price
             from delegate_to_other
             where user_id = ? and delegate_status = 1
