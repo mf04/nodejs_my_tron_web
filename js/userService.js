@@ -10,6 +10,7 @@ import {
     userBalanceLog,
     getUserOrderList,
     userWithdrawGenerate,
+    getMyUserProperty,
 } from "./MyMysql/Index.js"
 import jwt from "jsonwebtoken"
 import { JWT_SECRET } from "./config.js"
@@ -133,6 +134,10 @@ class UserService extends MyService {
 
     async userOrderList(userId) {
         return await getUserOrderList(userId);
+    }
+
+    async myUserProperty(userId) {
+        return getMyUserProperty(userId);
     }
 }
 

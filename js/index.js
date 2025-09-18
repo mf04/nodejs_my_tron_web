@@ -385,7 +385,7 @@ app.get("/get-user-avalible-balance",
 
 /**
  * 
- *   
+ * 获取会员租赁列表
  *  
  */
 app.get("/get-my-resource-rent-list",
@@ -393,6 +393,19 @@ app.get("/get-my-resource-rent-list",
     async (req, res) => {
         const userId = req.user.id;
         const result = await resourceRentService.getMyResourceRentList(userId);
+        res.send(reqestWrapper(result));
+    })
+
+/**
+ * 
+ * 获取会员资产
+ * 
+ */
+app.get("/get-my-property",
+    authenticateToken,
+    async (req, res) => {
+        const userId = req.user.id;
+        const result = await userService.myUserProperty(userId);
         res.send(reqestWrapper(result));
     })
 

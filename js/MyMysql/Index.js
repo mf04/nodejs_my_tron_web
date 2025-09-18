@@ -485,3 +485,23 @@ export const getMyResourceRentList = async (userId) => {
         console.log(err);
     }
 }
+
+export const getMyUserProperty = async (userId) => {
+    try {
+        const [result] = await promisePool.query(
+            `select balance_trx as trxTotal, 
+                balance_trx_lock as trxLock, 
+                balance_trx - balance_trx_lock as trxAvalible,
+                balance_usdt as usdtTotal,
+                balance_usdt_lock as usdtLock,
+                balance_usdt - balance_usdt_lock as usdtAvalible
+            from nodejs_users
+            where id = ?
+            limit 1`,
+            [userId]
+        );
+        return result && result[0];
+    } catch (err) {
+        console.log(err);
+    }
+}
