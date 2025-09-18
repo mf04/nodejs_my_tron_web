@@ -383,5 +383,18 @@ app.get("/get-user-avalible-balance",
         res.send(reqestWrapper(result));
     })
 
+/**
+ * 
+ *   
+ *  
+ */
+app.get("/get-my-resource-rent-list",
+    authenticateToken,
+    async (req, res) => {
+        const userId = req.user.id;
+        const result = await resourceRentService.getMyResourceRentList(userId);
+        res.send(reqestWrapper(result));
+    })
+
 
 app.listen(myServicePort)

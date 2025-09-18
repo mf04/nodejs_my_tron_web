@@ -1,7 +1,10 @@
 import MyService from "./MyService.js";
 import priceService from "./priceService.js";
 import { generateOrderNumber } from "./util.js";
-import { preRentDelegate } from "./MyMysql/Index.js";
+import {
+    preRentDelegate,
+    getMyResourceRentList,
+} from "./MyMysql/Index.js";
 
 class ResourceRentService extends MyService {
 
@@ -44,6 +47,10 @@ class ResourceRentService extends MyService {
             await resourceRentEvent(item);
         }
         return paramsArr;
+    }
+
+    async getMyResourceRentList(userId) {
+        return await getMyResourceRentList(userId);
     }
 
 }

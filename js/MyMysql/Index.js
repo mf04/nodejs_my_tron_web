@@ -318,11 +318,11 @@ export const getUserResourceRentList = async () => {
     try {
         const [result] = await promisePool.query(
             `SELECT id, time as orderTime, resource_type as type, amount, 
-            delegate_time as rentTime, price, txid as hash, delegate_deadline as doneTime 
+            delegate_time as rentTime, price, txid as hash, 
+            delegate_deadline as doneTime 
             from delegate_to_other
             ORDER BY id desc
-            limit 10
-            `
+            limit 10`
         );
         return result;
     } catch (err) {
@@ -461,6 +461,23 @@ export const resourceRentItemUpdate = async (params) => {
             set amount_trx = ?, txid = ?, process_status = ?, delegate_deadline = ?
             where user_id = 6`,
             params
+        );
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export const getMyResourceRentList = async (userId) => {
+    try {
+        const [result] = await promisePool.query(
+            `select id, amount, amount_trx as amountTrx, resource_type as resourceType, 
+            time, delegate_deadline as delegateDeadline, delegate_time as delegateTime,
+            process_status as processStatus, order_num as orderNum, price
+            from delegate_to_other
+            where user_id = ? and delegate_status = 1
+            order by id desc`,
+            [userId]
         );
         return result;
     } catch (err) {
