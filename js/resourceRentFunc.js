@@ -2,6 +2,7 @@ import {
     getResourceRentList,
     resourceRentItemUpdate,
     resourceRentItemStatusFailUpdate,
+    getUserItemBalanceTrx,
 } from "./MyMysql/CmdIndex.js";
 import balanceService from "./balanceService.js";
 
@@ -28,6 +29,20 @@ async function resourceRentItemFail(id) {
     await resourceRentItemStatusFailUpdate([processStatus, id]);
 }
 
+async function resourceRentBalanceLog(item) {
+    // console.log(item);
+    const balance = await getUserItemBalanceTrx(item.user_id);
+    console.log(balance, item.price);
+    const balanceItem = {
+        user_id: item.user_id,
+        amount: item.price,
+        balance,
+    };
+    const fromType = "buy_" + item.resource_type.toLowerCase();
+    await balanceService.init(balanceItem, "trx", fromType);
+}
+
+
 async function resourceRentItemDo(item) {
     try {
         const amountTrx = await this.getResourceRentTrx.call(this, item);
@@ -40,13 +55,8 @@ async function resourceRentItemDo(item) {
         await resourceRentItemUpdateToDb(
             item.id, item.delegate_time, hash, amountTrx
         );
-        const balanceItem = {
-            user_id: item.user_id,
-            amount: item.price,
-            balance: item.balance,
-        };
-        const fromType = "buy_" + item.resource_type.toLowerCase();
-        await balanceService.init(balanceItem, "trx", fromType);
+        resourceRentBalanceLog(item);
+
     } catch (err) {
         resourceRentItemFail(item.id);
     }

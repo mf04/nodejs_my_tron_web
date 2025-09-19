@@ -437,7 +437,6 @@ class TronResourceManager {
      * 
      */
     async resourceRentDoInit() {
-        // console.log("-----resourceRentDoInit-----");
         await resourceRentFunc.init.call(this);
     }
 
@@ -446,21 +445,6 @@ class TronResourceManager {
      * 查看租赁的资源，过期回收
      * 
      */
-    // async resourceRecover() {
-    //     try {
-    //         const result = await delegateToOtherExpireList();
-    //         // console.log(result);
-    //         if (!result || !result.length) {
-    //             throw new Error("没有到期的租赁记录");
-    //         }
-    //         for (let i = 0, item; item = result[i++];) {
-    //             await this.undelegateFromOther(item);
-    //         }
-    //         return [true];
-    //     } catch (error) {
-    //         return [error.message, "fail"];
-    //     }
-    // }
 
     async resourceRentRecoverInit() {
         await resourceRentRecoverFunc.init.call(this);

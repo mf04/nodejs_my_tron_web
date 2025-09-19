@@ -240,3 +240,20 @@ export const updateRechargeSuccess = async (params) => {
         console.log(err);
     }
 }
+
+export const getUserItemBalanceTrx = async (userId) => {
+    try {
+        const pool = getConnectionPool();
+        const promisePool = pool.promise();
+        const [result] = await promisePool.query(
+            `select balance_trx from nodejs_users
+            where id = ?
+            limit 1`,
+            [userId]
+        );
+        promisePool.end();
+        return result && result[0] && result[0]["balance_trx"] || 0;
+    } catch (err) {
+        console.log(err);
+    }
+}

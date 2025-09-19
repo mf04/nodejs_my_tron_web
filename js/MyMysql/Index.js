@@ -477,7 +477,7 @@ export const getMyResourceRentList = async (userId) => {
             delegate_time as delegateTime,
             process_status as processStatus, order_num as orderNum, price
             from delegate_to_other
-            where user_id = ? and delegate_status = 1
+            where user_id = ? and delegate_status = 1 and process_status in (1, 2)
             order by id desc`,
             [userId]
         );
