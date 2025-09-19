@@ -59,6 +59,22 @@ export const resourceRentItemUpdate = async (params) => {
     }
 }
 
+export const resourceRentItemStatusFailUpdate = async (params) => {
+    try {
+        const pool = getConnectionPool();
+        const promisePool = pool.promise();
+        const [result] = await promisePool.query(
+            `update delegate_to_other
+            set process_status = ? where id = ?`,
+            params
+        );
+        promisePool.end();
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 export const delegateToOtherExpireList = async () => {
     const nowStr = jsDate("Y-m-d H:i:s", new Date().getTime());
     const pool = getConnectionPool();

@@ -236,18 +236,22 @@ class TronResourceManager {
     }
 
     async delegateToOtherV2(amountInTrx, receiverAddress, resourceType) {
-        if (!this.tronWeb.isAddress(receiverAddress)) {
-            throw new Error("失败: 无效的接收者地址。");
+        try {
+            if (!this.tronWeb.isAddress(receiverAddress)) {
+                throw new Error("失败: 无效的接收者地址。");
+            }
+            const amountInSun = this.tronWeb.toSun(amountInTrx);
+            const amountSunInteger = Math.ceil(amountInSun);
+            const tx = await this.tronWeb.transactionBuilder.delegateResource(
+                amountSunInteger, receiverAddress, resourceType, this.ownerAddress
+            );
+            const signedTx = await this.tronWeb.trx.sign(tx);
+            const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
+            this.contractExcuteValidate(receipt);
+            return receipt.txid;
+        } catch (error) {
+            return [`委托失败: ${error.message}`, "fail"];
         }
-        const amountInSun = this.tronWeb.toSun(amountInTrx);
-        const amountSunInteger = Math.ceil(amountInSun);
-        const tx = await this.tronWeb.transactionBuilder.delegateResource(
-            amountSunInteger, receiverAddress, resourceType, this.ownerAddress
-        );
-        const signedTx = await this.tronWeb.trx.sign(tx);
-        const receipt = await this.tronWeb.trx.sendRawTransaction(signedTx);
-        this.contractExcuteValidate(receipt);
-        return receipt.txid;
     }
 
     /**

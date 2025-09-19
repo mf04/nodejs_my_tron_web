@@ -321,6 +321,7 @@ export const getUserResourceRentList = async () => {
             delegate_time as rentTime, price, txid as hash, 
             delegate_deadline as doneTime 
             from delegate_to_other
+            where process_status is not null
             ORDER BY id desc
             limit 10`
         );

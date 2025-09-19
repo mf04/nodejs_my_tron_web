@@ -20,7 +20,6 @@ class ResourceRentService extends MyService {
             } = params;
             const price = await priceService.getBuyResourcePrice(
                 resourceType, resourceAmount, rentTime);
-            console.log("----price----", price);
             const ownerAddress = this.getMainAccount();
             const orderNum = generateOrderNumber();
             // delegateStatus { 1:代理, 2:取消代理 }
@@ -40,8 +39,6 @@ class ResourceRentService extends MyService {
     }
 
     async resourceRentMultiEvent(paramsArr, userId) {
-        // console.log(paramsArr);
-        // console.log(userId);
         paramsArr = paramsArr.map(item => {
             item.userId = userId;
             return item;
@@ -49,7 +46,7 @@ class ResourceRentService extends MyService {
         for (let i = 0, item; item = paramsArr[i++];) {
             await this.resourceRentEvent(item);
         }
-        return paramsArr.length;
+        return [paramsArr.length];
     }
 
     async getMyResourceRentList(userId) {
