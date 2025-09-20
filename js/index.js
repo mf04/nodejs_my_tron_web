@@ -228,8 +228,8 @@ app.post("/user-recharge",
     authenticateToken,
     async (req, res) => {
         const { id: userId } = req.user;
-        const { address, type, web } = req.body;
-        const result = await userService.userRecharge(userId, address, type, web);
+        const { address, type, web, amount } = req.body;
+        const result = await userService.userRecharge(userId, address, type, web, amount);
         res.send(reqestWrapper(...result));
     })
 

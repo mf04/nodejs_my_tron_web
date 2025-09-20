@@ -80,9 +80,9 @@ const decryptRules = [
 
 const userRechargeRules = [
     body("address").notEmpty().withMessage("Address is required"),
-    // body("amount").notEmpty().withMessage("Amount is required"),
     body("type").notEmpty().withMessage("Type is required"),
     body("web").notEmpty().withMessage("Web is required"),
+    body("amount").notEmpty().withMessage("Amount is required"),
 ];
 
 const resourceGoodsRules = [

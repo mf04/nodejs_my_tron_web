@@ -152,14 +152,13 @@ export const getUserProfileByUserId = async (userId) => {
     }
 }
 
-export const userRechargeGenerate = async (userId, sendAddress, receiverAddress, type, web) => {
+export const userRechargeGenerate = async (userId, sendAddress, receiverAddress, type, web, amount) => {
     try {
-        // console.log("------userRechargeGenerate------");
-        // console.log(userId, sendAddress, receiverAddress, type, web);
         const [result] = await promisePool.query(
-            `INSERT INTO user_recharge (user_id, send_address, receiver_address, type, tron_web, status)
-            VALUES (?, ?, ?, ?, ?, ?)`,
-            [userId, sendAddress, receiverAddress, type, web, 0]
+            `INSERT INTO user_recharge 
+            (user_id, send_address, receiver_address, type, tron_web, amount, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [userId, sendAddress, receiverAddress, type, web, amount, 0]
         );
         return result;
     } catch (err) {
