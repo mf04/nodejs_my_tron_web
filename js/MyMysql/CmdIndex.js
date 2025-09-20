@@ -208,7 +208,8 @@ export const getRechargeList = async () => {
         const pool = getConnectionPool();
         const promisePool = pool.promise();
         const [result] = await promisePool.query(
-            `select R.id as id, user_id, send_address, R.created_at as time, 
+            `select R.id as id, user_id, send_address, 
+            R.created_at as time, R.amount as amount, 
             balance_trx - balance_trx_lock as balance
             from user_recharge R
             INNER JOIN
@@ -257,3 +258,19 @@ export const getUserItemBalanceTrx = async (userId) => {
         console.log(err);
     }
 }
+
+export const getUserBalanceTrx = async (userId) => {
+    try {
+        const pool = getConnectionPool();
+        const promisePool = pool.promise();
+        const [result] = await promisePool.query(
+            `select balance_trx from nodejs_users where id = ?`,
+            [userId]
+        );
+        promisePool.end();
+        return result && result[0] && result[0]["balance_trx"] || 0;
+    } catch (err) {
+        console.log(err);
+    }
+}
+

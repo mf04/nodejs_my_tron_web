@@ -288,7 +288,6 @@ export const getUserAvailableTrx = async (userId) => {
     }
 }
 
-
 export const getUserBalanceTrx = async (userId) => {
     try {
         const [result] = await promisePool.query(

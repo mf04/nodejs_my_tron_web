@@ -11,7 +11,8 @@ import { formattedValue } from "./bigNumber.util.js"
 import * as resourceRentFunc from "./resourceRentFunc.js";
 import * as resourceRentRecoverFunc from "./resourceRentRecoverFunc.js";
 import * as userWithdrawFunc from "./userWithdrawFunc.js";
-import * as userRechargeFunc from "./userRechargeFunc.js";
+// import * as userRechargeFunc from "./userRechargeFunc.js";
+import * as userRechargeFunc from "./userRechargeFuncV2.js";
 
 class TronResourceManager {
 
